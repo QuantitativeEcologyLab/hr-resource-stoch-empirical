@@ -1,0 +1,8 @@
+---
+title: ''
+output: pdf_document
+---
+
+* We should use the EDF for the hr size as a measure of confidence in the HR size whether was exact weights (and adding a random effect for each individual) or as normalized weights by dividing by the mean weight. Both options imply that we are measuring at the spatiotemporal scale of a range crossing, which varies among animals
+* Using the EDF as weights results in highly uncertain estimates for animals with large HRs or scarce data, so we need a good model structure with random effects, coviariates such as body mass, and post-stratification to avoid biasing towards animals with frequent range crossings.
+* Migrating animals will have larger range sizes and smaller EDF values, and they will also be more susceptible to interannual variation. These two points work well together because they imply we should estimate changes in the mean as smooth changes that occur across years rather than among years, which means i should keep the k for years relatively low (e.g., (2025 - 1981) / 4 = 11 ≈ 10)
