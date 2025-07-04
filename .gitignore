@@ -51,3 +51,4 @@ rsconnect/
 # all data files except for README.md files
 data/*
 !data/README.md
+*.db
