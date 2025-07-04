@@ -154,4 +154,4 @@ cowplot::plot_grid(
     scale_y_log10(expression(bold('95%'~HR~(log['10']~scale)))),
   ncol = 1)
 
-ggsave('figures/bc-test.png', height = 12, width = 12, dpi = 600, bg = 'white')
+ggsave('figures/bc-test.png', height = 12, width = 8, dpi = 300, bg = 'white')
