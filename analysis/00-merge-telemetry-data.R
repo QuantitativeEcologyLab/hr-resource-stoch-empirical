@@ -9,21 +9,6 @@ library('lubridate') # for working with dates
 library('ggplot2')   # for fancy plots
 source('analysis/figures/default-ggplot-theme.R')
 
-# https://doi.org/10.1016/j.cub.2025.03.010
-d0 <- st_read('data/telemetry-data/aikens-pronghorn/GPSdata.shp', quiet = TRUE) %>%
-  st_transform(crs = 'EPSG:4326') %>%
-  bind_cols(st_coordinates(.) %>%
-              data.frame() %>%
-              rename(long = X, lat = Y)) %>%
-  st_drop_geometry() %>%
-  mutate(time = '') #' *dates are missing times!*
-plot(lat ~ long, d, pch = '.')
-
-d0 %>%
-  summarize(n = n(), .by = c(animalID, date)) %>%
-  pull(n) %>%
-  table()
-
 setwd('data/telemetry-data')
 d <-
   bind_rows(
@@ -66,29 +51,47 @@ d <-
                 time_zone = tz_lookup_coords(lat = lat, lon = long,
                                              method = 'accurate'),
                 timestamp = as.POSIXct(timestamp),
-                outlier = Outlier, clean = TRUE)
+                outlier = Outlier, clean = TRUE),
+    # data from other contributors that i still need to clean
+    # Aikens at al. (collected by H. Sawyer); https://doi.org/10.1016/j.cub.2025.03.010
+    st_read('aikens-pronghorn/GPSdata.shp', quiet = TRUE) %>%
+      st_transform(crs = 'EPSG:4326') %>%
+      # assuming the data uses the local timezone
+      mutate(time_zone = tz_lookup(., crs = st_crs(.), method = 'accurate')) %>%
+      bind_cols(st_coordinates(.) %>%
+                  data.frame() %>%
+                  rename(long = X, lat = Y)) %>%
+      st_drop_geometry() %>%
+      transmute(animal_id = as.character(animalID),
+                species = 'Antilocapra americana',
+                dataset_name = 'Aikens et al. 2025 (Collected by Hall Sawyer)',
+                individual.local.identifier = animal_id, long, lat,
+                time_zone,
+                timestamp = paste0(date, '-', hour) %>%
+                  ymd_h(tz = unique(time_zone)),
+                outlier = FALSE, clean = FALSE) %>%
+      arrange(animal_id, timestamp) # original data are not sorted
   ) %>%
   # add correct timezone (perform for each time zone separately)
   group_by(time_zone) %>%
   mutate(timestamp = timestamp %>%
            `tz<-`(unique(time_zone))) %>%
   ungroup() %>%
-  # convert all times to UTC
-  mutate(timestamp = with_tz(timestamp, 'UTC')) %>%
+  # convert all times to UTC and make animal IDs unique
+  mutate(timestamp = with_tz(timestamp, 'UTC'),
+         animal_id = paste(animal_id, 'from', dataset_name)) %>%
   select(! time_zone) %>%
+  # collect the datasets for each individual animal
   nest(data = ! c(animal_id, species, dataset_name, clean)) %>%
   mutate(tel = map(data, \(.d) {
     # convert to telemetries quietly (will be doing data cleaning later)
-    suppressMessages(as.telemetry(.d, mark.rm = TRUE, quiet = TRUE))
-    }),
-    n_locations = map_int(tel, nrow),
-    n_days = map_dbl(data, \(.d) {
-      diff(range(.d$timestamp), units = 'days')
-      }))
+    suppressMessages(as.telemetry(.d, mark.rm = TRUE))
+  }, .progress = TRUE),
+  n_locations = map_int(tel, nrow),
+  n_days = map_dbl(data, \(.d) {
+    diff(range(.d$timestamp), units = 'days')
+  }))
 d
-
-# ensure there are no outliers (should be 0)
-sum(unnest(d, data)$outlier)
 
 # ensure there are no duplicated animal names across studies (should be 0)
 d %>%
@@ -112,7 +115,7 @@ ggplot(d, aes(n_days)) +
   scale_x_log10('Number of days tracked', breaks = c(10, 30, 100, 1000)) +
   ylab('Count')
 
-# add collar calibrations?
+# add collar calibrations when possible?
 
 # save the final dataset
 saveRDS(d, paste0('cleaned-telemetry-data-', Sys.Date(), '.rds'))
