@@ -1,0 +1,435 @@
+"animal_id","species","dataset_name","n_locations","median_sampling_freq_hours","sampling_duration_days","model_class","has_speed","range_resident","mass_kg","diet_inv","diet_vend","diet_vect","diet_vfish","diet_vunk","diet_scav","diet_fruit","diet_nect","diet_seed","diet_plant_o"
+"BW003","Canis lupus","Canis_lupus_boreal",15,22.9999991666608,13.42,"OUf error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW006","Canis lupus","Canis_lupus_boreal",61,22.9999991666608,45,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW008","Canis lupus","Canis_lupus_boreal",11846,0.250276666680972,520.83,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW009","Canis lupus","Canis_lupus_boreal",9153,0.250555277797911,570.87,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW010","Canis lupus","Canis_lupus_boreal",11952,0.250000833339161,527.75,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW012","Canis lupus","Canis_lupus_boreal",11627,0.250276944438616,625.54,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW013","Canis lupus","Canis_lupus_boreal",5298,0.250000833339161,84.79,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW014","Canis lupus","Canis_lupus_boreal",11709,0.250555277797911,892,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW015","Canis lupus","Canis_lupus_boreal",5629,0.250276666614744,247.08,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW016","Canis lupus","Canis_lupus_boreal",4914,0.250000833339161,128.08,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW017","Canis lupus","Canis_lupus_boreal",5483,0.250276944438616,305.17,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW018","Canis lupus","Canis_lupus_boreal",5633,0.250276666680972,192.58,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW019","Canis lupus","Canis_lupus_boreal",10823,0.250000833339161,442.71,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW021","Canis lupus","Canis_lupus_boreal",11522,0.250276666680972,447.37,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW024","Canis lupus","Canis_lupus_boreal",11035,0.0844438889291551,972.17,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW025","Canis lupus","Canis_lupus_boreal",4289,0.0841666666666667,164.5,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW027","Canis lupus","Canis_lupus_boreal",6982,0.0841655555698607,283.08,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW028","Canis lupus","Canis_lupus_boreal",4625,0.0841655555698607,158,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW029","Canis lupus","Canis_lupus_boreal",2313,0.0841655555698607,102,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW030","Canis lupus","Canis_lupus_boreal",6953,0.0841655555698607,269.79,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW031","Canis lupus","Canis_lupus_boreal",4392,0.0838897222280502,148,"OUF error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW033","Canis lupus","Canis_lupus_boreal",2050,3,287.75,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW035","Canis lupus","Canis_lupus_boreal",686,3,270.12,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW036","Canis lupus","Canis_lupus_boreal",2394,3,328.38,"OUF error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW038","Canis lupus","Canis_lupus_boreal",8114,2.97065277775129,907.58,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW039","Canis lupus","Canis_lupus_boreal",4260,3,569,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW040","Canis lupus","Canis_lupus_boreal",5248,3,689.29,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW041","Canis lupus","Canis_lupus_boreal",1783,3,242.17,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW042nex","Canis lupus","Canis_lupus_boreal",1986,0.084480000005828,353.03,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW043nex","Canis lupus","Canis_lupus_boreal",2095,3,273.5,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW044nex","Canis lupus","Canis_lupus_boreal",3380,0.0844438889291551,376.13,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW045nex","Canis lupus","Canis_lupus_boreal",1380,11.9983344444964,582,"OUF error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW046nex","Canis lupus","Canis_lupus_boreal",4479,0.0840240277846654,257.14,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW047nex","Canis lupus","Canis_lupus_boreal",3000,0.0838894444704056,204.5,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW049nex","Canis lupus","Canis_lupus_boreal",7297,0.0839999999602636,464.54,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW050","Canis lupus","Canis_lupus_boreal",1469,3.00027833329307,211.91,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW051","Canis lupus","Canis_lupus_boreal",1261,3.00027833329307,188.25,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW052","Canis lupus","Canis_lupus_boreal",1969,3,271,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"BW053","Canis lupus","Canis_lupus_boreal",3328,3,442.96,"OUF anisotropic error",TRUE,"",32.18333,0,100,0,0,0,0,0,0,0,0
+"E001","Cervus canadensis","Elk in southwestern Alberta",11245,2.00194444444444,1429.55,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E002","Cervus canadensis","Elk in southwestern Alberta",3557,2.00027777777778,317.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E003","Cervus canadensis","Elk in southwestern Alberta",10967,2.00166666666667,1350.93,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E004","Cervus canadensis","Elk in southwestern Alberta",8709,2,792.84,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E005","Cervus canadensis","Elk in southwestern Alberta",10180,2.00277777777778,1293.52,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E006","Cervus canadensis","Elk in southwestern Alberta",6126,2.00083333333333,597.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E007","Cervus canadensis","Elk in southwestern Alberta",5234,1.99111111111111,576.62,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E008","Cervus canadensis","Elk in southwestern Alberta",705,2,58.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E009","Cervus canadensis","Elk in southwestern Alberta",8624,2,791.73,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E010","Cervus canadensis","Elk in southwestern Alberta",2965,2.00111111111111,291.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E011","Cervus canadensis","Elk in southwestern Alberta",845,2,72.21,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E013","Cervus canadensis","Elk in southwestern Alberta",2179,2.00027777777778,380.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E014","Cervus canadensis","Elk in southwestern Alberta",4952,2,438.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E015","Cervus canadensis","Elk in southwestern Alberta",6571,1.99111111111111,737.95,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E016","Cervus canadensis","Elk in southwestern Alberta",8653,2,794.9,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E017","Cervus canadensis","Elk in southwestern Alberta",8341,2.00027777777778,795.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E018","Cervus canadensis","Elk in southwestern Alberta",8628,2.00055555555556,866.72,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E019","Cervus canadensis","Elk in southwestern Alberta",7449,2,631.63,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E020","Cervus canadensis","Elk in southwestern Alberta",6180,1.99111111111111,585.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E021","Cervus canadensis","Elk in southwestern Alberta",10764,2.00166666666667,1319.17,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E022","Cervus canadensis","Elk in southwestern Alberta",1601,2,135.46,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E023","Cervus canadensis","Elk in southwestern Alberta",8778,2,791.75,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E024","Cervus canadensis","Elk in southwestern Alberta",3230,2,282.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E025","Cervus canadensis","Elk in southwestern Alberta",4252,1.99111111111111,519.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E026","Cervus canadensis","Elk in southwestern Alberta",7186,2,600.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E027","Cervus canadensis","Elk in southwestern Alberta",8090,2,676.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E028","Cervus canadensis","Elk in southwestern Alberta",4744,2,414.58,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E029","Cervus canadensis","Elk in southwestern Alberta",2452,1.99111111111111,253.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E030","Cervus canadensis","Elk in southwestern Alberta",2779,2,246.46,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E031","Cervus canadensis","Elk in southwestern Alberta",2839,2,259.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E032","Cervus canadensis","Elk in southwestern Alberta",3440,2.00027777777778,317.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E033","Cervus canadensis","Elk in southwestern Alberta",2606,2.00027777777778,248.71,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E034","Cervus canadensis","Elk in southwestern Alberta",5202,2,459.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E035","Cervus canadensis","Elk in southwestern Alberta",5504,1.99111111111111,658,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E036","Cervus canadensis","Elk in southwestern Alberta",5278,1.99111111111111,575.46,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E037","Cervus canadensis","Elk in southwestern Alberta",3153,2.00027777777778,293.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E038","Cervus canadensis","Elk in southwestern Alberta",7988,2.00027777777778,790.84,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E039","Cervus canadensis","Elk in southwestern Alberta",5354,2,470.37,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E040","Cervus canadensis","Elk in southwestern Alberta",8575,2,788.28,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E041","Cervus canadensis","Elk in southwestern Alberta",1288,2,124.38,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E042","Cervus canadensis","Elk in southwestern Alberta",603,2.00027777777778,52.88,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E043","Cervus canadensis","Elk in southwestern Alberta",7820,2,671.75,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E044","Cervus canadensis","Elk in southwestern Alberta",11509,2.00166666666667,1461.35,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E045","Cervus canadensis","Elk in southwestern Alberta",2491,2.00069444444444,248.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E046","Cervus canadensis","Elk in southwestern Alberta",1404,2,117.54,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E047","Cervus canadensis","Elk in southwestern Alberta",907,2,77.29,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E048","Cervus canadensis","Elk in southwestern Alberta",2565,2,257.04,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E049","Cervus canadensis","Elk in southwestern Alberta",5978,2,501.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E051","Cervus canadensis","Elk in southwestern Alberta",5756,2,700.75,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E052","Cervus canadensis","Elk in southwestern Alberta",7337,2,702.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E053","Cervus canadensis","Elk in southwestern Alberta",6841,2,623.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E054","Cervus canadensis","Elk in southwestern Alberta",7136,2,702.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E055","Cervus canadensis","Elk in southwestern Alberta",7660,2,702.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E056","Cervus canadensis","Elk in southwestern Alberta",4185,2,359.51,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E057","Cervus canadensis","Elk in southwestern Alberta",6237,2,527.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E058","Cervus canadensis","Elk in southwestern Alberta",2651,2,257.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E059","Cervus canadensis","Elk in southwestern Alberta",7196,2,702.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E060","Cervus canadensis","Elk in southwestern Alberta",7614,2,702.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E061","Cervus canadensis","Elk in southwestern Alberta",6462,2,626.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E062","Cervus canadensis","Elk in southwestern Alberta",7092,2,702.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E063","Cervus canadensis","Elk in southwestern Alberta",5490,2,475.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E064","Cervus canadensis","Elk in southwestern Alberta",2249,2.00055555555556,213.13,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E065","Cervus canadensis","Elk in southwestern Alberta",5021,2.00138888888889,527.33,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E066","Cervus canadensis","Elk in southwestern Alberta",4062,2,376.5,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E067","Cervus canadensis","Elk in southwestern Alberta",6574,2,555.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E068","Cervus canadensis","Elk in southwestern Alberta",4085,1.00027777777778,180.13,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E070","Cervus canadensis","Elk in southwestern Alberta",3890,2,361.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E073","Cervus canadensis","Elk in southwestern Alberta",3955,2,361.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E074","Cervus canadensis","Elk in southwestern Alberta",6153,4.00055555555556,1107.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E075","Cervus canadensis","Elk in southwestern Alberta",11722,2,1107.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E076","Cervus canadensis","Elk in southwestern Alberta",6341,2.00027777777778,593.29,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E077","Cervus canadensis","Elk in southwestern Alberta",6413,2,542.71,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E078","Cervus canadensis","Elk in southwestern Alberta",7134,2,628.26,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E079","Cervus canadensis","Elk in southwestern Alberta",4328,2,369.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E080","Cervus canadensis","Elk in southwestern Alberta",6812,1.00083333333333,333.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E081","Cervus canadensis","Elk in southwestern Alberta",8207,2.00027777777778,828.61,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E082","Cervus canadensis","Elk in southwestern Alberta",8338,2.00055555555556,958.29,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E083","Cervus canadensis","Elk in southwestern Alberta",3754,4.00083333333333,753.46,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E085","Cervus canadensis","Elk in southwestern Alberta",1577,4.00152777777778,347.67,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E086","Cervus canadensis","Elk in southwestern Alberta",3944,2.005,510.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E087","Cervus canadensis","Elk in southwestern Alberta",6207,2.00111111111111,652.58,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E088","Cervus canadensis","Elk in southwestern Alberta",1855,1.99111111111111,194.08,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E090","Cervus canadensis","Elk in southwestern Alberta",1971,4.00055555555556,369.67,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E091","Cervus canadensis","Elk in southwestern Alberta",5035,1.99111111111111,761.36,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E092","Cervus canadensis","Elk in southwestern Alberta",4075,1.99111111111111,428.33,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E093","Cervus canadensis","Elk in southwestern Alberta",2871,2,248.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E094","Cervus canadensis","Elk in southwestern Alberta",8057,2,704.46,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E095","Cervus canadensis","Elk in southwestern Alberta",9229,2.00027777777778,880.63,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E096","Cervus canadensis","Elk in southwestern Alberta",4983,2.00027777777778,485.42,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E097","Cervus canadensis","Elk in southwestern Alberta",6159,2.00055555555556,659.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E098","Cervus canadensis","Elk in southwestern Alberta",7363,2,657.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E099","Cervus canadensis","Elk in southwestern Alberta",4410,2.00083333333333,659.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E100","Cervus canadensis","Elk in southwestern Alberta",7329,2,657.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E101","Cervus canadensis","Elk in southwestern Alberta",2408,2,222.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E102","Cervus canadensis","Elk in southwestern Alberta",2695,2,254.71,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E103","Cervus canadensis","Elk in southwestern Alberta",2890,2,286.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E104","Cervus canadensis","Elk in southwestern Alberta",1538,2.00361111111111,177.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E105","Cervus canadensis","Elk in southwestern Alberta",1588,2.01,317.63,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E106","Cervus canadensis","Elk in southwestern Alberta",14744,1.97055555555556,820.25,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E107","Cervus canadensis","Elk in southwestern Alberta",6676,2,593.42,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E108","Cervus canadensis","Elk in southwestern Alberta",2130,2.00138888888889,210.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E109","Cervus canadensis","Elk in southwestern Alberta",8226,2.00027777777778,755.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E110","Cervus canadensis","Elk in southwestern Alberta",7409,2,657.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E111","Cervus canadensis","Elk in southwestern Alberta",3038,2,263.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E113","Cervus canadensis","Elk in southwestern Alberta",9466,2.00083333333333,1002.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E114","Cervus canadensis","Elk in southwestern Alberta",8071,2,704.46,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E115","Cervus canadensis","Elk in southwestern Alberta",3489,2,302.67,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E116","Cervus canadensis","Elk in southwestern Alberta",8266,2,710.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E117","Cervus canadensis","Elk in southwestern Alberta",7059,2,645.5,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E118","Cervus canadensis","Elk in southwestern Alberta",6456,2.00083333333333,633.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E119","Cervus canadensis","Elk in southwestern Alberta",4002,1.99111111111111,620.84,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E120","Cervus canadensis","Elk in southwestern Alberta",7043,2,696.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E121","Cervus canadensis","Elk in southwestern Alberta",7674,2,751.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E122","Cervus canadensis","Elk in southwestern Alberta",6866,2,696.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E123","Cervus canadensis","Elk in southwestern Alberta",11703,2,1097.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E124","Cervus canadensis","Elk in southwestern Alberta",7650,2,718.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E125","Cervus canadensis","Elk in southwestern Alberta",4345,2,416.38,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E126","Cervus canadensis","Elk in southwestern Alberta",3271,2,310.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E127","Cervus canadensis","Elk in southwestern Alberta",747,2,74.29,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E128","Cervus canadensis","Elk in southwestern Alberta",4229,2,416.21,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E129","Cervus canadensis","Elk in southwestern Alberta",3935,2.00194444444444,422.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E130","Cervus canadensis","Elk in southwestern Alberta",2730,2.00138888888889,280.87,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E131","Cervus canadensis","Elk in southwestern Alberta",4964,2,439.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E132","Cervus canadensis","Elk in southwestern Alberta",3517,2.00333333333333,440.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E133","Cervus canadensis","Elk in southwestern Alberta",1804,2.005,215.75,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E134","Cervus canadensis","Elk in southwestern Alberta",1128,2.00305555555556,213.25,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E135","Cervus canadensis","Elk in southwestern Alberta",1920,2,163.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E136","Cervus canadensis","Elk in southwestern Alberta",2053,2.00138888888889,209.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E137","Cervus canadensis","Elk in southwestern Alberta",7721,2.00027777777778,719.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E138","Cervus canadensis","Elk in southwestern Alberta",3793,2.00027777777778,358.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E139","Cervus canadensis","Elk in southwestern Alberta",7487,2.00027777777778,719.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E140","Cervus canadensis","Elk in southwestern Alberta",1505,2.00055555555556,142.75,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E141","Cervus canadensis","Elk in southwestern Alberta",2433,2.00055555555556,229.38,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E142","Cervus canadensis","Elk in southwestern Alberta",7866,1.99111111111111,740.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E143","Cervus canadensis","Elk in southwestern Alberta",2013,2.00166666666667,227.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E144","Cervus canadensis","Elk in southwestern Alberta",13108,1.99861111111111,940.04,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E145","Cervus canadensis","Elk in southwestern Alberta",4429,1.99111111111111,558.71,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E146","Cervus canadensis","Elk in southwestern Alberta",8542,2,727.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E147","Cervus canadensis","Elk in southwestern Alberta",6667,1.99111111111111,691.83,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E149","Cervus canadensis","Elk in southwestern Alberta",4883,2,435.35,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E150","Cervus canadensis","Elk in southwestern Alberta",7412,2,700.96,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E151","Cervus canadensis","Elk in southwestern Alberta",3610,2.00083333333333,433.29,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E152","Cervus canadensis","Elk in southwestern Alberta",3850,2,333.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E153","Cervus canadensis","Elk in southwestern Alberta",6915,2.00027777777778,724.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E154","Cervus canadensis","Elk in southwestern Alberta",8133,2.00027777777778,814.93,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E156","Cervus canadensis","Elk in southwestern Alberta",1108,2,242.5,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E157","Cervus canadensis","Elk in southwestern Alberta",684,1.99972222222222,56.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E158","Cervus canadensis","Elk in southwestern Alberta",5618,2.0025,624.5,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E159","Cervus canadensis","Elk in southwestern Alberta",7572,1.99916666666667,541.35,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E160","Cervus canadensis","Elk in southwestern Alberta",7103,2,618.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E161","Cervus canadensis","Elk in southwestern Alberta",9761,1.95694444444444,578.12,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E162","Cervus canadensis","Elk in southwestern Alberta",1834,2.00166666666667,189.88,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E163","Cervus canadensis","Elk in southwestern Alberta",2389,2,219.38,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E164","Cervus canadensis","Elk in southwestern Alberta",8367,2,733.79,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E165","Cervus canadensis","Elk in southwestern Alberta",4650,2.00166666666667,505.29,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E166","Cervus canadensis","Elk in southwestern Alberta",715,2,59.54,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E167","Cervus canadensis","Elk in southwestern Alberta",3281,2.00083333333333,329.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E168","Cervus canadensis","Elk in southwestern Alberta",3029,2,253.58,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E170","Cervus canadensis","Elk in southwestern Alberta",5838,1.99722222222222,353.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E171","Cervus canadensis","Elk in southwestern Alberta",720,1.99111111111111,65.59,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E172","Cervus canadensis","Elk in southwestern Alberta",1870,2,161.67,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E173","Cervus canadensis","Elk in southwestern Alberta",1799,2,161.42,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E175","Cervus canadensis","Elk in southwestern Alberta",3018,1.99111111111111,294.04,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E176","Cervus canadensis","Elk in southwestern Alberta",1484,1.99972222222222,124.42,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E177","Cervus canadensis","Elk in southwestern Alberta",1085,2,92.33,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E178","Cervus canadensis","Elk in southwestern Alberta",1683,1.99111111111111,210.92,"OUF error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E179","Cervus canadensis","Elk in southwestern Alberta",6861,1.98222222222222,606.21,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E181","Cervus canadensis","Elk in southwestern Alberta",1471,2.00305555555556,185.92,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"E182","Cervus canadensis","Elk in southwestern Alberta",1566,2.00527777777778,228.71,"OUF anisotropic error",TRUE,"",165.01585,0,0,0,0,0,0,0,0,0,100
+"CA01","Oreamnos americanus","Oreamnos_americanus",7761,6.24694444444444,1561.27,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA02","Oreamnos americanus","Oreamnos_americanus",4625,2.25583333333333,804.24,"OUF error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA03","Oreamnos americanus","Oreamnos_americanus",223,6.25,57.81,"OU anisotropic error",FALSE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA04","Oreamnos americanus","Oreamnos_americanus",7653,6.24458333333333,1559.19,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA07","Oreamnos americanus","Oreamnos_americanus",7122,6.24333333333333,1364.92,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA08","Oreamnos americanus","Oreamnos_americanus",7827,6.24611111111111,1562.05,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA09","Oreamnos americanus","Oreamnos_americanus",7700,6.24638888888889,1547.21,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA10","Oreamnos americanus","Oreamnos_americanus",5968,6.20777777777778,1100.59,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA11","Oreamnos americanus","Oreamnos_americanus",7638,6.24777777777778,1563.09,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA12","Oreamnos americanus","Oreamnos_americanus",5362,6.24916666666667,1168.3,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"CA18","Oreamnos americanus","Oreamnos_americanus",3573,2.25722222222222,614.94,"OUF anisotropic error",TRUE,"",72.50033,0,0,0,0,0,0,0,0,0,100
+"246","Puma concolor","Puma_concolor_2",2101,4.00722222222222,617.46,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"272","Puma concolor","Puma_concolor_2",1487,3.01277777777778,338.12,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"307","Puma concolor","Puma_concolor_2",1718,3.00777777777778,345,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C1","Puma concolor","Puma_concolor_4",2735,2,242.12,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C10","Puma concolor","Puma_concolor_4",5834,2,510.54,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C11","Puma concolor","Puma_concolor_4",4289,2,367.83,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C12","Puma concolor","Puma_concolor_4",6547,2,552.71,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C13","Puma concolor","Puma_concolor_4",167,2,13.08,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C14","Puma concolor","Puma_concolor_4",632,2,55.54,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C16","Puma concolor","Puma_concolor_4",5470,2,484.21,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C17","Puma concolor","Puma_concolor_4",2426,2,210.54,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C18","Puma concolor","Puma_concolor_4",2789,2,239.54,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C19","Puma concolor","Puma_concolor_4",3330,2,282.87,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C2","Puma concolor","Puma_concolor_4",2379,2,202.96,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C21","Puma concolor","Puma_concolor_4",3558,2,336.38,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C22","Puma concolor","Puma_concolor_4",191,6,50.99,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C23","Puma concolor","Puma_concolor_4",2093,2,241.21,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C28","Puma concolor","Puma_concolor_4",2132,2,183.54,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C29","Puma concolor","Puma_concolor_4",1707,2,143.54,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C3","Puma concolor","Puma_concolor_4",2993,2,254.92,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C30","Puma concolor","Puma_concolor_4",1928,2,164.21,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C31","Puma concolor","Puma_concolor_4",2342,2,200.04,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C32","Puma concolor","Puma_concolor_4",1366,2,118.88,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C4","Puma concolor","Puma_concolor_4",3136,2,285.38,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C5","Puma concolor","Puma_concolor_4",4035,2,437.38,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C6","Puma concolor","Puma_concolor_4",1251,2,160.88,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C7","Puma concolor","Puma_concolor_4",6645,2,566.21,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C8","Puma concolor","Puma_concolor_4",3086,2,260.62,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"C9","Puma concolor","Puma_concolor_4",2283,2,209.04,"OUF anisotropic error",TRUE,"",51.60004,0,100,0,0,0,0,0,0,0,0
+"HSCEK063","Rangifer tarandus","Rangifer_tarandus_boreal",1266,2,260,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"HSCEK077","Rangifer tarandus","Rangifer_tarandus_boreal",2606,2,702.04,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK002","Rangifer tarandus","Rangifer_tarandus_boreal",1961,8,693,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK003","Rangifer tarandus","Rangifer_tarandus_boreal",2362,7.98333333333333,678.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK005","Rangifer tarandus","Rangifer_tarandus_boreal",262,8,94.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK005b","Rangifer tarandus","Rangifer_tarandus_boreal",1264,13,769.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK007","Rangifer tarandus","Rangifer_tarandus_boreal",1746,8,715.67,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK007b","Rangifer tarandus","Rangifer_tarandus_boreal",1513,13.0033333333333,1042.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK009","Rangifer tarandus","Rangifer_tarandus_boreal",2447,7.98333333333333,716,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK009b","Rangifer tarandus","Rangifer_tarandus_boreal",1611,13.0008333333333,1043.25,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK014","Rangifer tarandus","Rangifer_tarandus_boreal",2207,7.98333333333333,696,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK014b","Rangifer tarandus","Rangifer_tarandus_boreal",399,13.0016666666667,264.87,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK016","Rangifer tarandus","Rangifer_tarandus_boreal",1695,8,692,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK016b","Rangifer tarandus","Rangifer_tarandus_boreal",1414,13.0027777777778,927.87,"OUF error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK017","Rangifer tarandus","Rangifer_tarandus_boreal",2311,0.5,302.1,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK020","Rangifer tarandus","Rangifer_tarandus_boreal",2230,7.98333333333333,798.64,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK020b","Rangifer tarandus","Rangifer_tarandus_boreal",1625,13.0011111111111,1008.58,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK026","Rangifer tarandus","Rangifer_tarandus_boreal",2482,7.98333333333333,713.67,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK026b","Rangifer tarandus","Rangifer_tarandus_boreal",1539,13.0013888888889,1006.42,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK028","Rangifer tarandus","Rangifer_tarandus_boreal",165,8,60.29,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK031","Rangifer tarandus","Rangifer_tarandus_boreal",456,7.98333333333333,125.21,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK033","Rangifer tarandus","Rangifer_tarandus_boreal",2453,7.98333333333333,764.66,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK033b","Rangifer tarandus","Rangifer_tarandus_boreal",1679,13,1041.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK034","Rangifer tarandus","Rangifer_tarandus_boreal",1939,11.0155555555556,1050.54,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK036","Rangifer tarandus","Rangifer_tarandus_boreal",2387,7.98333333333333,767,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK036b","Rangifer tarandus","Rangifer_tarandus_boreal",1693,13.0011111111111,1040.54,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK038","Rangifer tarandus","Rangifer_tarandus_boreal",2572,7.98333333333333,713.83,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK038b","Rangifer tarandus","Rangifer_tarandus_boreal",396,13.0002777777778,290.99,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK040","Rangifer tarandus","Rangifer_tarandus_boreal",2089,12.9916666666667,1248,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK042","Rangifer tarandus","Rangifer_tarandus_boreal",341,8,105.53,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK044","Rangifer tarandus","Rangifer_tarandus_boreal",2391,7.96666666666667,660.44,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK046","Rangifer tarandus","Rangifer_tarandus_boreal",1445,7.98333333333333,432.29,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK047","Rangifer tarandus","Rangifer_tarandus_boreal",1357,7.98333333333333,434.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK050","Rangifer tarandus","Rangifer_tarandus_boreal",979,7.96666666666667,288,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK055","Rangifer tarandus","Rangifer_tarandus_boreal",2290,11.0072222222222,1139,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK066b","Rangifer tarandus","Rangifer_tarandus_boreal",812,13.0016666666667,593.13,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK071","Rangifer tarandus","Rangifer_tarandus_boreal",2110,12.9908333333333,1239.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK079","Rangifer tarandus","Rangifer_tarandus_boreal",2098,7.91666666666667,667.29,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK079b","Rangifer tarandus","Rangifer_tarandus_boreal",1744,13.0002777777778,1042.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK085","Rangifer tarandus","Rangifer_tarandus_boreal",1915,12.9863888888889,1116,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK097","Rangifer tarandus","Rangifer_tarandus_boreal",4880,0.5,655.44,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK097b","Rangifer tarandus","Rangifer_tarandus_boreal",1856,13,1118,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK100","Rangifer tarandus","Rangifer_tarandus_boreal",5238,0.5,648,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK100b","Rangifer tarandus","Rangifer_tarandus_boreal",1758,13,1120.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK104","Rangifer tarandus","Rangifer_tarandus_boreal",549,12.9936111111111,333.54,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK106","Rangifer tarandus","Rangifer_tarandus_boreal",716,4,136.95,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK110","Rangifer tarandus","Rangifer_tarandus_boreal",2434,7.98333333333333,653.85,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK110b","Rangifer tarandus","Rangifer_tarandus_boreal",145,12.0004175000058,151.97,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK111","Rangifer tarandus","Rangifer_tarandus_boreal",2092,12.9916666666667,1216.46,"OUF error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK114","Rangifer tarandus","Rangifer_tarandus_boreal",2716,4,639,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK119","Rangifer tarandus","Rangifer_tarandus_boreal",2212,12.9830555555556,1188.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK121","Rangifer tarandus","Rangifer_tarandus_boreal",743,4,152.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK126","Rangifer tarandus","Rangifer_tarandus_boreal",1104,4,673,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK126b","Rangifer tarandus","Rangifer_tarandus_boreal",1513,13.0016666666667,1042.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK133","Rangifer tarandus","Rangifer_tarandus_boreal",699,4,134.79,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK135","Rangifer tarandus","Rangifer_tarandus_boreal",2050,12.995,1249.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK136","Rangifer tarandus","Rangifer_tarandus_boreal",2829,7.98333333333333,727,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK136b","Rangifer tarandus","Rangifer_tarandus_boreal",1713,13.0002777777778,1041.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK139","Rangifer tarandus","Rangifer_tarandus_boreal",375,12.9998611111111,274.04,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK142","Rangifer tarandus","Rangifer_tarandus_boreal",1984,12.9919444444444,1187,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK143","Rangifer tarandus","Rangifer_tarandus_boreal",1240,12.995,756.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK146","Rangifer tarandus","Rangifer_tarandus_boreal",749,4,243.33,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK146b","Rangifer tarandus","Rangifer_tarandus_boreal",1888,13,1109.33,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK147","Rangifer tarandus","Rangifer_tarandus_boreal",666,12.9963888888889,425.54,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK161","Rangifer tarandus","Rangifer_tarandus_boreal",2158,4,724.34,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK161b","Rangifer tarandus","Rangifer_tarandus_boreal",1581,13.0013888888889,1008.58,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK163","Rangifer tarandus","Rangifer_tarandus_boreal",558,12.9930555555556,363.49,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK165","Rangifer tarandus","Rangifer_tarandus_boreal",84,13,49.83,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK166","Rangifer tarandus","Rangifer_tarandus_boreal",2020,13,1388.29,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK167","Rangifer tarandus","Rangifer_tarandus_boreal",673,12.0008340277606,912.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK168","Rangifer tarandus","Rangifer_tarandus_boreal",1937,13.0013888888889,1385.04,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK169","Rangifer tarandus","Rangifer_tarandus_boreal",1157,12,717.72,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK169b","Rangifer tarandus","Rangifer_tarandus_boreal",185,13.0002777777778,107.75,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK170","Rangifer tarandus","Rangifer_tarandus_boreal",1118,12,726.13,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK170b","Rangifer tarandus","Rangifer_tarandus_boreal",779,13.0009722222222,596.92,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK171","Rangifer tarandus","Rangifer_tarandus_boreal",819,13,496.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK172","Rangifer tarandus","Rangifer_tarandus_boreal",649,12.0018059722582,871.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK173","Rangifer tarandus","Rangifer_tarandus_boreal",541,12,513.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK174","Rangifer tarandus","Rangifer_tarandus_boreal",34,12.0002783332931,19.46,"OUf error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK175","Rangifer tarandus","Rangifer_tarandus_boreal",1341,12.0016655555036,930.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK176","Rangifer tarandus","Rangifer_tarandus_boreal",1091,12.0011111111111,889.96,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK177","Rangifer tarandus","Rangifer_tarandus_boreal",2155,13,1389.37,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK178","Rangifer tarandus","Rangifer_tarandus_boreal",2044,13.0002777777778,1311.92,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK179","Rangifer tarandus","Rangifer_tarandus_boreal",433,12.0011113888688,565.15,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK180","Rangifer tarandus","Rangifer_tarandus_boreal",2174,13,1336.83,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK181","Rangifer tarandus","Rangifer_tarandus_boreal",1281,12,721.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK181b","Rangifer tarandus","Rangifer_tarandus_boreal",1099,13.0011111111111,677.63,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK182","Rangifer tarandus","Rangifer_tarandus_boreal",1510,13,940.87,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK183","Rangifer tarandus","Rangifer_tarandus_boreal",2151,13,1334.67,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK184","Rangifer tarandus","Rangifer_tarandus_boreal",343,12,201.96,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK185","Rangifer tarandus","Rangifer_tarandus_boreal",912,12.0011113888688,837.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK186","Rangifer tarandus","Rangifer_tarandus_boreal",1978,13,1215.5,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK187","Rangifer tarandus","Rangifer_tarandus_boreal",923,12.0008327777518,872.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK188","Rangifer tarandus","Rangifer_tarandus_boreal",655,13,394.87,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK189","Rangifer tarandus","Rangifer_tarandus_boreal",2029,13.0002777777778,1335.75,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK190","Rangifer tarandus","Rangifer_tarandus_boreal",65,12.0002783333262,48.13,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK191","Rangifer tarandus","Rangifer_tarandus_boreal",874,12.0005566666524,926.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK192","Rangifer tarandus","Rangifer_tarandus_boreal",678,12.0013894444704,932.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK193","Rangifer tarandus","Rangifer_tarandus_boreal",2136,13,1313.54,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK194","Rangifer tarandus","Rangifer_tarandus_boreal",2070,13.0002777777778,1336.29,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK195","Rangifer tarandus","Rangifer_tarandus_boreal",2021,13.0006944444444,1380.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK196","Rangifer tarandus","Rangifer_tarandus_boreal",2162,13,1381.25,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK197","Rangifer tarandus","Rangifer_tarandus_boreal",997,12.0005544443925,892.96,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK198","Rangifer tarandus","Rangifer_tarandus_boreal",2161,13,1301.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK199","Rangifer tarandus","Rangifer_tarandus_boreal",608,13,373.75,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK200","Rangifer tarandus","Rangifer_tarandus_boreal",92,13.0002777777778,68.21,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK201","Rangifer tarandus","Rangifer_tarandus_boreal",2179,13,1319.5,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK202","Rangifer tarandus","Rangifer_tarandus_boreal",32,13,17.33,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK203","Rangifer tarandus","Rangifer_tarandus_boreal",1006,13,580.12,"OU error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK204","Rangifer tarandus","Rangifer_tarandus_boreal",1016,12.0008327777518,817,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK205","Rangifer tarandus","Rangifer_tarandus_boreal",1942,13,1121.79,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK206","Rangifer tarandus","Rangifer_tarandus_boreal",1798,13,1109.33,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK207","Rangifer tarandus","Rangifer_tarandus_boreal",120,13,67.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK208","Rangifer tarandus","Rangifer_tarandus_boreal",1805,13,1121.79,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK209","Rangifer tarandus","Rangifer_tarandus_boreal",1817,13,1103.92,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK210","Rangifer tarandus","Rangifer_tarandus_boreal",307,13,178.21,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK211","Rangifer tarandus","Rangifer_tarandus_boreal",1804,13,1103.92,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK212","Rangifer tarandus","Rangifer_tarandus_boreal",481,13.0002777777778,321.75,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK213","Rangifer tarandus","Rangifer_tarandus_boreal",1792,13,1119.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK214","Rangifer tarandus","Rangifer_tarandus_boreal",1668,13.0005555555556,1119.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK215","Rangifer tarandus","Rangifer_tarandus_boreal",1719,13.0002777777778,1119.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK216","Rangifer tarandus","Rangifer_tarandus_boreal",863,13.0002777777778,540.58,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK217","Rangifer tarandus","Rangifer_tarandus_boreal",1516,13.0002777777778,1117.46,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK218","Rangifer tarandus","Rangifer_tarandus_boreal",1672,13.0005555555556,1043.25,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK219","Rangifer tarandus","Rangifer_tarandus_boreal",1717,13.0002777777778,1041.63,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK220","Rangifer tarandus","Rangifer_tarandus_boreal",1644,13.0016666666667,1041.08,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK221","Rangifer tarandus","Rangifer_tarandus_boreal",1691,13.0005555555556,1011.29,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK222","Rangifer tarandus","Rangifer_tarandus_boreal",395,13.0022222222222,250.25,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK223","Rangifer tarandus","Rangifer_tarandus_boreal",1608,13.0008333333333,1007.5,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK224","Rangifer tarandus","Rangifer_tarandus_boreal",1383,13.0002777777778,949,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK225","Rangifer tarandus","Rangifer_tarandus_boreal",588,13.0011111111111,377,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK226","Rangifer tarandus","Rangifer_tarandus_boreal",1192,13.0002777777778,683.58,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK227","Rangifer tarandus","Rangifer_tarandus_boreal",643,13.0002777777778,372.67,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK228","Rangifer tarandus","Rangifer_tarandus_boreal",212,13,135.42,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK229","Rangifer tarandus","Rangifer_tarandus_boreal",1166,13,678.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK230","Rangifer tarandus","Rangifer_tarandus_boreal",900,13.0047222222222,678.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK231","Rangifer tarandus","Rangifer_tarandus_boreal",1120,13.0008333333333,678.17,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK232","Rangifer tarandus","Rangifer_tarandus_boreal",359,13.0027777777778,461.23,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK233","Rangifer tarandus","Rangifer_tarandus_boreal",829,13,499.42,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK234","Rangifer tarandus","Rangifer_tarandus_boreal",210,13,121.33,"OUF error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK235","Rangifer tarandus","Rangifer_tarandus_boreal",180,13,108.88,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK236","Rangifer tarandus","Rangifer_tarandus_boreal",137,13.0002777777778,78,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK237","Rangifer tarandus","Rangifer_tarandus_boreal",385,13.00375,301.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK238","Rangifer tarandus","Rangifer_tarandus_boreal",517,13.0029166666667,403,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK239","Rangifer tarandus","Rangifer_tarandus_boreal",623,13.0016666666667,512.42,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"SCEK240","Rangifer tarandus","Rangifer_tarandus_boreal",849,13.0011111111111,540.2,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"101_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",2469,6,1072.42,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"104_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",910,6,623.21,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"105_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",473,6.01666666666667,230.54,"OU anisotropic error",FALSE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"109_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",703,6.01666666666667,327.67,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"112_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",679,6,268,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"114_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",754,6,353.75,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"115_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",652,6,354.21,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"116_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",4045,2.01666666666667,732.37,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"117_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",690,5.98333333333333,350.79,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"118_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",894,6,351.29,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"121_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",2290,6,1087.46,"OUF error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"132_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",180,2,15.5,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"136_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",2680,6,1204.21,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"137_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",2001,6,700.92,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"149_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",144,6,80.67,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"151_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",1101,3,328.54,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"152_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",912,6,328.79,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"214_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",425,4.01666666666667,131.12,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"287_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",2771,4.00055555555556,762,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"362_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",1551,0.257777777777778,86.19,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"92_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",486,3,105.71,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"96_prepenned","Rangifer tarandus","Rangifer_tarandus_southern_mountain",1111,3,328.5,"OUF anisotropic error",TRUE,"",86.03398,0,0,0,0,0,0,0,0,0,100
+"197","Ursus arctos","Ursus_arctos_horribilis",1205,4.00555555555556,713.5,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"199","Ursus arctos","Ursus_arctos_horribilis",482,4.00666666666667,331.33,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"200","Ursus arctos","Ursus_arctos_horribilis",423,4.02472222222222,607,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"202","Ursus arctos","Ursus_arctos_horribilis",25,4.01055555555556,292.33,"OUF error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"242","Ursus arctos","Ursus_arctos_horribilis",514,4.02555555555556,355.83,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"259","Ursus arctos","Ursus_arctos_horribilis",2747,1.00055555555556,138.54,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"260","Ursus arctos","Ursus_arctos_horribilis",1218,1.00166666666667,69.62,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"262","Ursus arctos","Ursus_arctos_horribilis",3468,1.00166666666667,495.08,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"263","Ursus arctos","Ursus_arctos_horribilis",2786,1.00111111111111,144.25,"OUF error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"291","Ursus arctos","Ursus_arctos_horribilis",7817,1,710.67,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"292","Ursus arctos","Ursus_arctos_horribilis",6792,1.00027777777778,503.83,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"294","Ursus arctos","Ursus_arctos_horribilis",1471,1.00125,104.67,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"296","Ursus arctos","Ursus_arctos_horribilis",1242,1.00055555555556,70.62,"OUF error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"297","Ursus arctos","Ursus_arctos_horribilis",2664,1,120.58,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"316","Ursus arctos","Ursus_arctos_horribilis",1050,3.0025,387.75,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"317","Ursus arctos","Ursus_arctos_horribilis",3074,1.00111111111111,356.63,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"318","Ursus arctos","Ursus_arctos_horribilis",879,3.00083333333333,130.62,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60
+"320","Ursus arctos","Ursus_arctos_horribilis",1164,3.00111111111111,374.13,"OUF anisotropic error",TRUE,"",180.52042,10,10,0,0,0,0,20,0,0,60

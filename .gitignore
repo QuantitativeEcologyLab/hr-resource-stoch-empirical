@@ -48,7 +48,12 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-# all data files except for README.md files
-data/*
-!data/README.md
+# .db files
 *.db
+
+# all data files that cannot be shared
+data/telemetry-data/*
+data/elton-traits-1.0/*
+data/marcus-rasters/*
+!data/telemetry-data/telemetry-metadata.csv
+!data/README.md
