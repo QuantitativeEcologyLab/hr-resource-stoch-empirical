@@ -6,3 +6,17 @@ output: pdf_document
 * We should use the EDF for the hr size as a measure of confidence in the HR size whether was exact weights (and adding a random effect for each individual) or as normalized weights by dividing by the mean weight. Both options imply that we are measuring at the spatiotemporal scale of a range crossing, which varies among animals
 * Using the EDF as weights results in highly uncertain estimates for animals with large HRs or scarce data, so we need a good model structure with random effects, coviariates such as body mass, and post-stratification to avoid biasing towards animals with frequent range crossings.
 * Migrating animals will have larger range sizes and smaller EDF values, and they will also be more susceptible to interannual variation. These two points work well together because they imply we should estimate changes in the mean as smooth changes that occur across years rather than among years, which means i should keep the k for years relatively low (e.g., (2025 - 1981) / 4 = 11 ≈ 10)
+
+
+wolverines have very low E(R), very large HR, and cache food
+
+human activity is increasing stochasticity and conseuqnetly HR size, but it's also constraining movement capacities (Tucker paper)
+
+follow up after main figure:
+- effects of HFI
+- changes in variance over time: spatial needs will increase in the future, exacerbating issues
+
+papers to use for structure:
+- jetz scaling of animal space use (https://pubmed.ncbi.nlm.nih.gov/15472074/)
+  - tucker moving in the anthropocene (https://www.science.org/doi/10.1126/science.aam9712)
+- the search behavior of terrestrial mammals (https://www.biorxiv.org/content/10.1101/2022.12.31.521874v1)
