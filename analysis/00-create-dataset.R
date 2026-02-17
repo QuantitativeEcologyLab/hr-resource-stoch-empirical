@@ -7,6 +7,7 @@ library('ctmm')      # for converting data to telemetry format
 library('lutz')      # for getting time zones based on coordinates
 library('lubridate') # for working with dates
 library('ggplot2')   # for fancy plots
+library('terra')     # for rasters
 source('analysis/figures/default-ggplot-theme.R')
 
 elton_traits <-
@@ -25,7 +26,14 @@ d <-
   bind_rows(
     # clean data from other projects
     # Mezzini et al. 2026; https://github.com/QuantitativeEcologyLab/bc-mammals-temperature
-    readRDS('data/hr-estimates/mezzini-bc-temperature-2026-movement-models-akdes-2024-06-06.rds') %>%
+    readRDS('data/hr-estimates/mezzini-bc-tempterature-2026/movement-models-akdes-2024-06-06.rds') %>%
+      # drop non-range-resident individuals
+      left_join(read_csv('data/hr-estimates/mezzini-bc-tempterature-2026/telemetry-metadata.csv',
+                         show_col_types = FALSE) %>%
+                  select(animal, keep_for_RSF),
+                by = 'animal') %>%
+      filter(keep_for_RSF == 'yes') %>%
+      filter(animal != 'E035') %>% # has a HR of almost 3,000 km^2
       mutate(species = if_else(species == 'Ursus arctos horribilis',
                                'Ursus arctos', species)) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
@@ -37,10 +45,12 @@ d <-
       select(animal, species, dataset_name, tel, movement_model, akde),
     # DeNicola white-tailed deer
     readRDS('data/hr-estimates/denicola-ny-2025-full-telemetry-movement-models-2024-04-20.rds') %>%
+      # drop data after mortality event
+      filter(! grepl('Mortality', mortality.status)) %>%
       rename(movement_model = model) %>%
       mutate(dataset_name = case_when(
-        study.area == 'staten_island'~'DeNicola et al. (2025) (Staten Island)',
-        study.area == 'rockefeller'~'DeNicola et al. (2025) (Rockefeller)'),
+        study.area == 'staten_island' ~ 'DeNicola et al. (2025) (Staten Island)',
+        study.area == 'rockefeller' ~ 'DeNicola et al. (2025) (Rockefeller)'),
         species = 'Odocoileus virginianus',
         animal = paste0(animal, ' (year ', study.year, ')')) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
@@ -86,7 +96,6 @@ d <-
                            .name, '.Rda'))
                return(FIT)
              }),
-             # TODO: fit AKDEs
              akde = list(NULL)) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
     tibble(species = 'Panthera onca',
@@ -138,6 +147,7 @@ d <-
                       })),
     # giant anteaters (Issy Perry)
     readRDS('C:/Users/stefa/Documents/GitHub/hr-resource-stoch-empirical/data/hr-estimates/perry-Anteater_data/Anteater_data/Anteater_tibble.rds') %>%
+      # only keep range-resident anteaters
       filter(animal %in% c('Arya', 'Bella', 'Colete', 'Dom', 'Dumbo_1',
                            'Dumbo_2', 'George', 'Heather', 'Juju_2',
                            'Mulan', 'Nancy', 'Peter', 'Rita', 'Tim_2',
@@ -147,45 +157,83 @@ d <-
                            'Makao', 'Margaret', 'Maria', 'Puji', 'Rodolfo',
                            'Sheron', 'Thomas', 'Anthony', 'Kyle',
                            'Little_Rick', 'Reid')) %>%
+      # only keep non-orphaned anteaters
+      filter(! animal %in% names(readRDS('data/hr-estimates/perry-Anteater_data/Anteater_data/FITS_UDs/FITS_Orphan.rds'))) %>%
       mutate(across(c(tel, movement_model, akde), unname),
              species = 'Myrmecophaga tridactyla')
     # TODO: add Lauren's NMC data and models
     # TODO: add pronghorn data
   ) %>%
-  mutate(n_locations = map_int(tel, \(.tel) {
-    if(is.null(.tel)) return(NA_integer_) else return(nrow(.tel))
-  }),
-  n_days = map_dbl(tel, \(.tel) {
-    if(is.null(.tel)) {
+  # remove duplicated individuals from Mike's datasets
+  filter(! ((duplicated(animal) | duplicated(animal, fromLast = TRUE)) &
+              grepl('Noonan giant anteaters', dataset_name))) %>%
+  mutate(animal = paste0(animal, ' (', species, ')'),
+         n_locations = map_int(tel, \(.tel) {
+           if(is.null(.tel)) return(NA_integer_) else return(nrow(.tel))
+         }),
+         n_days = map_dbl(tel, \(.tel) {
+           if(is.null(.tel)) {
+             return(NA_real_)
+           } else {
+             return(diff(range(.tel$timestamp), units = 'days'))
+           }
+         }) %>%
+           round()) %>%
+  # add mass and diet composition
+  left_join(elton_traits, by = join_by('species' == 'scientific')) %>%
+  # TODO: add missing movement models and AKDEs
+  # mutate(movement_model = imap(movement_model, function(.mm, .i) {
+  #   if(class(.mm) == 'ctmm') {
+  #     return(.mm)
+  #   } else {
+  #     .mm <- ctmm.select(...)
+  #   }
+  # }))
+  mutate(hr_95 = map_dbl(akde, function(.akde) {
+    if(is.null(.akde)) {
       return(NA_real_)
     } else {
-      return(diff(range(.tel$timestamp), units = 'days'))
+      # convert HR to km^2
+      return(summary(.akde, units = FALSE, level.UD = 0.95)$CI['area (square meters)', 'est'] / 1e6)
     }
-  })) %>%
-  # add mass and diet composition
-  left_join(elton_traits, by = join_by('species' == 'scientific'))
-
-mutate(ud_raster = map(akde, fun()),
-       hr_95 = map(akde, get_hr()))
+  }),
+  # add raster of UD to calculate exposure to mean and variance of NDVI
+  ud_raster = map(akde, function(.akde) {
+    if(is.null(.akde)) {
+      return(NULL)
+    } else {
+      rast(raster(.akde, DF = 'PDF')) %>%
+        project('EPSG:4326') %>%
+        return()
+    }
+  }),
+  akde_ess_area = map_dbl(akde, function(.akde) {
+    if(is.null(.akde)) {
+      return(NA_real_)
+    } else {
+      return(summary(.akde)$DOF['area'])
+    }
+  }))
 
 # ensure all species have data
 if(sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
 
 # ensure there are no duplicated animal names across studies (should be 0)
-filter(d, duplicated(animal) | duplicated(animal, fromLast = TRUE)) %>%
-  View()
-
-d %>%
-  pull(animal) %>%
-  duplicated() %>%
-  sum()
+if(sum(duplicated(d$animal)) > 0) {
+  d %>%
+    select(animal, species, dataset_name, n_days) %>%
+    filter(duplicated(animal) | duplicated(animal, fromLast = TRUE)) %>%
+    arrange(animal, dataset_name)
+  
+  stop('There are duplicate animal names!')
+}
 
 # check number of individuals per species and fixes per individual
 d %>%
   group_by(species) %>%
   summarise(n_animals = n(),
-            mean_locations = mean(map_int(data, nrow))) %>%
-  janitor::add_totals_row()
+            thousand_locations = sum(n_locations) / 1e3) %>%
+  janitor::adorn_totals(where = 'row', na.rm = TRUE, fill = 'non-numeric')
 
 #' we might need to drop individuals with too little data. for example,
 #' tracking a mongolian gazzelle for 10 days may give an unrealistically
@@ -196,6 +244,23 @@ ggplot(d, aes(n_days)) +
   geom_vline(xintercept = 30, lty = 'dashed') +
   scale_x_log10('Number of days tracked', breaks = c(10, 30, 100, 1000)) +
   ylab('Count')
+
+# TODO: drop animals with excessively large HRs
+# filter based on UD ESS?
+hist(d$hr_95, breaks = 100)
+filter(d, hr_95 > 1e4) %>% pull(animal)
+
+large_hrs <- which(d$hr_95 > 1e4)
+map_dbl(d$akde[large_hrs], function(.akde) {
+  summary(.akde)$DOF['area']
+})
+
+layout(matrix(1:6, ncol = 2))
+for(i in large_hrs) {
+  plot(d$akde[[i]])
+  plot(d$tel[[i]], add= TRUE, error = FALSE)
+  title(paste0(d$animal[i], '\n95% HR:', round(d$hr_95[i]), 'km^2'))
+}
 
 # save the final dataset
 saveRDS(d, paste0('cleaned-telemetry-data-', Sys.Date(), '.rds'))
