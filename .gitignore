@@ -57,3 +57,5 @@ data/elton-traits-1.0/*
 data/marcus-rasters/*
 !data/telemetry-data/telemetry-metadata.csv
 !data/README.md
+/data/hr-estimates
+/figures/pronghorn-variograms
