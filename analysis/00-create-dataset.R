@@ -38,13 +38,13 @@ d <-
                                'Ursus arctos', species)) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
     # Medici et al. 2022; https://doi.org/10.1186/s40462-022-00313-w
-    readRDS('data/hr-estimates/medici-tapirs-final.rds') %>%
+    readRDS('data/hr-estimates/medici-tapirs/medici-tapirs-final.rds') %>%
       rename(animal = name, tel = data, movement_model = model) %>%
       mutate(dataset_name = paste('Medici et al. (2022)', region),
              species = 'Tapirus terrestris') %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
     # DeNicola white-tailed deer
-    readRDS('data/hr-estimates/denicola-ny-2025-full-telemetry-movement-models-2024-04-20.rds') %>%
+    readRDS('data/hr-estimates/denicola-deer/denicola-ny-2025-full-telemetry-movement-models-2024-04-20.rds') %>%
       # drop data after mortality event
       filter(! grepl('Mortality', mortality.status)) %>%
       rename(movement_model = model) %>%
@@ -54,10 +54,10 @@ d <-
         species = 'Odocoileus virginianus',
         animal = paste0(animal, ' (year ', study.year, ')')) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
-    readRDS('data/hr-estimates/denicola-se-2025-full-telemetry-movement-models.rds') %>%
+    readRDS('data/hr-estimates/denicola-deer/denicola-se-2025-full-telemetry-movement-models.rds') %>%
       rename(movement_model = mm,
              akde = ud) %>%
-      mutate(dataset_name = 'DeNicola et al. (2025) (SOuth Euclid)',
+      mutate(dataset_name = 'DeNicola et al. (2025) (South Euclid)',
              species = 'Odocoileus virginianus') %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
     # Noonan
@@ -146,7 +146,7 @@ d <-
                         return(AKDE)
                       })),
     # giant anteaters (Issy Perry)
-    readRDS('C:/Users/stefa/Documents/GitHub/hr-resource-stoch-empirical/data/hr-estimates/perry-Anteater_data/Anteater_data/Anteater_tibble.rds') %>%
+    readRDS('data/hr-estimates/perry-Anteater_data/Anteater_data/Anteater_tibble.rds') %>%
       # only keep range-resident anteaters
       filter(animal %in% c('Arya', 'Bella', 'Colete', 'Dom', 'Dumbo_1',
                            'Dumbo_2', 'George', 'Heather', 'Juju_2',
@@ -160,8 +160,17 @@ d <-
       # only keep non-orphaned anteaters
       filter(! animal %in% names(readRDS('data/hr-estimates/perry-Anteater_data/Anteater_data/FITS_UDs/FITS_Orphan.rds'))) %>%
       mutate(across(c(tel, movement_model, akde), unname),
-             species = 'Myrmecophaga tridactyla')
-    # TODO: add Lauren's NMC data and models
+             species = 'Myrmecophaga tridactyla'),
+    # Northern Mountain Caribou (Lauren Mills)
+    # TODO: missing tels and movement models
+    readRDS('data/hr-estimates/mills-northern-mountain-caribou/akde_df.RDS') %>%
+      as_tibble() %>%
+      rename(animal = animal_id, akde = AKDE_object) %>%
+      mutate(species = 'Rangifer tarandus',
+             dataset_name = 'Mills Nothern Mountain Caribou',
+             tel = list(NULL),
+             movement_model = list(NULL)) %>%
+      select(animal, species, dataset_name, tel, movement_model, akde)
     # TODO: add pronghorn data
   ) %>%
   # remove duplicated individuals from Mike's datasets
@@ -213,7 +222,8 @@ d <-
     } else {
       return(summary(.akde)$DOF['area'])
     }
-  }))
+  }),
+  keep_for_gam = akde_ess_area >= 10)
 
 # ensure all species have data
 if(sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
@@ -245,7 +255,15 @@ ggplot(d, aes(n_days)) +
   scale_x_log10('Number of days tracked', breaks = c(10, 30, 100, 1000)) +
   ylab('Count')
 
-# TODO: drop animals with excessively large HRs
+# currently dropping individuals with HR ESS < 10
+ggplot(d, aes(akde_ess_area)) +
+  geom_histogram(bins = 50, fill = 'grey', color = 'black') +
+  geom_vline(xintercept = c(3, 10), lty = 'dashed') +
+  scale_x_log10('Area ESS (log scale)',
+                breaks = c(1, 3, 10, 100, 1000)) +
+  ylab('Count')
+
+# TODO: drop animals with excessively large HRs (might be fixed now)
 # filter based on UD ESS?
 hist(d$hr_95, breaks = 100)
 filter(d, hr_95 > 1e4) %>% pull(animal)
