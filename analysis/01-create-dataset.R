@@ -10,18 +10,6 @@ library('ggplot2')   # for fancy plots
 library('terra')     # for rasters
 source('analysis/figures/default-ggplot-theme.R')
 
-elton_traits <-
-  read_delim('data/elton-traits-1.0/MamFuncDat.txt', delim = '\t',
-             show_col_types = FALSE) %>%
-  rename_with(stringr::str_to_snake) %>%
-  select(scientific, body_mass_value, diet_inv:diet_plant_o) %>%
-  mutate(body_mass_value = body_mass_value / 1e3) %>%
-  rename(mass_kg = body_mass_value) %>%
-  # add a row for elk, assuming it's identical to Cervus elaphus (red deer)
-  bind_rows(.,
-            filter(., scientific == 'Cervus elaphus') %>%
-              mutate(scientific = 'Cervus canadensis'))
-
 d <-
   bind_rows(
     # clean data from other projects
@@ -188,8 +176,6 @@ d <-
            }
          }) %>%
            round()) %>%
-  # add mass and diet composition
-  left_join(elton_traits, by = join_by('species' == 'scientific')) %>%
   # TODO: add missing movement models and AKDEs
   # mutate(movement_model = imap(movement_model, function(.mm, .i) {
   #   if(class(.mm) == 'ctmm') {
@@ -290,7 +276,7 @@ map_dbl(large_hrs$akde, function(.akde) {
 })
 
 # save the final dataset
-saveRDS(d, paste0('cleaned-telemetry-data-', Sys.Date(), '.rds'))
+saveRDS(d, paste0('akde-tibble-', Sys.Date(), '.rds'))
 
 if(FALSE) {
   # Aikens at al. (collected by H. Sawyer); https://doi.org/10.1016/j.cub.2025.03.010
