@@ -7,7 +7,6 @@ library('ctmm')      # for converting data to telemetry format
 library('lutz')      # for getting time zones based on coordinates
 library('lubridate') # for working with dates
 library('ggplot2')   # for fancy plots
-library('terra')     # for rasters
 source('analysis/figures/default-ggplot-theme.R')
 
 d <-
@@ -157,7 +156,8 @@ d <-
       mutate(species = 'Rangifer tarandus',
              dataset_name = 'Mills Nothern Mountain Caribou',
              tel = list(NULL),
-             movement_model = list(NULL)) %>%
+             movement_model = list(NULL),
+             akde = unname(akde)) %>%
       select(animal, species, dataset_name, tel, movement_model, akde)
     # TODO: add pronghorn data
   ) %>%
@@ -190,16 +190,6 @@ d <-
     } else {
       # convert HR to km^2
       return(summary(.akde, units = FALSE, level.UD = 0.95)$CI['area (square meters)', 'est'] / 1e6)
-    }
-  }),
-  # add raster of UD to calculate exposure to mean and variance of NDVI
-  ud_raster = map(akde, function(.akde) {
-    if(is.null(.akde)) {
-      return(NULL)
-    } else {
-      rast(raster(.akde, DF = 'PDF')) %>%
-        project('EPSG:4326') %>%
-        return()
     }
   }),
   akde_ess_area = map_dbl(akde, function(.akde) {
