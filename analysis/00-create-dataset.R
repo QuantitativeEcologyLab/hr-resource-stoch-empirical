@@ -248,6 +248,7 @@ d %>%
             thousand_locations = sum(n_locations) / 1e3) %>%
   janitor::adorn_totals(where = 'row', na.rm = TRUE, fill = 'non-numeric')
 
+#' TODO:
 #' we might need to drop individuals with too little data. for example,
 #' tracking a mongolian gazzelle for 10 days may give an unrealistically
 #' small home range despite the low resources because the data doesn't
@@ -261,27 +262,32 @@ ggplot(d, aes(n_days)) +
 # currently dropping individuals with HR ESS < 10
 ggplot(d, aes(akde_ess_area)) +
   geom_histogram(bins = 50, fill = 'grey', color = 'black') +
-  geom_vline(xintercept = c(3, 10), lty = 'dashed') +
+  geom_vline(xintercept = 4, lty = 'dashed') +
   scale_x_log10('Area ESS (log scale)',
-                breaks = c(1, 3, 10, 100, 1000)) +
+                breaks = c(1, 4, 10, 100, 1000)) +
   ylab('Count')
 
 # TODO: drop animals with excessively large HRs (might be fixed now)
 # filter based on UD ESS?
 hist(d$hr_95, breaks = 100)
-filter(d, hr_95 > 1e4) %>% pull(animal)
+hist(filter(d, keep_for_gam)$hr_95, breaks = 100)
+filter(d, keep_for_gam, hr_95 > 8000) %>% pull(animal)
 
-large_hrs <- which(d$hr_95 > 1e4)
-map_dbl(d$akde[large_hrs], function(.akde) {
-  summary(.akde)$DOF['area']
-})
+large_hrs <- filter(d, keep_for_gam, hr_95 > 8000)
+DIM <- ceiling(sqrt(nrow(large_hrs)))
 
-layout(matrix(1:6, ncol = 2))
-for(i in large_hrs) {
-  plot(d$akde[[i]])
-  plot(d$tel[[i]], add= TRUE, error = FALSE)
-  title(paste0(d$animal[i], '\n95% HR:', round(d$hr_95[i]), 'km^2'))
+layout(matrix(1:(DIM)^2, ncol = DIM))
+for(i in 1:nrow(large_hrs)) {
+  plot(large_hrs$akde[[i]])
+  plot(large_hrs$tel[[i]], add= TRUE, error = FALSE, type = 'l')
+  title(paste0(large_hrs$animal[i], '\n95% HR:\t\t\t', round(d$hr_95[i]),
+               ' km\U00B2'))
 }
+layout(1)
+
+map_dbl(large_hrs$akde, function(.akde) {
+  round(summary(.akde)$DOF['area'], 2)
+})
 
 # save the final dataset
 saveRDS(d, paste0('cleaned-telemetry-data-', Sys.Date(), '.rds'))
