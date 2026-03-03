@@ -37,24 +37,20 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
       return(.r)
     }
   }),
-  mean_ndvi = map_dbl(ud_raster, function(.r) {
+  raster_covariates = map(ud_raster, function(.r) {
     if(is.null(.r)) {
-      NA_real_
+      tibble(mean_ndvi = NA_real_,
+             var_ndvi = NA_real_)
     } else {
-      # NOTE: projecting after normalizing to avoid bad interpolation
-      .r <- .r * project(r_mean_ndvi, .r)
-      return(sum(values(.r), na.rm = TRUE))
-    }
-  }),
-  var_ndvi = map_dbl(ud_raster, function(.r) {
-    if(is.null(.r)) {
-      return(NA_real_)
-    } else {
-      # NOTE: projecting after normalizing to avoid bad interpolation
-      .r <- .r * project(r_var_ndvi, .r)
-      return(sum(values(.r), na.rm = TRUE))
+      #' projecting `.r` biases towards 0
+      tibble(mean_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
+                             na.rm = TRUE),
+             var_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
+                            na.rm = TRUE)) %>%
+        return()         
     }
   })) %>%
+  unnest(raster_covariates) %>%
   # add mass and diet composition
   left_join(elton_traits, by = join_by('species' == 'scientific'))
 
