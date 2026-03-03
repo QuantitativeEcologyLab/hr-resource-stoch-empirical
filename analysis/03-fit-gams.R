@@ -92,5 +92,8 @@ appraise(m, point_alpha = 0.3)
 summary(m)
 
 # regress residuals against HFI
+# TODO: exclude HFI from the model, then regress the predictions and/or
+# residuals against the HFI values to motivate future directions with
+# anthropogenic pressure
 
 # TODO: perform the same analysis but for diffusion and/or speed?
