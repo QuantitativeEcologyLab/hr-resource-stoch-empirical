@@ -46,20 +46,13 @@ d <-
         pull(2) %>%
         mean(na.rm = TRUE)
     }),
-    cv = map_dbl(tel, \(t) {
-      data.frame(t) %>%
-        select(longitude, latitude) %>%
-        extract(x = cv_r, y = .) %>%
-        pull(2) %>%
-        mean(na.rm = TRUE)
-    }),
     hr_95 = map_dbl(akde, \(a) {
       summary(a, units = FALSE, level = 0.95)$CI['area (square meters)', 'est'] / 1e6
     }))
 
 # plot unconditional relationships
 d %>%
-  pivot_longer(c(cv, mu, sigma2)) %>%
+  pivot_longer(c(mu, sigma2)) %>%
   ggplot(aes(value, hr_95)) +
   facet_grid(. ~ name, scales = 'free', switch = 'x') +
   geom_point(alpha = 0.2) +
@@ -67,14 +60,14 @@ d %>%
               alpha = 0.3, method = 'gam', formula = y ~ x) +
   xlab(NULL) +
   scale_y_log10() +
-  scale_color_manual(values = c('#992266', '#F09D00', '#3388E1'),
+  scale_color_manual(values = c('#F09D00', '#3388E1'),
                      aesthetics = c('color', 'fill')) +
   theme(strip.placement = 'outside', strip.background = element_blank(),
         legend.position = 'none')
 
 # plot unconditional relationships by species
 d %>%
-  pivot_longer(c(cv, mu, sigma2)) %>%
+  pivot_longer(c(mu, sigma2)) %>%
   ggplot(aes(value, hr_95)) +
   facet_grid(species ~ name, scales = 'free', switch = 'x') +
   geom_point(alpha = 0.2) +
@@ -82,14 +75,14 @@ d %>%
               alpha = 0.3, method = 'gam', formula = y ~ x) +
   xlab(NULL) +
   scale_y_log10() +
-  scale_color_manual(values = c('#992266', '#F09D00', '#3388E1'),
+  scale_color_manual(values = c('#F09D00', '#3388E1'),
                      aesthetics = c('color', 'fill')) +
   theme(strip.placement = 'outside', strip.background = element_blank(),
         legend.position = 'none')
 
 d %>%
   mutate(keep_for_RSF = factor(keep_for_RSF, levels = c('yes', 'no', 'check'))) %>%
-  select(mass_g, mu, sigma2, cv, hr_95, keep_for_RSF) %>%
+  select(mass_g, mu, sigma2, hr_95, keep_for_RSF) %>%
   pairs()
 
 # fit a test model that does not account for body size
