@@ -1,6 +1,8 @@
+library('ctmm')
 library('readr')
 library('dplyr')
 library('tidyr')
+library('purrr')
 library('terra')
 
 r_mean_ndvi <- rast('data/ndvi-rasters/marcus-estimated-mean.tif')
@@ -30,9 +32,9 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
     if(is.null(.akde)) {
       return(NULL)
     } else {
-      rast(raster(.akde, DF = 'PMF')) %>%
-        project('EPSG:4326') %>%
-        return()
+      .r <- rast(raster(.akde, DF = 'PMF'))
+      values(.r) <- values(.r) / sum(values(.r), na.rm = TRUE)
+      return(.r)
     }
   }),
   mean_ndvi = map_dbl(ud_raster, function(.r) {
@@ -40,9 +42,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
       NA_real_
     } else {
       # NOTE: projecting after normalizing to avoid bad interpolation
-      values(.r) <- values(.r) / sum(values(.r), na.rm = TRUE)
-      .r <- project(.r, r_mean_ndvi)
-      .r <- .r * r_mean_ndvi
+      .r <- .r * project(r_mean_ndvi, .r)
       return(sum(values(.r), na.rm = TRUE))
     }
   }),
@@ -51,9 +51,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
       return(NA_real_)
     } else {
       # NOTE: projecting after normalizing to avoid bad interpolation
-      values(.r) <- values(.r) / sum(values(.r), na.rm = TRUE)
-      .r <- project(.r, r_var_ndvi)
-      .r <- .r * r_var_ndvi
+      .r <- .r * project(r_var_ndvi, .r)
       return(sum(values(.r), na.rm = TRUE))
     }
   })) %>%
@@ -65,5 +63,6 @@ if(sum(is.na(d)) == 0) {
     select(! c(tel, movement_model, akde, ud_raster)) %>%
     saveRDS(paste0('data/gam-dataset-', Sys.Date(), '.rds'))
 } else {
-  stop('There are NA values in the dataset!')
+  stop(paste('There are NA values in the dataset!',
+             'Save the dataset manually to confirm.'))
 }
