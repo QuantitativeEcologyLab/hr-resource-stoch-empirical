@@ -196,9 +196,10 @@ d <-
       return(NA_real_)
     } else {
       # convert HR to km^2
-      return(summary(.akde, units = FALSE, level.UD = 0.95)$CI['area (square meters)', 'est'] / 1e6)
+      ci <- summary(.akde, units = FALSE, level.UD = 0.95)$CI
+      return('km^2' %#% ci['area (square meters)', 'est'])
     }
-  }),
+  }, .progress = 'Estimating HRs...'),
   akde_ess_area = map_dbl(akde, function(.akde) {
     if(is.null(.akde)) {
       return(NA_real_)
