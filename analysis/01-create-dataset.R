@@ -177,16 +177,22 @@ d <-
            }
          }) %>%
            round()) %>%
-  # TODO: add missing movement models and AKDEs
-  # mutate(movement_model = imap(movement_model, function(.mm, .i) {
-  #   if(class(.mm) == 'ctmm') {
+  # # add missing movement models and AKDEs
+  # mutate(movement_model = map2(movement_model, function(.tel, .mm) {
+  #   if (class(.mm) == 'ctmm') {
   #     return(.mm)
   #   } else {
-  #     .mm <- ctmm.select(...)
+  #     .vg <- ctmm.guess(.tel, interactive = FALSE)
+  #     .mm <- ctmm.select(data = .tel, CTMM = .vg)
+  #     return(.mm)
   #   }
-  # }))
-  mutate(hr_95 = map_dbl(akde, function(.akde) {
-    if(is.null(.akde)) {
+  # }, .progress = 'Fitting missing movement models...'),
+  # akde = map2(.tel, .mm, function(.tel, .mm) {
+  #   return(akde(data = .tel, CTMM = .mm, debias = TRUE, weights = TRUE))
+  # }, .progress = 'Fitting missing AKDEs...')) %>%
+  # estimate movement parameters
+  mutate(hr_95_km2 = map_dbl(akde, function(.akde) {
+    if (is.null(.akde)) {
       return(NA_real_)
     } else {
       # convert HR to km^2
