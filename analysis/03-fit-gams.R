@@ -66,7 +66,7 @@ d %>%
 
 # to get exponent for historical context
 m_0 <- gam(hr_95 ~ log(mass_kg),
-           family = gaussian(link = 'log'),
+           family = Gamma(link = 'log'),
            data = d,
            subset = keep_for_gam)
 summary(m_0)
@@ -74,20 +74,23 @@ exp(coef(m_0))
 
 # add NDVI variables to account for deviations
 # compare deviance explained
-m <- gam(hr_95 ~
+m <- bam(hr_95 ~
            # global effects
-           s(log1p(mean_ndvi), k = 3) +
-           s(log1p(var_ndvi), k = 3) +
-           #ti(mean_ndvi, var_ndvi, k = 5) +
+           s(mean_ndvi, k = 8) +
+           s(var_ndvi, k = 8) +
+           ti(mean_ndvi, var_ndvi, k = 5) +
            # s(mass_kg, k = 5) +
            # species-level effects
            s(species, bs = 're') +
-           s(log1p(mean_ndvi), species, bs = 'fs', k = 5) +
-           s(log1p(var_ndvi), species, bs = 'fs', k = 5),
-         family = gaussian(link = 'log'),
+           s(mean_ndvi, species, bs = 'fs', k = 10) +
+           s(var_ndvi, species, bs = 'fs', k = 10),
+         family = Gamma(link = 'log'),
          data = d,
-         method = 'REML')
-draw(m)
+         method = 'fREML',
+         discrete = TRUE)
+draw(m, residuals = TRUE)
+appraise(m, point_alpha = 0.3)
+summary(m)
 
 # regress residuals against HFI
 
