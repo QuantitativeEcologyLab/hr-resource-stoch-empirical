@@ -12,9 +12,8 @@ library('gratia')
 source('analysis/figures/default-ggplot-theme.R')
 
 # import rasters of mean, variance, and coefficient of variation in NDVI 
-mu_r <- rast('data/marcus-rasters/mean_predNDVI_raster.nc')
-s2_r <- rast('data/marcus-rasters/var_residuals_raster.nc')
-cv_r <- rast('data/marcus-rasters/coeff_variation_raster.nc')
+mu_r <- rast('data/ndvi-rasters/marcus-estimated-mean.tif')
+s2_r <- rast('data/ndvi-rasters/marcus-estimated-variance.tif')
 
 # extract values for each raster and average across GPS locations
 d <-
