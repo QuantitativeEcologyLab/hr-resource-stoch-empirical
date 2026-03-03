@@ -211,6 +211,26 @@ d <-
   #' add normalized weights based on `sqrt(ESS)`
   weight = if_else(keep_for_gam, sqrt(akde_ess_area), NA_real_),
   weight = weight / mean(weight, na.rm = TRUE),
+  speed_km_day = map_dbl(movement_model, function(.mm) {
+    if (is.null(.mm)) {
+      return(NA_real_)
+    } else {
+      return('km/day' %#% speed(.mm, units = FALSE)$CI[, 'est'])
+    }
+  }, .progress = 'Estimating speeds...'),
+  diffusion_km2_day =  'km^2/day' %#%
+    map_dbl(movement_model, function(.mm) {
+      if (is.null(.mm)) {
+        return(NA_real_)
+      } else {
+        if(any(grepl('diffusion', rownames(summary(.m)$CI)))) {
+          return(summary(.m, units = FALSE)$
+                   CI['diffusion (square meters/second)', 'est'])
+        } else {
+          return(NA_real_)
+        }
+      }
+    }))
 
 # ensure all species have data
 if(sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
