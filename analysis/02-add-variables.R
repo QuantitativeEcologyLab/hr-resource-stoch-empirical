@@ -45,7 +45,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
       #' projecting `.r` biases towards 0
       tibble(mean_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
                              na.rm = TRUE),
-             var_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
+             var_ndvi = sum(values(.r * project(r_var_ndvi, .r)),
                             na.rm = TRUE)) %>%
         return()         
     }
