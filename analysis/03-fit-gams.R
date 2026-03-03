@@ -1,6 +1,7 @@
 # include human pressure around the HR?
 # could restrict to HFI values below some amount
 library('dplyr')
+library('tidyr')
 library('mgcv')
 library('ggplot2')
 library('khroma')
