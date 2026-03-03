@@ -63,6 +63,6 @@ data/marcus-rasters/*
 # temp files
 data/ndvi-rasters/marcus-estimated-variance.tif
 data/ndvi-rasters/marcus-estimated-mean.tif
-data/gam-dataset-2026-02-24.rds
-data/akde-tibble-2026-02-24.rds
+data/gam-dataset-*
+data/akde-tibble-*
 writing/Moving in the Anthropocene.pdf
