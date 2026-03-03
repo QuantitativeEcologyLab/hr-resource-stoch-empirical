@@ -4,9 +4,11 @@ library('dplyr')
 library('tidyr')
 library('purrr')
 library('terra')
+library('sf')
 
 r_mean_ndvi <- rast('data/ndvi-rasters/marcus-estimated-mean.tif')
 r_var_ndvi <- rast('data/ndvi-rasters/marcus-estimated-variance.tif')
+r_hfi <- rast('data/hfi-raster/hfp_2021_100m_v1-2_cog.tif')
 
 layout(1:2)
 plot(r_mean_ndvi)
@@ -40,16 +42,27 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   raster_covariates = map(ud_raster, function(.r) {
     if (is.null(.r)) {
       tibble(mean_ndvi = NA_real_,
-             var_ndvi = NA_real_)
+             var_ndvi = NA_real_,
+             hfi = NA_real_)
     } else {
+      box <- st_bbox(.r) %>%
+        st_as_sfc() %>%
+        st_as_sf() %>%
+        st_buffer(1e4) %>%
+        st_transform(st_crs(r_hfi))
+      
+      r_hfi_cropped <- crop(r_hfi, box)
+      
       #' projecting `.r` biases towards 0
       tibble(mean_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
                              na.rm = TRUE),
              var_ndvi = sum(values(.r * project(r_var_ndvi, .r)),
-                            na.rm = TRUE)) %>%
+                            na.rm = TRUE),
+             hfi = sum(values(.r * project(r_hfi_cropped, .r)),
+                       na.rm = TRUE)) %>%
         return()         
     }
-  })) %>%
+  }, .progress = 'Calculating raster covariates...')) %>%
   unnest(raster_covariates) %>%
   # add mass and diet composition
   left_join(elton_traits, by = join_by('species' == 'scientific'))
