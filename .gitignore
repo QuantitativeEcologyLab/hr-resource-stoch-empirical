@@ -69,6 +69,7 @@ writing/2022.12.31.521874v1.full.pdf
 # datasets
 data/gam-dataset-*
 data/akde-tibble-*
+data/hfi-raster/hfp_2021_100m_v1-2_cog.tif
 
 # other data links
 data/hfi-raster/other-hfi-sources.txt
