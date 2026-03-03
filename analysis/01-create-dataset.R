@@ -164,7 +164,8 @@ d <-
   # remove duplicated individuals from Mike's datasets
   filter(! ((duplicated(animal) | duplicated(animal, fromLast = TRUE)) &
               grepl('Noonan giant anteaters', dataset_name))) %>%
-  mutate(animal = paste0(animal, ' (', species, ')'),
+  mutate(species = factor(species),
+         animal = factor(paste0(animal, ' (', species, ')')),
          n_locations = map_int(tel, \(.tel) {
            if(is.null(.tel)) return(NA_integer_) else return(nrow(.tel))
          }),
@@ -203,7 +204,6 @@ d <-
   #' add normalized weights based on `sqrt(ESS)`
   weight = if_else(keep_for_gam, sqrt(akde_ess_area), NA_real_),
   weight = weight / mean(weight, na.rm = TRUE),
-  species = factor(species))
 
 # ensure all species have data
 if(sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
