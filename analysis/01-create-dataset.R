@@ -167,10 +167,10 @@ d <-
   mutate(species = factor(species),
          animal = factor(paste0(animal, ' (', species, ')')),
          n_locations = map_int(tel, \(.tel) {
-           if(is.null(.tel)) return(NA_integer_) else return(nrow(.tel))
+           if (is.null(.tel)) return(NA_integer_) else return(nrow(.tel))
          }),
          n_days = map_dbl(tel, \(.tel) {
-           if(is.null(.tel)) {
+           if (is.null(.tel)) {
              return(NA_real_)
            } else {
              return(diff(range(.tel$timestamp), units = 'days'))
@@ -201,7 +201,7 @@ d <-
     }
   }, .progress = 'Estimating HRs...'),
   akde_ess_area = map_dbl(akde, function(.akde) {
-    if(is.null(.akde)) {
+    if (is.null(.akde)) {
       return(NA_real_)
     } else {
       return(summary(.akde)$DOF['area'])
@@ -233,10 +233,10 @@ d <-
     }))
 
 # ensure all species have data
-if(sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
+if (sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
 
 # ensure there are no duplicated animal names across studies (should be 0)
-if(sum(duplicated(d$animal)) > 0) {
+if (sum(duplicated(d$animal)) > 0) {
   d %>%
     select(animal, species, dataset_name, n_days) %>%
     filter(duplicated(animal) | duplicated(animal, fromLast = TRUE)) %>%
@@ -296,7 +296,7 @@ map_dbl(large_hrs$akde, function(.akde) {
 # save the final dataset
 saveRDS(d, paste0('data/akde-tibble-', Sys.Date(), '.rds'))
 
-if(FALSE) {
+if (FALSE) {
   # Aikens at al. (collected by H. Sawyer); https://doi.org/10.1016/j.cub.2025.03.010
   # not using because there are no movement models fit and some are not range resident
   pronghorn <-

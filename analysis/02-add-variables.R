@@ -29,7 +29,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
   mutate(ud_raster = map(akde, function(.akde) {
-    if(is.null(.akde)) {
+    if (is.null(.akde)) {
       return(NULL)
     } else {
       .r <- rast(raster(.akde, DF = 'PMF'))
@@ -38,7 +38,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
     }
   }),
   raster_covariates = map(ud_raster, function(.r) {
-    if(is.null(.r)) {
+    if (is.null(.r)) {
       tibble(mean_ndvi = NA_real_,
              var_ndvi = NA_real_)
     } else {
@@ -54,7 +54,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   # add mass and diet composition
   left_join(elton_traits, by = join_by('species' == 'scientific'))
 
-if(sum(is.na(d)) == 0) {
+if (sum(is.na(d)) == 0) {
   d %>%
     select(! c(tel, movement_model, akde, ud_raster)) %>%
     saveRDS(paste0('data/gam-dataset-', Sys.Date(), '.rds'))
