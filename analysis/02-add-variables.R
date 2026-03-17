@@ -27,6 +27,20 @@ elton_traits <-
             filter(., scientific == 'Cervus elaphus') %>%
               mutate(scientific = 'Cervus canadensis'))
 
+# HFI raster captures roads well
+regina <- st_as_sf(tibble(x = -104 - 36 / 60 - 24 / 60^2,
+                y = 50 + 27 /60 + 17 / 60^2), coords = c('x', 'y')) %>%
+  st_set_crs("EPSG:4326") %>%
+  st_buffer(15e3)
+mapview::mapview(regina, col.region = 'transparent', alpha.region = 0)
+mapview::mapshot(regina)
+
+st_transform(regina, crs(r_hfi)) %>%
+  crop(r_hfi, .) %>%
+  project(., "EPSG:4326") %>%
+  crop(regina) %>%
+  plot()
+
 d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
@@ -48,7 +62,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
       box <- st_bbox(.r) %>%
         st_as_sfc() %>%
         st_as_sf() %>%
-        st_buffer(1e4) %>%
+        st_buffer(1e3) %>%
         st_transform(st_crs(r_hfi))
       
       r_hfi_cropped <- crop(r_hfi, box)
@@ -66,6 +80,21 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   unnest(raster_covariates) %>%
   # add mass and diet composition
   left_join(elton_traits, by = join_by('species' == 'scientific'))
+
+# some rivers have excessively high HFI
+st_bbox(d$ud_raster[[1]]) %>%
+  st_as_sfc() %>%
+  st_as_sf() %>%
+  st_transform(st_crs(r_hfi)) %>%
+  crop(r_hfi, .) %>%
+  project("EPSG:4326") %>%
+  plot()
+d$tel[[1]] %>% ctmm::as.sf() %>%
+  st_transform(crs(r_hfi)) %>%
+  st_geometry() %>%
+  st_transform("EPSG:4326") %>%
+  plot(add = TRUE, col = 'white')
+d$tel[[1]] %>% ctmm::as.sf() %>% mapview::mapview()
 
 if (sum(is.na(d)) == 0) {
   d %>%
