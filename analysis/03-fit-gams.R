@@ -108,7 +108,7 @@ m_hr <- gam(list(hr_95 ~
             method = 'REML')
 draw(m_hr, dist = 1)
 ggsave('figures/hr-model-terms.png', width = 8, height = 8, units = 'in',
-       dpi = 300, bg = 'white')
+       dpi = 300, bg = 'white', scale = 2)
 
 appraise(m_hr, point_alpha = 0.2)
 ggsave('figures/hr-model-diagnostics.png', width = 8, height = 8, units = 'in',
