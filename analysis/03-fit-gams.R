@@ -106,3 +106,13 @@ m_hr <- gam(list(hr_95 ~
             # in too urban of an area
             subset = dataset_name != 'DeNicola et al. (2025) (Staten Island)',
             method = 'REML')
+draw(m_hr, dist = 1)
+ggsave('figures/hr-model-terms.png', width = 8, height = 8, units = 'in',
+       dpi = 300, bg = 'white')
+
+appraise(m_hr, point_alpha = 0.2)
+ggsave('figures/hr-model-diagnostics.png', width = 8, height = 8, units = 'in',
+       dpi = 300, bg = 'white')
+
+summary(m_hr)
+
