@@ -6,8 +6,8 @@ library('purrr')
 library('terra')
 library('sf')
 
-r_mean_ndvi <- rast('data/ndvi-rasters/marcus-estimated-mean.tif')
-r_var_ndvi <- rast('data/ndvi-rasters/marcus-estimated-variance.tif')
+r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-preds.tif')[[1]]
+r_var_ndvi <- rast('../ndvi-stochasticity/output/long-term-preds.tif')[[2]]
 r_hfi <- rast('data/hfi-raster/hfp_2021_100m_v1-2_cog.tif')
 
 layout(1:2)
