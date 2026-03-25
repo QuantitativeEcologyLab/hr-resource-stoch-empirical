@@ -79,7 +79,8 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   }, .progress = 'Calculating raster covariates...')) %>%
   unnest(raster_covariates) %>%
   # add mass and diet composition
-  left_join(elton_traits, by = join_by('species' == 'scientific'))
+  left_join(elton_traits, by = join_by('species' == 'scientific')) %>%
+  mutate(species = factor(species))
 
 # some rivers have excessively high HFI
 st_bbox(d$ud_raster[[1]]) %>%
