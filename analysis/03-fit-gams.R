@@ -64,12 +64,12 @@ d %>%
   pairs()
 
 # to get exponent for historical context
-m_0 <- gam(hr_95 ~ log(mass_kg),
-           family = Gamma(link = 'log'),
-           data = d,
-           subset = keep_for_gam)
-summary(m_0)
-exp(coef(m_0))
+m_hr_0 <- gam(hr_95 ~ log(mass_kg) + s(species, bs = 're'),
+              family = Gamma(link = 'log'),
+              data = d,
+              subset = keep_for_gam)
+summary(m_hr_0)
+exp(coef(m_hr_0))
 
 # add NDVI variables to account for deviations
 # compare deviance explained
