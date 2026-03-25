@@ -32,8 +32,7 @@ regina <- st_as_sf(tibble(x = -104 - 36 / 60 - 24 / 60^2,
                 y = 50 + 27 /60 + 17 / 60^2), coords = c('x', 'y')) %>%
   st_set_crs("EPSG:4326") %>%
   st_buffer(15e3)
-mapview::mapview(regina, col.region = 'transparent', alpha.region = 0)
-mapview::mapshot(regina)
+mapview::mapview(regina, col.region = 'transparent', alpha.region = 0.4)
 
 st_transform(regina, crs(r_hfi)) %>%
   crop(r_hfi, .) %>%
