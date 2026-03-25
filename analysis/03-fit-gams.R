@@ -8,7 +8,7 @@ library('khroma')
 library('gratia')
 source('analysis/figures/default-ggplot-theme.R')
 
-d <- readRDS('data/gam-dataset-2026-03-03.rds') %>%
+d <- readRDS('data/gam-dataset-2026-03-24.rds') %>%
   filter(keep_for_gam) %>%
   filter(mean_ndvi != 0) # drop individuals outside the current rasters
 
