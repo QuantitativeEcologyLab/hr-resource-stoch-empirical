@@ -73,7 +73,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
              var_ndvi = sum(values(.r * project(r_var_ndvi, .r)),
                             na.rm = TRUE),
              hfi = sum(values(.r * project(r_hfi_cropped, .r)),
-                       na.rm = TRUE)) %>%
+                       na.rm = TRUE) / 1e3) %>% # [0, 50e3] -> [0, 50]
         return()         
     }
   }, .progress = 'Calculating raster covariates...')) %>%
