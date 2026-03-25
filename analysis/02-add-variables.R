@@ -39,6 +39,7 @@ st_transform(regina, crs(r_hfi)) %>%
   project(., "EPSG:4326") %>%
   crop(regina) %>%
   plot()
+plot(regina, add = TRUE, lwd = 5)
 
 d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   # product of UD with mean NDVI and variance
