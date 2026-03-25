@@ -12,6 +12,16 @@ d <- readRDS('data/gam-dataset-2026-03-24.rds') %>%
   filter(keep_for_gam) %>%
   filter(mean_ndvi != 0) # drop individuals outside the current rasters
 
+if (! any(colnames(d) == 'speed')) {
+  d$speed <- rgamma(nrow(d), shape = 10, rate = 0.2)
+  warning('Missing speed! Filled value with random Gamma values.')
+}
+
+if (! any(colnames(d) == 'diff')) {
+  d$diffusion <- rgamma(nrow(d), shape = 10, rate = 0.2)
+  warning('Missing diffusion! Filled value with random Gamma values.')
+}
+
 d %>%
   summarize(mean_ndvi = mean(mean_ndvi),
             var_ndvi = mean(var_ndvi),
@@ -70,6 +80,12 @@ m_hr_0 <- gam(hr_95 ~ log(mass_kg) + s(species, bs = 're'),
               subset = keep_for_gam)
 summary(m_hr_0)
 exp(coef(m_hr_0))
+
+warning("Can't include mass yet because it's strongly correlated with E(NDVI)")
+ggplot(d, aes(mass_kg, mean_ndvi)) +
+  geom_point(aes(color = species)) +
+  geom_smooth(method = 'lm') +
+  scale_color_discreterainbow()
 
 # add NDVI variables to account for deviations
 # compare deviance explained
