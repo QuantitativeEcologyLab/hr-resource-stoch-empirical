@@ -116,3 +116,77 @@ ggsave('figures/hr-model-diagnostics.png', width = 8, height = 8, units = 'in',
 
 summary(m_hr)
 
+# there's a giant anteater with an oddly large HR
+m_hr$model[which.max(resid(m_hr)), ]
+
+if (any(! grepl('mass_kg', smooths(m_hr)))) {
+  stop("The model does not have a term of mass and is thus not comparable to m_hr_0!")
+} else {
+  AIC(m_hr_0, m_hr) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
+}
+
+# is there evidence of anthropogenic pressure?
+d %>%
+  filter(dataset_name != 'DeNicola et al. (2025) (Staten Island)') %>%
+  ggplot(aes(hfi, resid(m_hr))) +
+  geom_point(alpha = 0.5) +
+  geom_smooth()
+
+# perform the same analysis but for speed ----
+m_speed_0 <- gam(speed ~ log(mass_kg) + s(species, bs = 're'),
+                 family = Gamma(link = 'log'),
+                 data = d,
+                 subset = keep_for_gam)
+
+m_speed <- bam(speed ~
+                 # global effects
+                 s(mean_ndvi, k = 5) +
+                 s(var_ndvi, k = 5) +
+                 ti(mean_ndvi, var_ndvi, k = 5) +
+                 # s(mass_kg, k = 5) +
+                 # species-level effects
+                 s(species, bs = 're') +
+                 s(mean_ndvi, species, bs = 'fs', k = 5) +
+                 s(var_ndvi, species, bs = 'fs', k = 5),
+               family = Gamma(link = 'log'),
+               data = d,
+               method = 'fREML',
+               discrete = TRUE)
+draw(m_speed, residuals = TRUE)
+appraise(m_speed, point_alpha = 0.2)
+summary(m_speed)
+AIC(m_speed_0, m_speed) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
+
+# perform the same analysis but for diffusion
+m_diff_0 <- gam(diffusion ~ log(mass_kg) + s(species, bs = 're'),
+                family = Gamma(link = 'log'),
+                data = d,
+                subset = keep_for_gam)
+
+m_diff <- bam(diffusion ~
+                # global effects
+                s(mean_ndvi, k = 5) +
+                s(var_ndvi, k = 5) +
+                ti(mean_ndvi, var_ndvi, k = 5) +
+                # s(mass_kg, k = 5) +
+                # species-level effects
+                s(species, bs = 're') +
+                s(mean_ndvi, species, bs = 'fs', k = 5) +
+                s(var_ndvi, species, bs = 'fs', k = 5),
+              family = Gamma(link = 'log'),
+              data = d,
+              method = 'fREML',
+              discrete = TRUE)
+draw(m_diff, residuals = TRUE)
+appraise(m_diff, point_alpha = 0.2)
+summary(m_diff)
+AIC(m_diff_0, m_diff) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
+
+# save models ----
+saveRDS(m_hr, file = 'models/hr-model.rds')
+saveRDS(m_speed, file = 'models/diffusion-model.rds')
+saveRDS(m_diff, file = 'models/speed-model.rds')
+
+saveRDS(m_hr_0, file = 'models/hr-null-model.rds')
+saveRDS(m_speed_0, file = 'models/diffusion-null-model.rds')
+saveRDS(m_diff_0, file = 'models/speed-null-model.rds')
