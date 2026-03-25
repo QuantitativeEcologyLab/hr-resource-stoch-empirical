@@ -48,9 +48,9 @@ d %>%
 d %>%
   pivot_longer(c(mean_ndvi, var_ndvi)) %>%
   ggplot(aes(value, hr_95)) +
-  facet_wrap(. ~ species + name, scales = 'free', ncol = 4) +
+  facet_grid(~ name, scales = 'free', switch = 'x') +
   geom_point(alpha = 0.2) +
-  geom_smooth(aes(color = name, fill = name),
+  geom_smooth(aes(color = name, fill = name, group = species),
               alpha = 0.3, method = 'gam', formula = y ~ x) +
   xlab(NULL) +
   scale_y_log10() +
