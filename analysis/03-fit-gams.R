@@ -89,27 +89,20 @@ ggplot(d, aes(mass_kg, mean_ndvi)) +
 
 # add NDVI variables to account for deviations
 # compare deviance explained
-m <- bam(hr_95 ~
-           # global effects
-           s(mean_ndvi, k = 8) +
-           s(var_ndvi, k = 8) +
-           ti(mean_ndvi, var_ndvi, k = 5) +
-           # s(mass_kg, k = 5) +
-           # species-level effects
-           s(species, bs = 're') +
-           s(mean_ndvi, species, bs = 'fs', k = 10) +
-           s(var_ndvi, species, bs = 'fs', k = 10),
-         family = Gamma(link = 'log'),
-         data = d,
-         method = 'fREML',
-         discrete = TRUE)
-draw(m, residuals = TRUE)
-appraise(m, point_alpha = 0.3)
-summary(m)
-
-# regress residuals against HFI
-# TODO: exclude HFI from the model, then regress the predictions and/or
-# residuals against the HFI values to motivate future directions with
-# anthropogenic pressure
-
-# TODO: perform the same analysis but for diffusion and/or speed?
+m_hr <- gam(list(hr_95 ~
+              # global effects
+              s(mean_ndvi, k = 5) +
+              s(var_ndvi, k = 5) +
+              ti(mean_ndvi, var_ndvi, k = 3) +
+              # s(mass_kg, k = 5) +
+              # species-level effects
+              s(species, bs = 're') +
+              s(mean_ndvi, species, bs = 'fs', k = 5) +
+              s(var_ndvi, species, bs = 'fs', k = 5),
+              ~ s(species, bs = 're') +
+                te(mean_ndvi, var_ndvi, k = 5)),
+            family = gammals(),
+            data = d,
+            # in too urban of an area
+            subset = dataset_name != 'DeNicola et al. (2025) (Staten Island)',
+            method = 'REML')
