@@ -8,6 +8,8 @@ library('lutz')      # for getting time zones based on coordinates
 library('lubridate') # for working with dates
 library('ggplot2')   # for fancy plots
 source('analysis/figures/default-ggplot-theme.R')
+source('functions/import_rda.R')
+data('buffalo')
 
 d <-
   bind_rows(
@@ -158,7 +160,28 @@ d <-
              tel = list(NULL),
              movement_model = list(NULL),
              akde = unname(akde)) %>%
-      select(animal, species, dataset_name, tel, movement_model, akde)
+      select(animal, species, dataset_name, tel, movement_model, akde),
+    # example buffalo data from the ctmm package
+    # AKDES and movement models provided by Mike via a Dropbox link
+    #' from `https://github.com/ctmm-initiative/ctmmlearn/blob/main/data`
+    tibble(species = 'Syncerus caffer',
+           dataset_name = 'ctmm buffalo',
+           movement_model =
+             import_rda('data/telemetry-data/ctmm-data/buffalo.rda',
+                        object_name = 'FITS'),
+           animal = map_chr(movement_model, function(.mm) {
+             return(.mm@info$identity)
+           }),
+           tel = buffalo[animal],
+           akde = import_rda('data/telemetry-data/ctmm-data/buffalo_akdes.rda',
+                             object_name = 'AKDES')[animal]),
+    # TODO: add models for banded armadillo
+    # banded armadillo from Mike Noonan
+    tibble(tel = import_rda('data/telemetry-data/noonan-banded-armadillo/Tolypeutes_matacus.Rda',
+                      object_name = 'Tolypeutes_matacus') %>%
+             as.telemetry(),
+           animal = names(tel)) %>%
+      mutate(tel = unname(tel))
     # TODO: add pronghorn data
   ) %>%
   # remove duplicated individuals from Mike's datasets
