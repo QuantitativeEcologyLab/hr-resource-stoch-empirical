@@ -82,6 +82,9 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
   left_join(elton_traits, by = join_by('species' == 'scientific')) %>%
   mutate(species = factor(species))
 
+# ensure all species have data
+if (sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
+
 # some rivers have excessively high HFI
 st_bbox(d$ud_raster[[1]]) %>%
   st_as_sfc() %>%
