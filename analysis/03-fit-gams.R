@@ -88,7 +88,21 @@ ggplot(d, aes(mass_kg, mean_ndvi)) +
   scale_color_discreterainbow()
 
 # add NDVI variables to account for deviations
-# compare deviance explained
+m_hr_0 <- gam(list(hr_95 ~
+                   # global effects
+                   s(mean_ndvi, k = 5) +
+                   # s(mass_kg, k = 5) +
+                   # species-level effects
+                   s(species, bs = 're') +
+                   s(mean_ndvi, species, bs = 'fs', k = 5),
+                 ~ s(species, bs = 're') +
+                   s(mean_ndvi, k = 5)),
+            family = gammals(),
+            data = d,
+            # in too urban of an area
+            subset = dataset_name != 'DeNicola et al. (2025) (Staten Island)',
+            method = 'REML')
+
 m_hr <- gam(list(hr_95 ~
               # global effects
               s(mean_ndvi, k = 5) +
@@ -114,10 +128,12 @@ appraise(m_hr, point_alpha = 0.2)
 ggsave('figures/hr-model-diagnostics.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white')
 
-summary(m_hr)
+# generalized likelihood test for model comparison
+anova(m_hr_0, m_hr, test = 'Chisq')
 
-# there's a giant anteater with an oddly large HR
-m_hr$model[which.max(resid(m_hr)), ]
+# change in deviance explained
+((summary(m_hr$null.deviance)) -
+  (m_hr_0$deviance / m_hr_0$null.deviance)) * 100
 
 if (any(! grepl('mass_kg', smooths(m_hr)))) {
   stop("The model does not have a term of mass and is thus not comparable to m_hr_0!")
