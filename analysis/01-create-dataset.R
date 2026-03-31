@@ -3,6 +3,7 @@ library('sf')        # for shapefiles
 library('dplyr')     # for data wrangling
 library('tidyr')     # for data wrangling
 library('purrr')     # for functional programming
+library('furrr')     # for parallelized functional programming
 library('ctmm')      # for converting data to telemetry format
 library('lutz')      # for getting time zones based on coordinates
 library('lubridate') # for working with dates
@@ -11,6 +12,54 @@ source('analysis/figures/default-ggplot-theme.R')
 source('functions/import_rda.R')
 data('buffalo')
 
+# TODO: drop cougars to simplify data permission process?
+
+# clean pronghorn data and fit models ----
+# Aikens at al. (collected by H. Sawyer)
+# https://doi.org/10.1016/j.cub.2025.03.010
+pronghorn <-
+  st_read('data/telemetry-data/aikens-pronghorn/GPSdata.shp',
+          quiet = TRUE) %>%
+  st_transform(crs = 'EPSG:4326') %>%
+  # assuming the data uses the local timezone
+  mutate(time_zone = tz_lookup(., crs = st_crs(.), method = 'accurate')) %>%
+  bind_cols(st_coordinates(.) %>%
+              data.frame() %>%
+              rename(long = X, lat = Y)) %>%
+  st_drop_geometry() %>%
+  transmute(animal = as.character(animalID),
+            species = 'Antilocapra americana',
+            dataset_name = 'Aikens et al. 2025 (Collected by Hall Sawyer)',
+            individual.local.identifier = animal,
+            long, lat, time_zone,
+            timestamp = paste0(date, '-', hour) %>%
+              ymd_h(tz = unique(time_zone)),
+            outlier = FALSE, clean = FALSE) %>%
+  arrange(animal, timestamp) %>% # original data are not sorted
+  nest(tel = ! c(animal, species, dataset_name, clean)) %>%
+  mutate(tel = map(tel, as.telemetry))
+
+map(1, function(i) {
+  png(paste0('figures/pronghorn-variograms/pronghorn-', i, '.png'),
+      width = 12, height = 10, units = "in", res = 200)
+  ctmm.guess(pronghorn$tel[[i]])
+  dev.off()
+}) %>%
+  invisible()
+
+# drop animals that are not range-resident
+pronghorn <- pronghorn %>% filter(! animal %in% c(22, 23, 26, 29, 30))
+
+# pronghorn <-
+  pronghorn %>%
+    slice(1) %>%
+  mutate(vg = map(tel, \(.tel) list(ctmm.guess(.tel, interactive = FALSE))),
+         movement_model = map(tel, vg, \(.tel, .vg) {
+           list(ctmm.select(data = .tel, CTMM = .vg[[1]]))
+         }, .progress = TRUE))
+nrow(pronghorn)
+
+# compile full dataset ----
 d <-
   bind_rows(
     # clean data from other projects
@@ -32,10 +81,9 @@ d <-
       mutate(dataset_name = paste('Medici et al. (2022)', region),
              species = 'Tapirus terrestris') %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
-    # DeNicola white-tailed deer
+    # DeNicola white-tailed deer (NY)
     readRDS('data/hr-estimates/denicola-deer/denicola-ny-2025-full-telemetry-movement-models-2024-04-20.rds') %>%
-      # drop data after mortality event
-      filter(! grepl('Mortality', mortality.status)) %>%
+      filter(! grepl('Mortality', mortality.status)) %>% # post mortality
       rename(movement_model = model) %>%
       mutate(dataset_name = case_when(
         study.area == 'staten_island' ~ 'DeNicola et al. (2025) (Staten Island)',
@@ -43,6 +91,7 @@ d <-
         species = 'Odocoileus virginianus',
         animal = paste0(animal, ' (year ', study.year, ')')) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
+    # DeNicola white-tailed deer (South Euclid)
     readRDS('data/hr-estimates/denicola-deer/denicola-se-2025-full-telemetry-movement-models.rds') %>%
       rename(movement_model = mm,
              akde = ud) %>%
@@ -65,18 +114,18 @@ d <-
                       function(.file) {
                         load(.file)
                         return(AKDE)
-                      })),
+                      })) %>%
+      filter(animal != 'Juliana'), # not range-resident 
     tibble(
       map('data/hr-estimates/noonan-anteater-2/Myrmecophaga_tridactyla.Rda',
           function(.fn) { # to convert Rda to an unnamed object
             load(.fn)
-            data %>%
-              select(! c(X.11:X)) %>%
-              return()
+            data %>% select(! c(X.11:X)) %>% return()
           })[[1]]) %>%
       mutate(animal = ID) %>%
       nest(tel = ! animal) %>%
-      filter(animal != 'Yoki') %>%
+      filter(animal != 'Little Rick') %>% # duplicate from Issy's dataset
+      filter(animal != 'Yoki') %>% # not a useful telemetry
       mutate(species = 'Myrmecophaga tridactyla',
              dataset_name = 'Noonan giant anteaters 2',
              tel = map(tel, \(.tel) suppressMessages(as.telemetry(.tel))),
@@ -151,7 +200,7 @@ d <-
       mutate(across(c(tel, movement_model, akde), unname),
              species = 'Myrmecophaga tridactyla'),
     # Northern Mountain Caribou (Lauren Mills)
-    # TODO: missing tels and movement models
+    # TODO: missing tels (and movement models)
     readRDS('data/hr-estimates/mills-northern-mountain-caribou/akde_df.RDS') %>%
       as_tibble() %>%
       rename(animal = animal_id, akde = AKDE_object) %>%
@@ -175,12 +224,14 @@ d <-
            tel = buffalo[animal],
            akde = import_rda('data/telemetry-data/ctmm-data/buffalo_akdes.rda',
                              object_name = 'AKDES')[animal]),
-    # TODO: add models for banded armadillo
     # banded armadillo from Mike Noonan
     tibble(tel = import_rda('data/telemetry-data/noonan-banded-armadillo/Tolypeutes_matacus.Rda',
-                      object_name = 'Tolypeutes_matacus') %>%
-             as.telemetry(),
-           animal = names(tel)) %>%
+                            object_name = 'Tolypeutes_matacus') %>%
+             as.telemetry() %>%
+             suppressMessages(),
+           animal = names(tel),
+           species = 'Tolypeutes matacus',
+           dataset_name = 'Noonan southern tree banded armadillo') %>%
       mutate(tel = unname(tel))
     # TODO: add pronghorn data
   ) %>%
@@ -199,20 +250,33 @@ d <-
              return(diff(range(.tel$timestamp), units = 'days'))
            }
          }) %>%
-           round()) %>%
-  # # add missing movement models and AKDEs
-  # mutate(movement_model = map2(movement_model, function(.tel, .mm) {
-  #   if (class(.mm) == 'ctmm') {
-  #     return(.mm)
-  #   } else {
-  #     .vg <- ctmm.guess(.tel, interactive = FALSE)
-  #     .mm <- ctmm.select(data = .tel, CTMM = .vg)
-  #     return(.mm)
-  #   }
-  # }, .progress = 'Fitting missing movement models...'),
-  # akde = map2(.tel, .mm, function(.tel, .mm) {
-  #   return(akde(data = .tel, CTMM = .mm, debias = TRUE, weights = TRUE))
-  # }, .progress = 'Fitting missing AKDEs...')) %>%
+           round())
+
+# add missing movement models and AKDEs
+# splitting the dataset to have a more realistic ETA
+d <-
+  bind_rows(
+    d %>% filter(! (is.null(movement_model) | is.null(akde))),
+    d %>% filter(is.null(movement_model) | is.null(akde)) %>%
+      mutate(movement_model = future_map2(tel, movement_model, \(.tel, .mm) {
+        if (class(.mm) == 'ctmm') {
+          return(.mm)
+        } else if(is.null(.tel)) {
+          return(NULL)
+        } else {
+          .vg <- ctmm.guess(.tel, interactive = FALSE)
+          .mm <- ctmm.select(data = .tel, CTMM = .vg)
+          return(.mm)
+        }
+      }, .progress = TRUE),
+      akde = future_map2(tel, movement_model, function(.tel, .mm) {
+        if(is.null(.tel) | is.null(.mm)) {
+          return(NULL)
+        } else {
+          return(akde(data = .tel, CTMM = .mm, debias = TRUE, weights = TRUE))
+        }
+      }, .progress = TRUE))
+  ) %>%
   # estimate movement parameters
   mutate(hr_95_km2 = map_dbl(akde, function(.akde) {
     if (is.null(.akde)) {
@@ -246,8 +310,8 @@ d <-
       if (is.null(.mm)) {
         return(NA_real_)
       } else {
-        if(any(grepl('diffusion', rownames(summary(.m)$CI)))) {
-          return(summary(.m, units = FALSE)$
+        if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
+          return(summary(.mm, units = FALSE)$
                    CI['diffusion (square meters/second)', 'est'])
         } else {
           return(NA_real_)
@@ -255,13 +319,14 @@ d <-
       }
     }))
 
-# ensure all species have data
-if (sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
+# warnings about fractal movement are ok: no speed was estimated
+unique(dplyr::last_dplyr_warnings())
 
 # ensure there are no duplicated animal names across studies (should be 0)
 if (sum(duplicated(d$animal)) > 0) {
   d %>%
     select(animal, species, dataset_name, n_days) %>%
+    mutate(animal = gsub('[-_]', ' ', animal)) %>%
     filter(duplicated(animal) | duplicated(animal, fromLast = TRUE)) %>%
     arrange(animal, dataset_name)
   
@@ -318,39 +383,3 @@ map_dbl(large_hrs$akde, function(.akde) {
 
 # save the final dataset
 saveRDS(d, paste0('data/akde-tibble-', Sys.Date(), '.rds'))
-
-if (FALSE) {
-  # Aikens at al. (collected by H. Sawyer); https://doi.org/10.1016/j.cub.2025.03.010
-  # not using because there are no movement models fit and some are not range resident
-  pronghorn <-
-    st_read('data/telemetry-data/aikens-pronghorn/GPSdata.shp', quiet = TRUE) %>%
-    st_transform(crs = 'EPSG:4326') %>%
-    # assuming the data uses the local timezone
-    mutate(time_zone = tz_lookup(., crs = st_crs(.), method = 'accurate')) %>%
-    bind_cols(st_coordinates(.) %>%
-                data.frame() %>%
-                rename(long = X, lat = Y)) %>%
-    st_drop_geometry() %>%
-    transmute(animal = as.character(animalID),
-              species = 'Antilocapra americana',
-              dataset_name = 'Aikens et al. 2025 (Collected by Hall Sawyer)',
-              individual.local.identifier = animal,
-              long, lat, time_zone,
-              timestamp = paste0(date, '-', hour) %>%
-                ymd_h(tz = unique(time_zone)),
-              outlier = FALSE, clean = FALSE) %>%
-    arrange(animal, timestamp) %>% # original data are not sorted
-    nest(tel = ! c(animal, species, dataset_name, clean)) %>%
-    mutate(tel = map(tel, as.telemetry),
-           vg = map(tel, \(.tel) ctmm.guess(.tel, interactive = FALSE)),
-           movement_model = map(tel, vg, \(.tel, .vg) {
-             list(ctmm.select(data = .tel, CTMM = .vg))
-           }, .progress = TRUE))
-  nrow(pronghorn)
-  
-  for(i in 1:nrow(pronghorn)) {
-    png(paste0('figures/pronghorn-variograms/pronghorn-', i, '.png'))
-    ctmm.guess(pronghorn$tel[[i]])
-    dev.off()
-  }
-}
