@@ -1,11 +1,138 @@
 ---
-title: "Environmental stochasticity forces mammals to expand their ranges"
-output: pdf_document
+title: "\\Large Environmental stochasticity drives mammals to expand their ranges"
+author:
+  - name: Stefano Mezzini
+    email: stefano.mezzini@ubc.ca
+    institute: [braes, biol, pois]
+  - name: Michael J. Noonan
+    email: michael.noonan@ubc.ca
+    institute: [braes, biol, cmps]
+institute:
+  - braes: Okanagan Institute for Biodiversity, Resilience, and Ecosystem Services, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
+  - biol: Department of Biology, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
+  - pois: Poisson Consulting Ltd., Nelson, British Columbia, Canada.
+  - cmps: Department of Computer Science, Math, Physics, and Statistics, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
+bibliography: 'hr-resource-stoch-empirical.bib'
+csl: 'nature.csl'
+fontsize: 12pt
+indent: true
+header-includes:
+    - \usepackage{setspace}\doublespacing # for double-spaced text
+    - \usepackage{indentfirst} # for indenting first line of each paragraph
+    - \usepackage[small]{titlesec} # for smaller font for headings
+    - \usepackage{caption} # for more customization of captions
+    - \captionsetup[figure]{font=footnotesize, aboveskip=4pt, belowskip=-15pt}
+    - \usepackage{hanging} # for hanging indents in references
+    - \usepackage[left]{lineno} # for line numbers
+    - \usepackage{booktabs} # to prevent tables from splitting
+subparagraph: true # needed for \usepackage[small]{titlesec}
+urlcolor: cyan
+output:
+  bookdown::pdf_document2:
+    latex_engine: xelatex # for Delta symbol in table
+    pandoc_args:
+      - '--lua-filter=scholarly-metadata.lua'
+      - '--lua-filter=author-info-blocks.lua'
+    toc: false
+    number_sections: true
+editor_options: 
+  chunk_output_type: console
 ---
 
-* We should use the EDF for the hr size as a measure of confidence in the HR size whether was exact weights (and adding a random effect for each individual) or as normalized weights by dividing by the mean weight. Both options imply that we are measuring at the spatiotemporal scale of a range crossing, which varies among animals
+<!-- submission guidelines for Science:
+- www.science.org/content/page/science-information-authors
+- www.science.org/content/page/instructions-preparing-initial-manuscript
+
+- < 3000 words for the main text
+- 3 display items (figures or tables) with brief legends
+- about 50 main-text references
+- structured acknowledgments section
+
+- main text divided into sections with brief subheadings
+- "Materials and Methods" should be included in supplementary materials w sufficient detail to replicate the study. This should be followed by additional data and figures needed to support the paper’s conclusions.
+- All data must be available in either the main text or the supplementary materials or must be deposited at a publicly accessible repository and cited in the paper. For more on our open data policy, including information on our partnership with Dryad, please see the “Data and Code Deposition” section of our Editorial Policies.
+
+Research Articles that are not a good fit for our print format:
+- often have more than 4 figures
+- will be included in all digital versions of Science
+- a one-page summary (~500 words, divided into four sections: “Introduction,” “Rationale,” “Results,” and “Conclusion”) plus a summary figure and caption (no more than 65 words) will be included in the print version.
+- The methods section runs after the main text as part of the article, but other additional information to support the paper’s conclusions remains as supplementary material.
+-->
+
+```{r setup, include=FALSE}
+# set chunk defaults: don't print code, images text width and centered
+knitr::opts_chunk$set(echo = FALSE, out.width = '\\textwidth',
+                      fig.align = 'center', cache = TRUE, warning = FALSE,
+                      message = FALSE)
+```
+
+\newpage
+
+<!--
+available text sizes:
+Huge > huge > LARGE > Large > large > normalsize > small > footnotesize > scriptsize > tiny
+-->
+
+```{r abstract, echo=FALSE}
+abstract <- ""
+n_words_abstract <- stringi::stri_count_words(abstract)
+if (FALSE){
+  n_words_abstract
+}
+```
+
+\clearpage
+
+\noindent \textbf{Article type}: Research article
+
+\noindent \textbf{Words in abstract}: `r n_words_abstract`
+
+```{r}
+if (n_words_abstract > 300) warning(paste("Absract has", n_words_abstract, "> 3,000 words!"))
+```
+
+\noindent \textbf{Words in main text}: `r suppressMessages(wordcountaddin::word_count()) - 25` <!-- does not include abstract or figure captions; "- 25" approximately removes the stuff on page 2 -->
+
+\noindent \textbf{Figures}: 0
+
+\noindent \textbf{Tables}: 0
+
+\noindent \textbf{References}: XXX
+
+\noindent \textbf{Appendices}: 0
+
+\noindent \textbf{Key words:} XXX
+
+\noindent \textbf{Contact Information:} *Corresponding author’s telephone, and email details*
+
+\ 
+
+\clearpage
+
+# Abstract {-}
+
+\noindent `r abstract`
+
+<!-- start main body on a new page -->
+\newpage
+
+\doublespacing
+
+\linenumbers
+
+# Introduction
+
+like H = C / R paper [@harestad_ref_xxxx], but:
+- R is now a random variable with mean and variance
+- relationship can now be nonlinear
+
+@mezzini_how_2025
+
+* We should use the EDF for the hr size as a measure of confidence in the HR size whether was exact weights (and adding a random effect for each individual) or as normalized weights by dividing by the mean weight. 
+Both options imply that we are measuring at the spatiotemporal scale of a range crossing, which varies among animals
 * Using the EDF as weights results in highly uncertain estimates for animals with large HRs or scarce data, so we need a good model structure with random effects, coviariates such as body mass, and post-stratification to avoid biasing towards animals with frequent range crossings.
-* Migrating animals will have larger range sizes and smaller EDF values, and they will also be more susceptible to interannual variation. These two points work well together because they imply we should estimate changes in the mean as smooth changes that occur across years rather than among years, which means i should keep the k for years relatively low (e.g., (2025 - 1981) / 4 = 11 ≈ 10)
+* Migrating animals will have larger range sizes and smaller EDF values, and they will also be more susceptible to interannual variation. 
+These two points work well together because they imply we should estimate changes in the mean as smooth changes that occur across years rather than among years, which means i should keep the k for years relatively low (e.g., (2025 - 1981) / 4 = 11 ≈ 10)
 
 
 wolverines have very low E(R), very large HR, and cache food
@@ -23,3 +150,14 @@ papers to use for structure:
 - jetz scaling of animal space use (https://pubmed.ncbi.nlm.nih.gov/15472074/)
   - tucker moving in the anthropocene (https://www.science.org/doi/10.1126/science.aam9712)
 - the search behavior of terrestrial mammals (https://www.biorxiv.org/content/10.1101/2022.12.31.521874v1)
+
+# Materials and Methods
+
+
+\clearpage
+
+# References and notes
+
+\references
+
+# Acknowledgments
