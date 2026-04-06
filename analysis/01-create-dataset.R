@@ -55,13 +55,6 @@ if(FALSE) {
 # drop animals that are not range-resident within the observation period
 pronghorn <- pronghorn %>% filter(! animal %in% c(22, 23, 26, 29, 30))
 
-# pronghorn <-
-  pronghorn %>%
-    slice(1) %>%
-  mutate(vg = map(tel, \(.tel) list(ctmm.guess(.tel, interactive = FALSE))),
-         movement_model = map(tel, vg, \(.tel, .vg) {
-           list(ctmm.select(data = .tel, CTMM = .vg[[1]]))
-         }, .progress = TRUE))
 nrow(pronghorn)
 
 # compile full dataset ----
