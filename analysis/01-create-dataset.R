@@ -10,9 +10,14 @@ library('lubridate') # for working with dates
 library('ggplot2')   # for fancy plots
 source('analysis/figures/default-ggplot-theme.R')
 source('functions/import_rda.R')
-data('buffalo')
+source('functions/outlier_plots.R') # to plot outlier diagnostic plots
+source('functions/check_animal.R') # to run diagnostic plots
+source('functions/plot_adj.R') # to plot 20 adjacent locations
+source('functions/flag_outlier.R') # to mark outliers
+source('functions/remove_outlier_flags.R') # to start over with an animal
 
 # TODO: drop cougars to simplify data permission process?
+data('buffalo')
 
 # clean pronghorn data and fit models ----
 # Aikens at al. (collected by H. Sawyer)
