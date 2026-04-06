@@ -55,6 +55,39 @@ if(FALSE) {
 # drop animals that are not range-resident within the observation period
 pronghorn <- pronghorn %>% filter(! animal %in% c(22, 23, 26, 29, 30))
 
+if(FALSE) {
+  # all pronghorn telemetry data look clean
+  out <- check_animal(id = 1, .data = pronghorn) # good
+  out <- check_animal(id = 2, .data = pronghorn) # good
+  out <- check_animal(id = 3, .data = pronghorn) # has a bit of an excursion
+  out <- check_animal(id = 4, .data = pronghorn) # has a bit of an excursion
+  out <- check_animal(id = 5, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 8, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 9, .data = pronghorn) # good
+  out <- check_animal(id = 10, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 11, .data = pronghorn) # good
+  out <- check_animal(id = 12, .data = pronghorn) # fence makes a hole
+  out <- check_animal(id = 13, .data = pronghorn) # good
+  out <- check_animal(id = 14, .data = pronghorn) # good
+  out <- check_animal(id = 17, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 18, .data = pronghorn) # good
+  out <- check_animal(id = 27, .data = pronghorn) # good
+  out <- check_animal(id = 28, .data = pronghorn) # good
+  out <- check_animal(id = 31, .data = pronghorn) # good
+  out <- check_animal(id = 33, .data = pronghorn) # good
+  out <- check_animal(id = 34, .data = pronghorn) # good
+  out <- check_animal(id = 35, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 36, .data = pronghorn) # good
+  out <- check_animal(id = 37, .data = pronghorn) # good
+  out <- check_animal(id = 38, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 39, .data = pronghorn) # explores along a fence
+  out <- check_animal(id = 40, .data = pronghorn) # good
+  out <- check_animal(id = 41, .data = pronghorn) # good
+  out <- check_animal(id = 42, .data = pronghorn) # good
+  out <- check_animal(id = 43, .data = pronghorn) # good
+  out <- check_animal(id = 44, .data = pronghorn) # good
+}
+
 nrow(pronghorn)
 
 # compile full dataset ----
