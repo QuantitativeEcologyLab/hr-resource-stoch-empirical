@@ -258,8 +258,8 @@ d <-
          }) %>%
            round())
 
-# add missing movement models and AKDEs
-# splitting the dataset to have a more realistic ETA
+# add missing movement models and AKDEs ----
+# not using a single pipeline to have a more realistic ETA
 d <-
   bind_rows(
     d %>% filter(! (is.null(movement_model) | is.null(akde))),
