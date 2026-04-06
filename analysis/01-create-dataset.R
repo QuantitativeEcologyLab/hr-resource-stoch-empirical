@@ -267,6 +267,7 @@ d <-
            dataset_name = 'Noonan southern tree banded armadillo') %>%
       mutate(tel = unname(tel)),
     # pronghorn data from Aikens at al. (collected by H. Sawyer)
+    # https://doi.org/10.1016/j.cub.2025.03.010
     pronghorn %>%
       mutate(animal = paste0("Pronghorn", animal))
   ) %>%
