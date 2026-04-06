@@ -370,6 +370,9 @@ d <-
 # warnings about fractal movement are ok: no speed was estimated
 unique(dplyr::last_dplyr_warnings())
 
+# save the final dataset
+saveRDS(d, paste0('data/akde-tibble-', Sys.Date(), '.rds'))
+
 # ensure there are no duplicated animal names across studies (should be 0)
 if (sum(duplicated(d$animal)) > 0) {
   d %>%
@@ -428,6 +431,3 @@ layout(1)
 map_dbl(large_hrs$akde, function(.akde) {
   round(summary(.akde)$DOF['area'], 2)
 })
-
-# save the final dataset
-saveRDS(d, paste0('data/akde-tibble-', Sys.Date(), '.rds'))
