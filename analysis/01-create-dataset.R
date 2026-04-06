@@ -16,7 +16,6 @@ source('functions/plot_adj.R') # to plot 20 adjacent locations
 source('functions/flag_outlier.R') # to mark outliers
 source('functions/remove_outlier_flags.R') # to start over with an animal
 
-# TODO: drop cougars to simplify data permission process?
 data('buffalo')
 
 # clean pronghorn data and fit models ----
@@ -70,6 +69,8 @@ d <-
     # clean data from other projects
     # Mezzini et al. 2026; https://github.com/QuantitativeEcologyLab/bc-mammals-temperature
     readRDS('data/hr-estimates/mezzini-bc-tempterature-2026/movement-models-akdes-2024-06-06.rds') %>%
+      # TODO: drop cougars to simplify data permission process
+      filter(species != 'Puma concolor') %>%
       # drop non-range-resident individuals
       left_join(read_csv('data/hr-estimates/mezzini-bc-tempterature-2026/telemetry-metadata.csv',
                          show_col_types = FALSE) %>%
