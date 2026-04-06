@@ -96,7 +96,7 @@ d <-
     # clean data from other projects
     # Mezzini et al. 2026; https://github.com/QuantitativeEcologyLab/bc-mammals-temperature
     readRDS('data/hr-estimates/mezzini-bc-tempterature-2026/movement-models-akdes-2024-06-06.rds') %>%
-      # TODO: drop cougars to simplify data permission process
+      # drop cougars to simplify data permission process
       filter(species != 'Puma concolor') %>%
       # drop non-range-resident individuals
       left_join(read_csv('data/hr-estimates/mezzini-bc-tempterature-2026/telemetry-metadata.csv',
