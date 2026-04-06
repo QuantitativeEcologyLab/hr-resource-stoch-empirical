@@ -39,7 +39,7 @@ pronghorn <-
             timestamp = paste0(date, '-', hour) %>%
               ymd_h(tz = unique(time_zone))) %>%
   arrange(animal, timestamp) %>% # original data are not sorted
-  nest(tel = ! c(animal, species, dataset_name, clean)) %>%
+  nest(tel = ! c(animal, species, dataset_name)) %>%
   mutate(tel = map(tel, as.telemetry))
 
 if(FALSE) {
