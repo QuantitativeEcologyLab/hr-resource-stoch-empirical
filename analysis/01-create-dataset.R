@@ -275,7 +275,7 @@ d <-
           .mm <- ctmm.select(data = .tel, CTMM = .vg)
           return(.mm)
         }
-      }, .progress = TRUE),
+      }, .progress = TRUE, .options = furrr_options(seed = NULL)),
       akde = future_map2(tel, movement_model, function(.tel, .mm) {
         if(is.null(.tel) | is.null(.mm)) {
           return(NULL)
