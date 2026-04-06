@@ -18,6 +18,9 @@ source('functions/remove_outlier_flags.R') # to start over with an animal
 
 data('buffalo')
 
+# set up plan to run processes in parallel
+plan(multisession, workers = availableCores(logical = FALSE) - 2)
+
 # clean pronghorn data and fit models ----
 # Aikens at al. (collected by H. Sawyer)
 # https://doi.org/10.1016/j.cub.2025.03.010
