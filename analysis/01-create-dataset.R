@@ -52,7 +52,7 @@ if(FALSE) {
     invisible()
 }
 
-# drop animals that are not range-resident
+# drop animals that are not range-resident within the observation period
 pronghorn <- pronghorn %>% filter(! animal %in% c(22, 23, 26, 29, 30))
 
 # pronghorn <-
