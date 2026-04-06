@@ -263,7 +263,8 @@ d <-
 d <-
   bind_rows(
     d %>% filter(! (is.null(movement_model) | is.null(akde))),
-    d %>% filter(is.null(movement_model) | is.null(akde)) %>%
+    d %>% filter(map_lgl(movement_model, is.null) |
+                   map_lgl(akde, is.null)) %>%
       mutate(movement_model = future_map2(tel, movement_model, \(.tel, .mm) {
         if (class(.mm) == 'ctmm') {
           return(.mm)
