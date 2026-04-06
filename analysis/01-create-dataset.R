@@ -42,13 +42,15 @@ pronghorn <-
   nest(tel = ! c(animal, species, dataset_name, clean)) %>%
   mutate(tel = map(tel, as.telemetry))
 
-map(1, function(i) {
-  png(paste0('figures/pronghorn-variograms/pronghorn-', i, '.png'),
-      width = 12, height = 10, units = "in", res = 200)
-  ctmm.guess(pronghorn$tel[[i]])
-  dev.off()
-}) %>%
-  invisible()
+if(FALSE) {
+  map(1, function(i) {
+    png(paste0('figures/pronghorn-variograms/pronghorn-', i, '.png'),
+        width = 12, height = 10, units = "in", res = 200)
+    ctmm.guess(pronghorn$tel[[i]])
+    dev.off()
+  }) %>%
+    invisible()
+}
 
 # drop animals that are not range-resident
 pronghorn <- pronghorn %>% filter(! animal %in% c(22, 23, 26, 29, 30))
