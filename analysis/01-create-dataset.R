@@ -265,8 +265,10 @@ d <-
            animal = names(tel),
            species = 'Tolypeutes matacus',
            dataset_name = 'Noonan southern tree banded armadillo') %>%
-      mutate(tel = unname(tel))
-    # TODO: add pronghorn data
+      mutate(tel = unname(tel)),
+    # pronghorn data from Aikens at al. (collected by H. Sawyer)
+    pronghorn %>%
+      mutate(animal = paste0("Pronghorn", animal))
   ) %>%
   # remove duplicated individuals from Mike's datasets
   filter(! ((duplicated(animal) | duplicated(animal, fromLast = TRUE)) &
