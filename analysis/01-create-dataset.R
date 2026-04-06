@@ -309,7 +309,14 @@ d <-
         if(is.null(.tel) | is.null(.mm)) {
           return(NULL)
         } else {
-          return(akde(data = .tel, CTMM = .mm, debias = TRUE, weights = TRUE))
+          filename <- paste0(.tel@info$identity, '-temp.png')
+          png(filename)
+          .akde <- akde(data = .tel, CTMM = .mm, debias = TRUE,
+                        weights = TRUE)
+          dev.off()
+          unlink(filename)
+          
+          return(.akde)
         }
       }, .progress = TRUE))
   ) %>%
