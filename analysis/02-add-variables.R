@@ -6,8 +6,8 @@ library('purrr')
 library('terra')
 library('sf')
 
-r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-preds.tif')[[1]]
-r_var_ndvi <- rast('../ndvi-stochasticity/output/long-term-preds.tif')[[2]]
+r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[1]]
+r_var_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[2]]
 r_hfi <- rast('data/hfi-raster/hfp_2021_100m_v1-2_cog.tif')
 
 layout(1:2)
@@ -27,7 +27,7 @@ elton_traits <-
             filter(., scientific == 'Cervus elaphus') %>%
               mutate(scientific = 'Cervus canadensis'))
 
-# HFI raster captures roads well
+# HFI raster captures main roads well
 regina <- st_as_sf(tibble(x = -104 - 36 / 60 - 24 / 60^2,
                 y = 50 + 27 /60 + 17 / 60^2), coords = c('x', 'y')) %>%
   st_set_crs("EPSG:4326") %>%
