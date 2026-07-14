@@ -17,6 +17,9 @@ source('functions/flag_outlier.R') # to mark outliers
 source('functions/remove_outlier_flags.R') # to start over with an animal
 
 data('buffalo')
+data('coati')
+data('gazelle')
+data('wolf')
 
 # set up plan to run processes in parallel
 plan(multisession, workers = availableCores(logical = FALSE) - 2)
@@ -246,9 +249,9 @@ d <-
              movement_model = list(NULL),
              akde = unname(akde)) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
-    # example buffalo data from the ctmm package
+    # buffalo data from the {ctmm} package
     # AKDES and movement models provided by Mike via a Dropbox link
-    #' from `https://github.com/ctmm-initiative/ctmmlearn/blob/main/data`
+    #' from https://github.com/ctmm-initiative/ctmmlearn/blob/main/data
     tibble(species = 'Syncerus caffer',
            dataset_name = 'ctmm buffalo',
            movement_model =
@@ -260,6 +263,27 @@ d <-
            tel = buffalo[animal],
            akde = import_rda('data/telemetry-data/ctmm-data/buffalo_akdes.rda',
                              object_name = 'AKDES')[animal]),
+    # coati data from the {ctmm} package
+    tibble(species = 'Nasua narica',
+           dataset_name = 'ctmm coati',
+           movement_model = NULL,
+           animal = names(coati),
+           tel = coati[animal],
+           akde = NULL),
+    # maned wolf data from the {ctmm} package
+    tibble(species = 'Chrysocyon brachyurus',
+           dataset_name = 'ctmm maned wolf',
+           movement_model = NULL,
+           animal = names(wolf),
+           tel = wolf[animal],
+           akde = NULL),
+    # gazelle data from the {ctmm} package
+    tibble(species = 'Antilocapra guttorosa',
+           dataset_name = 'ctmm gazelle',
+           movement_model = NULL,
+           animal = names(gazelle),
+           tel = gazelle[animal],
+           akde = NULL),
     # banded armadillo from Mike Noonan
     tibble(tel = import_rda('data/telemetry-data/noonan-banded-armadillo/Tolypeutes_matacus.Rda',
                             object_name = 'Tolypeutes_matacus') %>%
@@ -275,8 +299,8 @@ d <-
       mutate(animal = paste0("Pronghorn", animal))
   ) %>%
   # remove duplicated individuals from Mike's datasets
-  filter(! ((duplicated(animal) | duplicated(animal, fromLast = TRUE)) &
-              grepl('Noonan giant anteaters', dataset_name))) %>%
+  filter(grepl('Noonan giant anteaters', dataset_name) &
+           ! (duplicated(animal) | duplicated(animal, fromLast = TRUE))) %>%
   mutate(species = factor(species),
          animal = factor(paste0(animal, ' (', species, ')')),
          n_locations = map_int(tel, \(.tel) {
