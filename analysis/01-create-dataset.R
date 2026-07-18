@@ -18,7 +18,6 @@ source('functions/remove_outlier_flags.R') # to start over with an animal
 
 data('buffalo')
 data('coati')
-data('gazelle')
 data('wolf')
 
 # set up plan to run processes in parallel
@@ -277,13 +276,6 @@ d <-
            animal = names(wolf),
            tel = wolf[animal],
            akde = NULL),
-    # gazelle data from the {ctmm} package
-    tibble(species = 'Antilocapra guttorosa',
-           dataset_name = 'ctmm gazelle',
-           movement_model = NULL,
-           animal = names(gazelle),
-           tel = gazelle[animal],
-           akde = NULL),
     # banded armadillo from Mike Noonan
     tibble(tel = import_rda('data/telemetry-data/noonan-banded-armadillo/Tolypeutes_matacus.Rda',
                             object_name = 'Tolypeutes_matacus') %>%
@@ -417,7 +409,7 @@ d %>%
 
 #' TODO:
 #' we might need to drop individuals with too little data. for example,
-#' tracking a mongolian gazzelle for 10 days may give an unrealistically
+#' tracking a nomadic animal for 10 days may give an unrealistically
 #' small home range despite the low resources because the data doesn't
 #' show the movement between patches
 ggplot(d, aes(n_days)) +
