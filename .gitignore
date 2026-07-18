@@ -52,12 +52,14 @@ rsconnect/
 *.db
 
 # all data files that cannot be shared
-data/telemetry-data/*
-data/elton-traits-1.0/*
-data/marcus-rasters/*
-!data/telemetry-data/telemetry-metadata.csv
 !data/README.md
-/data/hr-estimates
+data/telemetry-data/*
+!data/telemetry-data/public-movebank-data
+data/telemetry-data/public-movebank-data/*
+!data/telemetry-data/public-movebank-data/README.md
+!data/telemetry-data/telemetry-metadata.csv
+data/elton-traits-1.0/*
+data/hr-estimates
 /figures/pronghorn-variograms
 
 # temp files
@@ -74,3 +76,4 @@ data/hfi-raster/hfp_2021_100m_v1-2_cog.tif
 
 # other data links
 data/hfi-raster/other-hfi-sources.txt
+.positai
