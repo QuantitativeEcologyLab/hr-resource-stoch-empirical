@@ -1,4 +1,4 @@
-The data inclued here were all downloaded from MoveBank and from one of the sources below:
+The data inclued here were all downloaded from [MoveBank](https://www.movebank.org/cms/webapp?gwt_fragment=page%3Dstudies) and from one of the sources below:
 
 * Bohm H, Neilson E, de la Mare C, Boutin S (2014) Wildlife habitat effectiveness and connectivity: moose ecology project summary report 2010–2012: Final report. 41 p.
 * Tsalyuk M, Kilian W, Reineking B, Marcus W. 2019. Temporal variation in resource selection of African elephants follows long term variability in resource availability. Ecol Monog. 89(2):e01348. <https://doi.org/10.1002/ecm.1348>
@@ -50,4 +50,8 @@ The data inclued here were all downloaded from MoveBank and from one of the sour
 * Power RJ, Dell S (2020) Data from: A note on the reestablishment of the cheetah population in the Pilanesberg National Park, South Africa. Movebank Data Repository. https://doi.org/10.5441/001/1.k6b630mv
 * Power RJ, Van der Merwe V, Page-Nicholson S, Botha M-V, Dell S, Nel HP. 2019. A note on the reestablishment of the cheetah population in the Pilanesberg National Park, South Africa. African Journal of Wildlife Research. 49:12–15. https://doi.org/10.3957/056.049.0012
 * Power RJ, Page-Nicholson S, Van der Merwe V, Botha M-V, Dell S, Nel HP. 2018. Successful establishment of a ‘hard released’ cheetah on a South African metapopulation reserve. Cat News. 68:26-29.
-* *continue after "Cheetah Pilanesberg National Park, South Africa, 2014-2015" (cited above)*
+* [Choloepus hoffmanni, The Sloth Conservation Foundation, Puerto Viejo de Talamanca Costa Rica](https://www.movebank.org/cms/webapp?gwt_fragment=page=studies,path=study4725153649); CC0
+* Warret Rodrigues, C., & Roth, J. D. (2023). Feast to famine: Sympatric predators respond differently to seasonal prey scarcity on the low Arctic tundra. Ecology and Evolution, 13, e9951
+* Kays R, Hirsch BT. 2015. Data from: Stink or swim: techniques to meet the challenges for the study and conservation of small critters that hide, swim or climb and may otherwise make themselves unpleasant. Movebank Data Repository. https://www.doi.org/10.5441/001/1.41076dq1
+* Powell RA, Ellwood S, Kays R, Maran T. 2017. Stink or swim: techniques to meet the challenges for the study and conservation of small critters that hide, swim, or climb, and may otherwise make themselves unpleasant. In Macdonald DW, Newman C, Harrington LA, editors. Biology and Conservation of Musteloids. Oxford University Press, Oxford. p 216–230. https://doi.org/10.1093/oso/9780198759805.003.0008
+* continue after https://www.movebank.org/cms/webapp?gwt_fragment=page=studies,path=study2950149
