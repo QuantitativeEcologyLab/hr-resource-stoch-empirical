@@ -1,4 +1,4 @@
 remove_outlier_flags <- function(id) {
-  d$tel[[which(d$animal == id)]]$outlier <<-
-    d$tel[[which(d$animal == id)]]$original_outliers
+  d$data[[which(d$animal_id == id)]]$outlier <<-
+    d$data[[which(d$animal_id == id)]]$original_outliers
 }
