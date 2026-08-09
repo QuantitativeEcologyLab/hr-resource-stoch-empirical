@@ -1,4 +1,4 @@
-The data inclued here were all downloaded from [MoveBank](https://www.movebank.org/cms/webapp?gwt_fragment=page%3Dstudies) and from one of the sources below:
+The data included here were all downloaded from [MoveBank](https://www.movebank.org/cms/webapp?gwt_fragment=page%3Dstudies) and from one of the sources below:
 
 * Bohm H, Neilson E, de la Mare C, Boutin S (2014) Wildlife habitat effectiveness and connectivity: moose ecology project summary report 2010–2012: Final report. 41 p.
 * Tsalyuk M, Kilian W, Reineking B, Marcus W. 2019. Temporal variation in resource selection of African elephants follows long term variability in resource availability. Ecol Monog. 89(2):e01348. <https://doi.org/10.1002/ecm.1348>
