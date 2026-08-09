@@ -238,14 +238,10 @@ d <-
       mutate(across(c(tel, movement_model, akde), unname),
              species = 'Myrmecophaga tridactyla'),
     # Northern Mountain Caribou (Lauren Mills)
-    # TODO: missing tels (and movement models)
-    readRDS('data/hr-estimates/mills-northern-mountain-caribou/akde_df.RDS') %>%
-      as_tibble() %>%
-      rename(animal = animal_id, akde = AKDE_object) %>%
+    readRDS('data/hr-estimates/mills-northern-mountain-caribou/mills-nmc.rds') %>%
       mutate(species = 'Rangifer tarandus',
              dataset_name = 'Mills Nothern Mountain Caribou',
-             tel = list(NULL),
-             movement_model = list(NULL),
+             movment_model = unname(movement_model),
              akde = unname(akde)) %>%
       select(animal, species, dataset_name, tel, movement_model, akde),
     # buffalo data from the {ctmm} package
@@ -265,17 +261,17 @@ d <-
     # coati data from the {ctmm} package
     tibble(species = 'Nasua narica',
            dataset_name = 'ctmm coati',
-           movement_model = NULL,
+           movement_model = list(NULL),
            animal = names(coati),
            tel = coati[animal],
-           akde = NULL),
+           akde = list(NULL)),
     # maned wolf data from the {ctmm} package
     tibble(species = 'Chrysocyon brachyurus',
            dataset_name = 'ctmm maned wolf',
-           movement_model = NULL,
+           movement_model = list(NULL),
            animal = names(wolf),
            tel = wolf[animal],
-           akde = NULL),
+           akde = list(NULL)),
     # banded armadillo from Mike Noonan
     tibble(tel = import_rda('data/telemetry-data/noonan-banded-armadillo/Tolypeutes_matacus.Rda',
                             object_name = 'Tolypeutes_matacus') %>%
@@ -288,11 +284,23 @@ d <-
     # pronghorn data from Aikens at al. (collected by H. Sawyer)
     # https://doi.org/10.1016/j.cub.2025.03.010
     pronghorn %>%
-      mutate(animal = paste0("Pronghorn", animal))
+      mutate(animal = paste0("Pronghorn", animal)),
+    # alpine ibex from Movebank (movement models from Mike)
+    tibble(tel = import_rda("data/telemetry-data/capra-ibex/Capra_ibex.Rda", "Capra_ibex") %>%
+             as.telemetry() %>%
+             suppressMessages(),
+           animal = names(tel),
+           species = "Capra ibex",
+           dataset_name = "Monitoring of Capra ibex (Bovidae) populations in the western alps (project ALCOTRA LEMED-IBEX)",
+           movement_model = map(animal, function(.a) {
+             import_rda(paste0("data/hr-estimates/noonan-capra-ibex/",
+                               "Fits_", .a, ".rda"), object_name = "FIT")
+           }),
+           akde = list(NULL))
   ) %>%
   # remove duplicated individuals from Mike's datasets
-  filter(grepl('Noonan giant anteaters', dataset_name) &
-           ! (duplicated(animal) | duplicated(animal, fromLast = TRUE))) %>%
+  filter(! (grepl('Noonan giant anteaters', dataset_name) &
+              (duplicated(animal) | duplicated(animal, fromLast = TRUE)))) %>%
   mutate(species = factor(species),
          animal = factor(paste0(animal, ' (', species, ')')),
          n_locations = map_int(tel, \(.tel) {
@@ -418,7 +426,7 @@ ggplot(d, aes(n_days)) +
   scale_x_log10('Number of days tracked', breaks = c(10, 30, 100, 1000)) +
   ylab('Count')
 
-# currently dropping individuals with HR ESS < 10
+# currently dropping individuals with HR ESS < 4
 ggplot(d, aes(akde_ess_area)) +
   geom_histogram(bins = 50, fill = 'grey', color = 'black') +
   geom_vline(xintercept = 4, lty = 'dashed') +
@@ -427,19 +435,20 @@ ggplot(d, aes(akde_ess_area)) +
   ylab('Count')
 
 # TODO: drop animals with excessively large HRs (might be fixed now)
-# filter based on UD ESS?
-hist(d$hr_95, breaks = 100)
-hist(filter(d, keep_for_gam)$hr_95, breaks = 100)
-filter(d, keep_for_gam, hr_95 > 8000) %>% pull(animal)
+layout(1:2)
+hist(d$hr_95_km2, breaks = 100)
+hist(filter(d, keep_for_gam)$hr_95_km2, breaks = 100, xlim = range(d$hr_95_km2))
+layout(1)
+filter(d, keep_for_gam, hr_95_km2 > 8000) %>% pull(animal)
 
-large_hrs <- filter(d, keep_for_gam, hr_95 > 8000)
+large_hrs <- filter(d, keep_for_gam, hr_95_km2 > 8000)
 DIM <- ceiling(sqrt(nrow(large_hrs)))
 
 layout(matrix(1:(DIM)^2, ncol = DIM))
 for(i in 1:nrow(large_hrs)) {
   plot(large_hrs$akde[[i]])
   plot(large_hrs$tel[[i]], add= TRUE, error = FALSE, type = 'l')
-  title(paste0(large_hrs$animal[i], '\n95% HR:\t\t\t', round(d$hr_95[i]),
+  title(paste0(large_hrs$animal[i], '\n95% HR:\t\t\t', round(d$hr_95_km2[i]),
                ' km\U00B2'))
 }
 layout(1)
