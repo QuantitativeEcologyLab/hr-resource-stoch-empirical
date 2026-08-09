@@ -188,7 +188,7 @@ saved <- map2(d$tel, d$animal_id, plot_outlie, .progress = TRUE)
 setwd('../..')
 
 # clean the telemetries ----
-if(! exists('d')) d <- read_rds('movebank-data-2026-08-01.rds')
+if(! exists('d')) d <- read_rds('data/telemetry-data/movebank-data-2026-08-01.rds')
 
 #' `cat(paste0('out <- check_animal(d$animal_id[', 1:nrow(d)'])'), sep = '\n)`
 # skipping telemetries that look clean
@@ -2151,6 +2151,5 @@ out <- check_animal(d$animal_id[673])
 # 674
 out <- check_animal(d$animal_id[674])
 
-
 # save the movebank dataset ----
-saveRDS(d, paste0('movebank-data-', Sys.Date(), '.rds'))
+saveRDS(d, paste0('data/telemetry-data/movebank-data-', Sys.Date(), '.rds'))
