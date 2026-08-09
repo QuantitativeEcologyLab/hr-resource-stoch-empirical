@@ -77,3 +77,4 @@ data/hfi-raster/hfp_2021_100m_v1-2_cog.tif
 # other data links
 data/hfi-raster/other-hfi-sources.txt
 .positai
+/models/movement-models
