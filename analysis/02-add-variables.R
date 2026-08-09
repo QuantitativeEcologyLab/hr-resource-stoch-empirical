@@ -8,12 +8,28 @@ library('sf')
 
 r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[1]]
 r_var_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[2]]
+r_var_ndvi <- ifel(r_var_ndvi > 0.04, 0.04, r_var_ndvi)
 r_hfi <- rast('data/hfi-raster/hfp_2021_100m_v1-2_cog.tif')
 
 layout(1:2)
 plot(r_mean_ndvi)
 plot(r_var_ndvi)
-layout(1)
+layout(1) # HFI raster has too high a resolution to plot!
+
+# HFI raster captures main roads well
+regina <- st_as_sf(tibble(x = -104 - 36 / 60 - 24 / 60^2,
+                          y = 50 + 27 /60 + 17 / 60^2), coords = c('x', 'y')) %>%
+  st_set_crs("EPSG:4326") %>%
+  st_buffer(15e3)
+
+mapview::mapview(regina, col.region = 'transparent', alpha.region = 0.4)
+
+st_transform(regina, crs(r_hfi)) %>%
+  crop(r_hfi, .) %>%
+  project(., "EPSG:4326") %>%
+  crop(regina) %>%
+  plot()
+plot(regina, add = TRUE, lwd = 5)
 
 elton_traits <-
   read_delim('data/elton-traits-1.0/MamFuncDat.txt', delim = '\t',
@@ -27,21 +43,7 @@ elton_traits <-
             filter(., scientific == 'Cervus elaphus') %>%
               mutate(scientific = 'Cervus canadensis'))
 
-# HFI raster captures main roads well
-regina <- st_as_sf(tibble(x = -104 - 36 / 60 - 24 / 60^2,
-                y = 50 + 27 /60 + 17 / 60^2), coords = c('x', 'y')) %>%
-  st_set_crs("EPSG:4326") %>%
-  st_buffer(15e3)
-mapview::mapview(regina, col.region = 'transparent', alpha.region = 0.4)
-
-st_transform(regina, crs(r_hfi)) %>%
-  crop(r_hfi, .) %>%
-  project(., "EPSG:4326") %>%
-  crop(regina) %>%
-  plot()
-plot(regina, add = TRUE, lwd = 5)
-
-d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
+d <- readRDS('data/akde-tibble-2026-07-22.rds') %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
   mutate(ud_raster = map(akde, function(.akde) {
@@ -85,7 +87,7 @@ d <- readRDS('data/akde-tibble-2026-02-24.rds') %>%
 # ensure all species have data
 if (sum(is.na(d$mass_kg)) > 0) stop('At least one row has `NA` mass!')
 
-# some rivers have excessively high HFI
+# some rivers have high HFI because they are not distinguishable from roads
 st_bbox(d$ud_raster[[1]]) %>%
   st_as_sfc() %>%
   st_as_sf() %>%
@@ -105,6 +107,7 @@ if (sum(is.na(d)) == 0) {
     select(! c(tel, movement_model, akde, ud_raster)) %>%
     saveRDS(paste0('data/gam-dataset-', Sys.Date(), '.rds'))
 } else {
-  stop(paste('There are NA values in the dataset!',
+  stop(paste('There are NA values in columns',
+             paste0(colnames(d)[colSums(is.na(d)) > 0], collapse = ', '), '. ',
              'Save the dataset manually to confirm.'))
 }
