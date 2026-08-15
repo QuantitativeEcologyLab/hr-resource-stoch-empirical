@@ -1,3 +1,5 @@
+#' *NOTE:* if the viewer is blank, try setting `options(viewer = NULL)`
+
 # function to plot telemetry points near problematic points
 plot_adj <- function(id, n_adj = 10,
                      min_speed = NA, max_speed = NA,
@@ -14,7 +16,7 @@ plot_adj <- function(id, n_adj = 10,
     map_type <- c('Esri.WorldImagery', 'OpenTopoMap',
                   'OpenStreetMap.Mapnik')[map_type]
   }
-  tel <- filter(d, animal == id)$tel[[1]] # find the telemetry
+  tel <- filter(d, animal_id == id)$data[[1]] # find the telemetry
   tel <- filter(tel, ! outlier) # drop outliers
   
   # find problematic locations
@@ -47,6 +49,7 @@ if(length(problematic) > 50 & ! many) {
 adj <- sapply(problematic, \(x) (x - n_adj):(x + n_adj))
 adj[adj < 1] <- 1 # only allow positive indices 
 adj[adj > nrow(tel)] <- nrow(tel) # no indices greater than n(rows)
+adj_vec <- unique(sort(as.vector(adj)))
 
 if(map) {
   adj_long <- adj %>%
@@ -61,7 +64,7 @@ if(map) {
     tel[adj_long$value, ] %>%
       data.frame() %>%
       bind_cols(adj_long) %>%
-      sf::st_as_sf(coords = c('location.long', 'location.lat'),
+      sf::st_as_sf(coords = c('long', 'lat'),
                    crs = 4326) %>%
       # view data with a map background
       mapview::mapview(col = 'black', lwd = 3, col.regions ='darkorange',
@@ -71,7 +74,7 @@ if(map) {
       data.frame() %>%
       bind_cols(adj_long) %>%
       mutate(problematic = factor(value == problematic)) %>%
-      sf::st_as_sf(coords = c('location.long', 'location.lat'),
+      sf::st_as_sf(coords = c('long', 'lat'),
                    crs = 4326) %>%
       # view data with a map background
       mapview::mapview(zcol = 'group',  col = 'black', lwd = 3,
@@ -84,9 +87,9 @@ if(map) {
   layout(t(1:2))
   
   # plot of the telemetry with errors
-  plot(tel[adj, ], units = FALSE, error = FALSE, col = 'black',
+  plot(tel[adj_vec, ], units = FALSE, error = FALSE, col = 'black',
        type = 'l', main = paste0(id, ': locations with DOP'))
-  plot(tel[adj, ], units = FALSE, add = TRUE, col = 'black',
+  plot(tel[adj_vec, ], units = FALSE, add = TRUE, col = 'black',
        transparency.error = 0)
   plot(tel[problematic, ], units = FALSE, add = TRUE, col = 'red',
        transparency.error = 0, lwd = 2)
