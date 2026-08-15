@@ -244,296 +244,63 @@ d$data <- map_if(d$data, grepl("elephants", d$animal_id), function(.d) {
   .d
 })
 
-#' *continue here*
-
-# 40
-out <- check_animal(d$animal_id[40])
-
-# 41
-out <- check_animal(d$animal_id[41])
-
-# 42
-out <- check_animal(d$animal_id[42])
-
-# 43
-out <- check_animal(d$animal_id[43])
-
-# 44
-out <- check_animal(d$animal_id[44])
-
-# 45
-out <- check_animal(d$animal_id[45])
-
-# 46
-out <- check_animal(d$animal_id[46])
-
-# 47
-out <- check_animal(d$animal_id[47])
-
-# 48
-out <- check_animal(d$animal_id[48])
-
-# 49
-out <- check_animal(d$animal_id[49])
-
-# 50
-out <- check_animal(d$animal_id[50])
-
-# 51
-out <- check_animal(d$animal_id[51])
-
-# 52
-out <- check_animal(d$animal_id[52])
-
-# 53
-out <- check_animal(d$animal_id[53])
-
 # 54
 out <- check_animal(d$animal_id[54])
-
-# 55
-out <- check_animal(d$animal_id[55])
+plot_adj(d$animal_id[54], max_speed = 5)
+plot_adj(d$animal_id[54], max_speed = 15)
+flag_outlier(d$animal_id[54], max_speed = 5, value = 2)
+out <- check_animal(d$animal_id[54])
+plot_adj(d$animal_id[54], max_speed = 3) # ok
 
 # 56
 out <- check_animal(d$animal_id[56])
-
-# 57
-out <- check_animal(d$animal_id[57])
-
-# 58
-out <- check_animal(d$animal_id[58])
-
-# 59
-out <- check_animal(d$animal_id[59])
-
-# 60
-out <- check_animal(d$animal_id[60])
-
-# 61
-out <- check_animal(d$animal_id[61])
+flag_outlier(d$animal_id[56], max_speed = 10, value = 1)
+out <- check_animal(d$animal_id[56])
+plot_adj(d$animal_id[56], max_speed = 3)
+flag_outlier(d$animal_id[56], max_speed = 3, value = 1)
+out <- check_animal(d$animal_id[56])
 
 # 62
 out <- check_animal(d$animal_id[62])
-
-# 63
-out <- check_animal(d$animal_id[63])
-
-# 64
-out <- check_animal(d$animal_id[64])
-
-# 65
-out <- check_animal(d$animal_id[65])
-
-# 66
-out <- check_animal(d$animal_id[66])
-
-# 67
-out <- check_animal(d$animal_id[67])
-
-# 68
-out <- check_animal(d$animal_id[68])
-
-# 69
-out <- check_animal(d$animal_id[69])
-
-# 70
-out <- check_animal(d$animal_id[70])
-
-# 71
-out <- check_animal(d$animal_id[71])
-
-# 72
-out <- check_animal(d$animal_id[72])
-
-# 73
-out <- check_animal(d$animal_id[73])
-
-# 74
-out <- check_animal(d$animal_id[74])
-
-# 75
-out <- check_animal(d$animal_id[75])
-
-# 76
-out <- check_animal(d$animal_id[76])
-
-# 77
-out <- check_animal(d$animal_id[77])
-
-# 78
-out <- check_animal(d$animal_id[78])
-
-# 79
-out <- check_animal(d$animal_id[79])
-
-# 80
-out <- check_animal(d$animal_id[80])
-
-# 81
-out <- check_animal(d$animal_id[81])
-
-# 82
-out <- check_animal(d$animal_id[82])
-
-# 83
-out <- check_animal(d$animal_id[83])
-
-# 84
-out <- check_animal(d$animal_id[84])
-
-# 85
-out <- check_animal(d$animal_id[85])
-
-# 86
-out <- check_animal(d$animal_id[86])
+plot(d$tel[[62]], type = "l", error = FALSE, col = "black")
+plot(d$tel[[62]][1:100, ], type = "l", error = FALSE, add = TRUE, col = "blue")
+plot(d$tel[[62]][nrow(d$tel[[62]]) - 175:0, ], type = "l", error = FALSE,
+     add = TRUE, lwd = 2)
+# excursion is at the end. would have excluded it if it was at the start
 
 # 87
 out <- check_animal(d$animal_id[87])
-
-# 88
-out <- check_animal(d$animal_id[88])
-
-# 89
-out <- check_animal(d$animal_id[89])
-
-# 90
-out <- check_animal(d$animal_id[90])
-
-# 91
-out <- check_animal(d$animal_id[91])
-
-# 92
-out <- check_animal(d$animal_id[92])
-
-# 93
-out <- check_animal(d$animal_id[93])
-
-# 94
-out <- check_animal(d$animal_id[94])
-
-# 95
-out <- check_animal(d$animal_id[95])
-
-# 96
-out <- check_animal(d$animal_id[96])
-
-# 97
-out <- check_animal(d$animal_id[97])
+flag_outlier(d$animal_id[87], max_distance = 2000, value = 1)
+out <- check_animal(d$animal_id[87])
 
 # 98
+out <- check_animal(d$animal_id[98])
+plot_adj(d$animal_id[98], max_distance = 2700)
+flag_outlier(d$animal_id[98], max_distance = 2700, value = 1)
 out <- check_animal(d$animal_id[98])
 
 # 99
 out <- check_animal(d$animal_id[99])
+plot_adj(d$animal_id[99], max_distance = 1700)
+flag_outlier(d$animal_id[99], max_distance = 1700, value = 1)
+out <- check_animal(d$animal_id[99])
 
 # 100
 out <- check_animal(d$animal_id[100])
-
-# 101
-out <- check_animal(d$animal_id[101])
-
-# 102
-out <- check_animal(d$animal_id[102])
-
-# 103
-out <- check_animal(d$animal_id[103])
-
-# 104
-out <- check_animal(d$animal_id[104])
-
-# 105
-out <- check_animal(d$animal_id[105])
-
-# 106
-out <- check_animal(d$animal_id[106])
-
-# 107
-out <- check_animal(d$animal_id[107])
-
-# 108
-out <- check_animal(d$animal_id[108])
-
-# 109
-out <- check_animal(d$animal_id[109])
-
-# 110
-out <- check_animal(d$animal_id[110])
-
-# 111
-out <- check_animal(d$animal_id[111])
-
-# 112
-out <- check_animal(d$animal_id[112])
-
-# 113
-out <- check_animal(d$animal_id[113])
-
-# 114
-out <- check_animal(d$animal_id[114])
-
-# 115
-out <- check_animal(d$animal_id[115])
-
-# 116
-out <- check_animal(d$animal_id[116])
-
-# 117
-out <- check_animal(d$animal_id[117])
-
-# 118
-out <- check_animal(d$animal_id[118])
-
-# 119
-out <- check_animal(d$animal_id[119])
-
-# 120
-out <- check_animal(d$animal_id[120])
-
-# 121
-out <- check_animal(d$animal_id[121])
-
-# 122
-out <- check_animal(d$animal_id[122])
-
-# 123
-out <- check_animal(d$animal_id[123])
-
-# 124
-out <- check_animal(d$animal_id[124])
-
-# 125
-out <- check_animal(d$animal_id[125])
-
-# 126
-out <- check_animal(d$animal_id[126])
-
-# 127
-out <- check_animal(d$animal_id[127])
-
-# 128
-out <- check_animal(d$animal_id[128])
-
-# 129
-out <- check_animal(d$animal_id[129])
-
-# 130
-out <- check_animal(d$animal_id[130])
-
-# 131
-out <- check_animal(d$animal_id[131])
-
-# 132
-out <- check_animal(d$animal_id[132])
+plot_adj(d$animal_id[100], max_speed = 0, map = TRUE, many = TRUE) # ok
 
 # 133
 out <- check_animal(d$animal_id[133])
-
-# 134
-out <- check_animal(d$animal_id[134])
+flag_outlier(d$animal_id[133], max_distance = 2e5, value = 1)
+out <- check_animal(d$animal_id[133])
 
 # 135
 out <- check_animal(d$animal_id[135])
+plot_adj(d$animal_id[135], max_distance = 3e4)
+flag_outlier(d$animal_id[135], max_distance = 1e4, value = 2)
+out <- check_animal(d$animal_id[135])
 
+# continue cleaning here ----
 # 136
 out <- check_animal(d$animal_id[136])
 
