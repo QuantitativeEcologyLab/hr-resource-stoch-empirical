@@ -13,6 +13,8 @@ source('functions/flag_outlier.R')
 source('functions/remove_outlier_flags.R')
 source('functions/plot_start.R')
 source('functions/plot_adj.R')
+options(plot_outlier_diagnostics = FALSE) # plotting diagnostics is much slower
+options(viewer = NULL) # ensures mapview::mapvioew() works
 
 # functions for this script ----
 import_movebank <- function(file_name) {
@@ -190,7 +192,7 @@ saved <- map2(d$tel, d$animal_id, plot_outlie, .progress = TRUE)
 setwd('../..')
 
 # clean the telemetries ----
-if(! exists('d')) d <- read_rds('data/telemetry-data/movebank-data-2026-08-01.rds')
+if(! exists('d')) d <- readRDS('data/telemetry-data/movebank-data-2026-08-01.rds')
 
 #' `cat(paste0('out <- check_animal(d$animal_id[', 1:nrow(d)'])'), sep = '\n)`
 # skipping telemetries that look clean
@@ -718,7 +720,6 @@ out <- check_animal(d$animal_id[616])
 flag_outlier(d$animal_id[616], max_speed = 5, value = 1)
 out <- check_animal(d$animal_id[616])
 
-# ----
 # 625
 out <- check_animal(d$animal_id[625])
 # distances with high speeds are very short: likely just GPS error
