@@ -95,9 +95,16 @@ if(FALSE) {
 
 nrow(pronghorn)
 
+movebank_data <- readRDS('data/telemetry-data/movebank-data-2026-08-17.rds')
+
 # compile full dataset ----
 d <-
   bind_rows(
+    movebank_data %>%
+      rename(animal = animal_id) %>%
+      mutate(movement_model = list(NULL),
+             akde = list(NULL)) %>%
+      select(animal, species, dataset_name, tel, movement_model, akde),
     # clean data from other projects
     # Mezzini et al. 2026; https://github.com/QuantitativeEcologyLab/bc-mammals-temperature
     readRDS('data/hr-estimates/mezzini-bc-tempterature-2026/movement-models-akdes-2024-06-06.rds') %>%
@@ -315,40 +322,81 @@ d <-
          }) %>%
            round())
 
-# add missing movement models and AKDEs ----
+# telemetries are not available for ctmm maned wolf
+filter(d, n_days < 0)
+
+# plot variograms ----
+d <-
+  d %>%
+  mutate(i = 1:n()) %>%
+  mutate(variogram = map(i, function(.i) {
+    .id <- substr(d$animal[.i], 1, 30)
+    .tel <- tel[[.i]]
+    if (is.null(.tel)) return(NULL)
+    
+    png(paste0("figures/variograms/", .i, "-", .id, ".png"),
+        width = 6, height = 6, units = "in", res = 300)
+    plot(variogram(.tel))
+    dev.off()
+    
+    ctmm.guess(.tel, interactive = FALSE)
+  }, .progress = TRUE))
+
+# add missing movement models ----
 # not using a single pipeline to have a more realistic ETA
 d <-
   bind_rows(
-    d %>% filter(! (map_lgl(movement_model, is.null) |
-                      map_lgl(akde, is.null))),
-    d %>% filter(map_lgl(movement_model, is.null) |
-                   map_lgl(akde, is.null)) %>%
-      mutate(movement_model = future_map2(tel, movement_model, \(.tel, .mm) {
+    d %>% filter(!map_lgl(movement_model, is.null)),
+    # fit missing movement models or UDs
+    d %>% filter(map_lgl(movement_model, is.null)) %>%
+      mutate(movement_model = future_map(1:n(), \(.i) {
+        .tel <- tel[[.i]]
+        .mm <- movement_model[[.i]]
         if (class(.mm) == 'ctmm') {
           return(.mm)
-        } else if(is.null(.tel)) {
-          return(NULL)
-        } else {
-          .vg <- ctmm.guess(.tel, interactive = FALSE)
-          .mm <- ctmm.select(data = .tel, CTMM = .vg)
-          return(.mm)
         }
-      }, .progress = TRUE, .options = furrr_options(seed = NULL)),
-      akde = future_map2(tel, movement_model, function(.tel, .mm) {
-        if(is.null(.tel) | is.null(.mm)) {
+        if(is.null(.tel)) {
           return(NULL)
-        } else {
-          filename <- paste0(.tel@info$identity, '-temp.png')
-          png(filename)
-          .akde <- akde(data = .tel, CTMM = .mm, debias = TRUE,
-                        weights = TRUE)
-          dev.off()
-          unlink(filename)
-          
-          return(.akde)
         }
-      }, .progress = TRUE))
-  ) %>%
+        .a <- as.character(animal[.i])
+        model_filename <- paste0("models/movement-models/", .a, ".rds")
+        if (file.exists(model_filename)) {
+          return(readRDS(model_filename))
+        }
+        .vg <- ctmm.guess(.tel, interactive = FALSE)
+        .mm <- ctmm.select(data = .tel, CTMM = .vg)
+        saveRDS(.mm, model_filename)
+        .mm
+      }, .progress = TRUE, .options = furrr_options(seed = NULL))))
+
+# add missing AKDEs ----
+# flag animals that are not range resident (can still use speed & diffusion)
+# assesed via variogram figures; if migrating at least one full migration
+d$range_resident <- ! d$i %in% c()
+
+d <- bind_rows(
+  d %>% filter(!(map_lgl(akde, is.null) & range_resident)),
+  d %>%
+    filter(map_lgl(akde, is.null) & range_resident) %>%
+    mutate(akde = future_map2(tel, movement_model, function(.tel, .mm) {
+      if(is.null(.tel) | is.null(.mm)) {
+        return(NULL)
+      }
+      akde_filename <- paste0("models/akdes/", .a, ".rds")
+      if(file.exists(akde_filename)) {
+        return(readRDS(akde_filename))
+      }
+      temp_filename <- paste0(.tel@info$identity, '-temp.png')
+      png(temp_filename)
+      .akde <- akde(data = .tel, CTMM = .mm, debias = TRUE,
+                    weights = TRUE)
+      dev.off()
+      unlink(temp_filename)
+      saveRDS(.akde, akde_filename)
+      .akde
+    }, .progress = TRUE)))
+
+d <- d %>%
   # estimate movement parameters
   mutate(hr_95_km2 = map_dbl(akde, function(.akde) {
     if (is.null(.akde)) {
