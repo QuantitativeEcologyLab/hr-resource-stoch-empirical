@@ -39,7 +39,7 @@ import_movebank <- function(file_name) {
       individual.local.identifier = as.character(individual.local.identifier),
       long = `location.long`, lat = `location.lat`,
       timestamp = as.POSIXct(timestamp),
-      outlier = FALSE, clean = FALSE
+      outlier = FALSE
     ) %>%
     arrange(animal_id, timestamp) %>%
     #' drop duplicated locations -- not worth modelling since:
