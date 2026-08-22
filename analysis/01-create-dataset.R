@@ -349,7 +349,7 @@ d <-
     d %>% filter(!map_lgl(movement_model, is.null)),
     # fit missing movement models or UDs
     d %>% filter(map_lgl(movement_model, is.null)) %>%
-      mutate(movement_model = future_map(1:n(), \(.i) {
+      mutate(movement_model = future_map(i, \(.i) {
         .tel <- tel[[.i]]
         .mm <- movement_model[[.i]]
         if (class(.mm) == 'ctmm') {
@@ -374,11 +374,17 @@ d <-
 # assesed via variogram figures; if migrating at least one full migration
 d$range_resident <- ! d$i %in% c()
 
+if (!dir.exists("models/akdes")) dir.create("models/akdes")
+
 d <- bind_rows(
   d %>% filter(!(map_lgl(akde, is.null) & range_resident)),
   d %>%
     filter(map_lgl(akde, is.null) & range_resident) %>%
-    mutate(akde = future_map2(tel, movement_model, function(.tel, .mm) {
+    mutate(akde = future_map(i, \(.i) {
+      .tel <- tel[[.i]]
+      .mm <- movement_model[[.i]]
+      .a <- animal[[.i]]
+      
       if(is.null(.tel) | is.null(.mm)) {
         return(NULL)
       }
@@ -396,8 +402,8 @@ d <- bind_rows(
       .akde
     }, .progress = TRUE)))
 
+# estimate movement parameters ----
 d <- d %>%
-  # estimate movement parameters
   mutate(hr_95_km2 = map_dbl(akde, function(.akde) {
     if (is.null(.akde)) {
       return(NA_real_)
