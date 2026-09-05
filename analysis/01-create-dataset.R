@@ -325,10 +325,11 @@ d <-
 # telemetries are not available for ctmm maned wolf
 filter(d, n_days < 0)
 
+d$i <- 1:nrow(d)
+
 # plot variograms ----
 d <-
   d %>%
-  mutate(i = 1:n()) %>%
   mutate(variogram = map(i, function(.i) {
     .id <- substr(d$animal[.i], 1, 30)
     .tel <- tel[[.i]]
@@ -349,25 +350,30 @@ d <-
     d %>% filter(!map_lgl(movement_model, is.null)),
     # fit missing movement models or UDs
     d %>% filter(map_lgl(movement_model, is.null)) %>%
-      mutate(movement_model = future_map(i, \(.i) {
-        .tel <- tel[[.i]]
+      mutate(movement_model = future_map(1:n(), \(.i) {
         .mm <- movement_model[[.i]]
         if (class(.mm) == 'ctmm') {
           return(.mm)
-        }
-        if(is.null(.tel)) {
-          return(NULL)
         }
         .a <- as.character(animal[.i])
         model_filename <- paste0("models/movement-models/", .a, ".rds")
         if (file.exists(model_filename)) {
           return(readRDS(model_filename))
         }
-        .vg <- ctmm.guess(.tel, interactive = FALSE)
+        .tel <- tel[[.i]]
+        if(is.null(.tel)) {
+          return(NULL)
+        }
+        .vg <- variogram[[.i]]
         .mm <- ctmm.select(data = .tel, CTMM = .vg)
         saveRDS(.mm, model_filename)
         .mm
       }, .progress = TRUE, .options = furrr_options(seed = NULL))))
+
+# ensure all movement models used the correct data
+with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
+     all(map_chr(tel, \(.tel) .tel@info$identity) ==
+           map_chr(movement_model, \(.mm) .mm@info$identity)))
 
 # add missing AKDEs ----
 # flag animals that are not range resident (can still use speed & diffusion)
@@ -396,31 +402,53 @@ d$range_resident <- ! d$i %in% c(
 
 if (!dir.exists("models/akdes")) dir.create("models/akdes")
 
-d <- bind_rows(
-  d %>% filter(!(map_lgl(akde, is.null) & range_resident)),
-  d %>%
-    filter(map_lgl(akde, is.null) & range_resident) %>%
-    mutate(akde = future_map(i, \(.i) {
-      .tel <- tel[[.i]]
-      .mm <- movement_model[[.i]]
-      .a <- animal[[.i]]
-      
-      if(is.null(.tel) | is.null(.mm)) {
+d <- d %>%
+  mutate(
+    # import existing AKDEs
+    akde = future_map(animal, \(.a) {
+      akde_filename <- paste0("models/akdes/", .a, ".rds")
+      if (file.exists(akde_filename)) {
+        return(readRDS(akde_filename))
+      } else {
         return(NULL)
       }
-      akde_filename <- paste0("models/akdes/", .a, ".rds")
-      if(file.exists(akde_filename)) {
-        return(readRDS(akde_filename))
-      }
-      temp_filename <- paste0(.tel@info$identity, '-temp.png')
-      png(temp_filename)
-      .akde <- akde(data = .tel, CTMM = .mm, debias = TRUE,
-                    weights = TRUE)
-      dev.off()
-      unlink(temp_filename)
-      saveRDS(.akde, akde_filename)
-      .akde
-    }, .progress = TRUE)))
+    }))
+
+d <- d %>%
+  bind_rows(
+    # separate individuals that already have or can't have AKDEs 
+    d %>% filter(!map_lgl(akde, is.null) | !range_resident | is.null(tel) |
+                   is.null(movement_model)),
+    # from akdes that can still be fit
+    #' *NOTE:* can't use i column because filtering breaks the indexing
+    d %>%
+      filter(map_lgl(akde, is.null), range_resident, !is.null(tel),
+             !is.null(movement_model)) %>%
+      mutate(
+        # fit remaining AKDEs
+        akde = future_map(1:n(), \(.i) {
+          .tel <- tel[[.i]]
+          .mm <- movement_model[[.i]]
+          .a <- animal[[.i]]
+          .akde <- akde[[.i]]
+          
+          if (!is.null(.akde)) {
+            return(.akde)
+          }
+          
+          if (is.null(.tel) | is.null(.mm)) {
+            return(NULL)
+          }
+          akde_filename <- paste0("models/akdes/", .a, ".rds")
+          temp_filename <- paste0(.tel@info$identity, '-temp.png')
+          png(temp_filename)
+          .akde <- akde(data = .tel, CTMM = .mm, debias = TRUE,
+                        weights = TRUE)
+          dev.off()
+          unlink(temp_filename)
+          saveRDS(.akde, akde_filename)
+          .akde
+        }, .progress = TRUE)))
 
 # estimate movement parameters ----
 d <- d %>%
