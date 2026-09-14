@@ -43,7 +43,8 @@ elton_traits <-
             filter(., scientific == 'Cervus elaphus') %>%
               mutate(scientific = 'Cervus canadensis'))
 
-d <- readRDS('data/akde-tibble-2026-07-22.rds') %>%
+# TODO: update to the newest dataset
+d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
   mutate(ud_raster = map(akde, function(.akde) {
