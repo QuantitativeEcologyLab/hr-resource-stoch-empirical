@@ -375,6 +375,8 @@ with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
      all(map_chr(tel, \(.tel) .tel@info$identity) ==
            map_chr(movement_model, \(.mm) .mm@info$identity)))
 
+table(map_chr(d$movement_model, class))
+
 # add missing AKDEs ----
 # flag animals that are not range resident (can still use speed & diffusion)
 # assessed via variogram figures; if migrating at least one full migration
@@ -401,6 +403,8 @@ d$range_resident <- ! d$i %in% c(
   1596, 1597)
 
 if (!dir.exists("models/akdes")) dir.create("models/akdes")
+
+mean(map_lgl(d$akde, is.null))
 
 d <- d %>%
   mutate(
