@@ -405,14 +405,20 @@ if (!dir.exists("models/akdes")) dir.create("models/akdes")
 d <- d %>%
   mutate(
     # import existing AKDEs
-    akde = future_map(animal, \(.a) {
+    akde = future_map2(animal, akde, \(.a, .ud) {
+      if (!is.null(.ud)) {
+        return(.ud)
+      }
+      
       akde_filename <- paste0("models/akdes/", .a, ".rds")
       if (file.exists(akde_filename)) {
         return(readRDS(akde_filename))
       } else {
         return(NULL)
       }
-    }))
+    }, .progress = TRUE))
+
+mean(map_lgl(d$akde, is.null))
 
 d <- d %>%
   bind_rows(
