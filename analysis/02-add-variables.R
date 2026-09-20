@@ -45,6 +45,8 @@ elton_traits <-
 
 # TODO: update to the newest dataset
 d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
+  # TODO: drop this filter after updating the dataset (but rm maned wolves!)
+  filter(!grepl("Chrysocyon brachyurus", animal)) %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
   mutate(ud_raster = map(akde, function(.akde) {

@@ -18,7 +18,7 @@ source('functions/remove_outlier_flags.R') # to start over with an animal
 
 data('buffalo')
 data('coati')
-data('wolf')
+# can't use ctmm::wolf because it's projected (not GPS) data, so no CRS
 
 # set up plan to run processes in parallel
 plan(multisession, workers = availableCores(logical = FALSE) - 2)
@@ -271,13 +271,6 @@ d <-
            movement_model = list(NULL),
            animal = names(coati),
            tel = coati[animal],
-           akde = list(NULL)),
-    # maned wolf data from the {ctmm} package
-    tibble(species = 'Chrysocyon brachyurus',
-           dataset_name = 'ctmm maned wolf',
-           movement_model = list(NULL),
-           animal = names(wolf),
-           tel = wolf[animal],
            akde = list(NULL)),
     # banded armadillo from Mike Noonan
     tibble(tel = import_rda('data/telemetry-data/noonan-banded-armadillo/Tolypeutes_matacus.Rda',
