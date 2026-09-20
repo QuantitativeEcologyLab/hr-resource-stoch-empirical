@@ -121,11 +121,11 @@ m_hr <- gam(list(hr_95 ~
             subset = dataset_name != 'DeNicola et al. (2025) (Staten Island)',
             method = 'REML')
 draw(m_hr, dist = 1)
-ggsave('figures/hr-model-terms.png', width = 8, height = 8, units = 'in',
+ggsave('figures/hr-hgam-terms.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white', scale = 2)
 
 appraise(m_hr, point_alpha = 0.2)
-ggsave('figures/hr-model-diagnostics.png', width = 8, height = 8, units = 'in',
+ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white')
 
 # generalized likelihood test for model comparison
@@ -199,10 +199,10 @@ summary(m_diff)
 AIC(m_diff_0, m_diff) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
 
 # save models ----
-saveRDS(m_hr, file = 'models/hr-model.rds')
-saveRDS(m_speed, file = 'models/diffusion-model.rds')
-saveRDS(m_diff, file = 'models/speed-model.rds')
+saveRDS(m_hr, file = 'models/hr-hgam.rds')
+saveRDS(m_speed, file = 'models/diffusion-hgam.rds')
+saveRDS(m_diff, file = 'models/speed-hgam.rds')
 
-saveRDS(m_hr_0, file = 'models/hr-null-model.rds')
-saveRDS(m_speed_0, file = 'models/diffusion-null-model.rds')
-saveRDS(m_diff_0, file = 'models/speed-null-model.rds')
+saveRDS(m_hr_0, file = 'models/hr-null-hgam.rds')
+saveRDS(m_speed_0, file = 'models/diffusion-null-hgam.rds')
+saveRDS(m_diff_0, file = 'models/speed-null-hgam.rds')
