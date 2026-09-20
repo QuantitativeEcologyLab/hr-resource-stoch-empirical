@@ -50,13 +50,10 @@ d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
   mutate(ud_raster = map(akde, function(.akde) {
-    if (is.null(.akde)) {
-      return(NULL)
-    } else {
-      .r <- rast(raster(.akde, DF = 'PMF'))
-      values(.r) <- values(.r) / sum(values(.r), na.rm = TRUE)
-      return(.r)
-    }
+    if (is.null(.akde)) return(NULL)
+    .r <- rast(raster(.akde, DF = 'PMF'))
+    values(.r) <- values(.r) / sum(values(.r), na.rm = TRUE)
+    .r
   }),
   raster_covariates = map(ud_raster, function(.r) {
     if (is.null(.r)) {
@@ -78,8 +75,7 @@ d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
              var_ndvi = sum(values(.r * project(r_var_ndvi, .r)),
                             na.rm = TRUE),
              hfi = sum(values(.r * project(r_hfi_cropped, .r)),
-                       na.rm = TRUE) / 1e3) %>% # [0, 50e3] -> [0, 50]
-        return()         
+                       na.rm = TRUE) / 1e3) # [0, 50e3] -> [0, 50]
     }
   }, .progress = 'Calculating raster covariates...')) %>%
   unnest(raster_covariates) %>%
