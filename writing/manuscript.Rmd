@@ -68,13 +68,21 @@ knitr::opts_chunk$set(echo = FALSE, out.width = '\\textwidth',
 
 \newpage
 
+Alternative titles:
+
+* Mean conditions are insufficient for predicting animal movement
+* Average is not enough: environmental stochasticity drives home range expansion of mammals
+* Moving beyond the average: environmental stochasticity as a driver of mammalian movement
+
+\newpage
+
 <!--
 available text sizes:
 Huge > huge > LARGE > Large > large > normalsize > small > footnotesize > scriptsize > tiny
 -->
 
 ```{r abstract, echo=FALSE}
-abstract <- ""
+abstract <- "The range size of an animal is often used of as a proxy for the animal's overall needs while also accounting for several latent variables, such as access to resources, vagility, competition, predation, and reproductive behaviour. However, most work historically focused on typical or average conditions and assumed that the variation around typical conditions was negligible or at least consistent over time. Recently, environmental unpredictability has gained more recognition as a driver of movement behaviour. Here, we use a large GPS dataset of 1599 terrestrial mammals to present empirical evidence that environmental stochasticity causes them to expand their range, spend more time exploring, and move faster and more ballistically throughout the landscape. Our results suggest that growing environmental stochasticity will..."
 n_words_abstract <- stringi::stri_count_words(abstract)
 if (FALSE){
   n_words_abstract
