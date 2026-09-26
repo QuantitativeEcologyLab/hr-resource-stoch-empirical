@@ -8,27 +8,8 @@ library('khroma')
 library('gratia')
 source('analysis/figures/default-ggplot-theme.R')
 
-d <- readRDS('data/gam-dataset-2026-09-22.rds') %>%
+d <- readRDS('data/gam-dataset-2026-09-26.rds') %>%
   filter(mean_ndvi != 0) # drop individuals outside the current rasters
-
-if (! any(colnames(d) == 'speed')) {
-  d$speed <- rgamma(nrow(d), shape = 10, rate = 0.2)
-  warning('Missing speed! Filled value with random Gamma values.')
-}
-
-if (! any(colnames(d) == 'diff')) {
-  d$diffusion <- rgamma(nrow(d), shape = 10, rate = 0.2)
-  warning('Missing diffusion! Filled value with random Gamma values.')
-}
-
-d %>%
-  summarize(mean_ndvi = mean(mean_ndvi),
-            var_ndvi = mean(var_ndvi),
-            .by = species)
-
-d %>%
-  slice(1, .by = species) %>%
-  select(species, mass_kg)
 
 # HR size and mass
 ggplot(d, aes(log(mass_kg), log(hr_95_km2))) +
@@ -67,6 +48,7 @@ d %>%
   theme(strip.placement = 'outside', strip.background = element_blank(),
         legend.position = 'none')
 
+# mean ndvi and DENVar are correlated
 d %>%
   select(mass_kg, mean_ndvi, var_ndvi, hr_95_km2) %>%
   pairs()
@@ -81,10 +63,10 @@ summary(m_hr_mass_only)
 exp(coef(m_hr_mass_only)[1:2])
 
 # add NDVI variables to account for deviations
-m_hr_0 <- gam(list(hr_95_km2 ~
+m_hr_ndvi <- gam(list(hr_95_km2 ~
                      # global effects
                      s(mean_ndvi, k = 5) +
-                     # s(mass_kg, k = 5) +
+                     log(mass_kg) +
                      # species-level effects
                      s(species, bs = 're') +
                      s(mean_ndvi, species, bs = 'fs', k = 5),
@@ -92,9 +74,7 @@ m_hr_0 <- gam(list(hr_95_km2 ~
                      s(mean_ndvi, k = 5)),
               family = gammals(),
               data = d,
-              subset = keep_for_gam &
-                # in too urban of an area
-                dataset_name != 'DeNicola et al. (2025) (Staten Island)',
+              subset = keep_for_gam,
               method = 'REML')
 
 m_hr <- gam(list(hr_95_km2 ~
@@ -102,7 +82,7 @@ m_hr <- gam(list(hr_95_km2 ~
                    s(mean_ndvi, k = 5) +
                    s(var_ndvi, k = 5) +
                    ti(mean_ndvi, var_ndvi, k = 3) +
-                   # s(mass_kg, k = 5) +
+                   log(mass_kg) +
                    # species-level effects
                    s(species, bs = 're') +
                    s(mean_ndvi, species, bs = 'fs', k = 5) +
@@ -125,24 +105,32 @@ ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8, units = 'in',
 
 # generalized likelihood test for model comparison
 anova(m_hr_mass_only, m_hr, test = 'Chisq')
-anova(m_hr_0, m_hr, test = 'Chisq')
+anova(m_hr_ndvi, m_hr, test = 'Chisq')
 
 # change in deviance explained
-((summary(m_hr$null.deviance)) -
-    (m_hr_0$deviance / m_hr_0$null.deviance)) * 100
+(1 - m_hr$deviance / m_hr$null.deviance) * 100 -
+  (1 - m_hr_ndvi$deviance / m_hr_ndvi$null.deviance) * 100
 
-if (any(! grepl('mass_kg', smooths(m_hr)))) {
-  stop("The model does not have a term of mass and is thus not comparable to m_hr_0!")
+# percentage of previously unexplained deviance now explained
+((1 - m_hr$deviance / m_hr$null.deviance) - (1 - m_hr_ndvi$deviance / m_hr_ndvi$null.deviance)) /
+  (m_hr_ndvi$deviance / m_hr_ndvi$null.deviance) * 100
+
+# relative to mass-only model
+(1 - m_hr$deviance / m_hr$null.deviance) * 100 -
+  (1 - m_hr_mass_only$deviance / m_hr_mass_only$null.deviance) * 100
+
+# percentage of previously unexplained deviance now explained
+((1 - m_hr$deviance / m_hr$null.deviance) - (1 - m_hr_mass_only$deviance / m_hr_mass_only$null.deviance)) /
+  (m_hr_mass_only$deviance / m_hr_mass_only$null.deviance) * 100
+
+if (any(!any(parametric_terms(m_hr) == 'log(mass_kg)'))) {
+  stop("The model does not have a term of mass and is thus not comparable to m_hr_ndvi!")
 } else {
-  AIC(m_hr_0, m_hr) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
+  AIC(m_hr_ndvi, m_hr, m_hr_mass_only) %>%
+    mutate(AIC = AIC - min(AIC)) %>%
+    arrange(AIC)
 }
 
-# is there evidence of anthropogenic pressure?
-d %>%
-  filter(dataset_name != 'DeNicola et al. (2025) (Staten Island)') %>%
-  ggplot(aes(hfi, resid(m_hr))) +
-  geom_point(alpha = 0.5) +
-  geom_smooth()
 
 # perform the same analysis but for speed ----
 m_speed_0 <- gam(speed ~ log(mass_kg) + s(species, bs = 're'),
@@ -195,10 +183,14 @@ summary(m_diff)
 AIC(m_diff_0, m_diff) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
 
 # save models ----
-saveRDS(m_hr, file = 'models/hr-hgam.rds')
-saveRDS(m_speed, file = 'models/diffusion-hgam.rds')
-saveRDS(m_diff, file = 'models/speed-hgam.rds')
+saveRDS(m_hr, file = 'models/hr-null-hgam.rds')
+saveRDS(m_speed, file = 'models/diffusion-null-hgam.rds')
+saveRDS(m_diff, file = 'models/speed-null-hgam.rds')
 
-saveRDS(m_hr_0, file = 'models/hr-null-hgam.rds')
-saveRDS(m_speed_0, file = 'models/diffusion-null-hgam.rds')
-saveRDS(m_diff_0, file = 'models/speed-null-hgam.rds')
+saveRDS(m_hr_ndvi, file = 'models/hr-ndvi-only-hgam.rds')
+saveRDS(m_speed_ndvi, file = 'models/diffusion-ndvi-only-hgam.rds')
+saveRDS(m_diff_ndvi, file = 'models/speed-ndvi-only-hgam.rds')
+
+saveRDS(m_hr, file = 'models/hr-full-hgam.rds')
+saveRDS(m_speed, file = 'models/diffusion-full-hgam.rds')
+saveRDS(m_diff, file = 'models/speed-full-hgam.rds')

@@ -73,7 +73,7 @@ if (sum(is.na(d$mass_kg)) > 0) {
 
 if (sum(is.na(d)) > 0) {
   cli::cli_alert_warning(
-    paste('There are NA values in columns',
+    paste0('There are NA values in columns ',
           paste0(colnames(d)[colSums(is.na(d)) > 0], collapse = ', '), '. ',
           'Save the dataset manually to confirm.'))
 }
