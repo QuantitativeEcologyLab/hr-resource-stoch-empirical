@@ -368,8 +368,6 @@ with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
      all(map_chr(tel, \(.tel) .tel@info$identity) ==
            map_chr(movement_model, \(.mm) .mm@info$identity)))
 
-table(map_chr(d$movement_model, class))
-
 # add missing AKDEs ----
 # flag animals that are not range resident (can still use speed & diffusion)
 # assessed via variogram figures; if migrating at least one full migration
@@ -397,11 +395,9 @@ d$range_resident <- ! d$i %in% c(
 
 if (!dir.exists("models/akdes")) dir.create("models/akdes")
 
-mean(map_lgl(d$akde, is.null))
-
+# import existing AKDEs
 d <- d %>%
   mutate(
-    # import existing AKDEs
     akde = future_map2(animal, akde, \(.a, .ud) {
       if (!is.null(.ud)) {
         return(.ud)
@@ -415,18 +411,24 @@ d <- d %>%
       }
     }, .progress = TRUE))
 
-mean(map_lgl(d$akde, is.null))
+mean(map_lgl(d$akde, is.null) & d$range_resident)
+
+# using 62 or 42 cores was maxing out the RAM and crashing the machine
+plan(multisession,
+     workers = max(min(availableCores(logical = FALSE) - 12, 30), 1))
 
 d <- d %>%
   bind_rows(
-    # separate individuals that already have or can't have AKDEs 
-    d %>% filter(!map_lgl(akde, is.null) | !range_resident | is.null(tel) |
-                   is.null(movement_model)),
-    # from akdes that can still be fit
+    # separate individuals that already have or can't have AKDEs...
+    d %>% filter(!map_lgl(akde, is.null) |
+                   !range_resident |
+                   map_lgl(tel, is.null) |
+                   map_lgl(movement_model, is.null)),
+    # ...from akdes that can still be fit
     #' *NOTE:* can't use i column because filtering breaks the indexing
     d %>%
-      filter(map_lgl(akde, is.null), range_resident, !is.null(tel),
-             !is.null(movement_model)) %>%
+      filter(map_lgl(akde, is.null), range_resident, !map_lgl(tel, is.null),
+             !map_lgl(movement_model, is.null)) %>%
       mutate(
         # fit remaining AKDEs
         akde = future_map(1:n(), \(.i) {
@@ -445,8 +447,8 @@ d <- d %>%
           akde_filename <- paste0("models/akdes/", .a, ".rds")
           temp_filename <- paste0(.tel@info$identity, '-temp.png')
           png(temp_filename)
-          .akde <- akde(data = .tel, CTMM = .mm, debias = TRUE,
-                        weights = TRUE)
+          .akde <- ctmm::akde(data = .tel, CTMM = .mm, debias = TRUE,
+                              weights = TRUE)
           dev.off()
           unlink(temp_filename)
           saveRDS(.akde, akde_filename)
@@ -478,23 +480,21 @@ d <- d %>%
   speed_km_day = map_dbl(movement_model, function(.mm) {
     if (is.null(.mm)) {
       return(NA_real_)
-    } else {
-      return('km/day' %#% speed(.mm, units = FALSE)$CI[, 'est'])
     }
+    'km/day' %#% suppressWarnings(speed(.mm, units = FALSE)$CI[, 'est']))
   }, .progress = 'Estimating speeds...'),
-  diffusion_km2_day =  'km^2/day' %#%
-    map_dbl(movement_model, function(.mm) {
-      if (is.null(.mm)) {
-        return(NA_real_)
-      } else {
-        if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
-          return(summary(.mm, units = FALSE)$
-                   CI['diffusion (square meters/second)', 'est'])
-        } else {
-          return(NA_real_)
-        }
-      }
-    }))
+diffusion_km2_day =  'km^2/day' %#%
+  map_dbl(movement_model, function(.mm) {
+    if (is.null(.mm)) {
+      return(NA_real_)
+    }
+    if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
+      return(summary(.mm, units = FALSE)$
+               CI['diffusion (square meters/second)', 'est'])
+    } else {
+      return(NA_real_)
+    }
+  }))
 
 # warnings about fractal movement are ok: no speed was estimated
 unique(dplyr::last_dplyr_warnings())
@@ -520,17 +520,6 @@ d %>%
             thousand_locations = sum(n_locations) / 1e3) %>%
   janitor::adorn_totals(where = 'row', na.rm = TRUE, fill = 'non-numeric')
 
-#' TODO:
-#' we might need to drop individuals with too little data. for example,
-#' tracking a nomadic animal for 10 days may give an unrealistically
-#' small home range despite the low resources because the data doesn't
-#' show the movement between patches
-ggplot(d, aes(n_days)) +
-  geom_histogram(bins = 50, fill = 'grey', color = 'black') +
-  geom_vline(xintercept = 30, lty = 'dashed') +
-  scale_x_log10('Number of days tracked', breaks = c(10, 30, 100, 1000)) +
-  ylab('Count')
-
 # currently dropping individuals with HR ESS < 4
 ggplot(d, aes(akde_ess_area)) +
   geom_histogram(bins = 50, fill = 'grey', color = 'black') +
@@ -539,7 +528,7 @@ ggplot(d, aes(akde_ess_area)) +
                 breaks = c(1, 4, 10, 100, 1000)) +
   ylab('Count')
 
-# TODO: drop animals with excessively large HRs (might be fixed now)
+# drop animals with excessively large HRs (might be fixed now)
 layout(1:2)
 hist(d$hr_95_km2, breaks = 100)
 hist(filter(d, keep_for_gam)$hr_95_km2, breaks = 100, xlim = range(d$hr_95_km2))
