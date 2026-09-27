@@ -1,17 +1,17 @@
 ---
-title: "\\Large Environmental stochasticity drives mammals to expand their ranges"
+title: "\\Large Environmental stochasticity drives mammals to increase their ranges and movement rates"
 author:
   - name: Stefano Mezzini
     email: stefano.mezzini@ubc.ca
     institute: [braes, biol, pois]
   - name: Michael J. Noonan
     email: michael.noonan@ubc.ca
-    institute: [braes, biol, cmps]
+    institute: [braes, biol, mps]
 institute:
   - braes: Okanagan Institute for Biodiversity, Resilience, and Ecosystem Services, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
   - biol: Department of Biology, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
   - pois: Poisson Consulting Ltd., Nelson, British Columbia, Canada.
-  - cmps: Department of Computer Science, Math, Physics, and Statistics, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
+  - mps: Department of Math, Physics, and Statistics, The University of British Columbia Okanagan, Kelowna, British Columbia, Canada.
 bibliography: 'hr-resource-stoch-empirical.bib'
 csl: 'nature.csl'
 fontsize: 12pt
@@ -70,6 +70,7 @@ knitr::opts_chunk$set(echo = FALSE, out.width = '\\textwidth',
 
 Alternative titles:
 
+* Environmental stochasticity drives mammals to expand their ranges
 * Mean conditions are insufficient for predicting animal movement
 * Average is not enough: environmental stochasticity drives home range expansion of mammals
 * Moving beyond the average: environmental stochasticity as a driver of mammalian movement
@@ -82,7 +83,7 @@ Huge > huge > LARGE > Large > large > normalsize > small > footnotesize > script
 -->
 
 ```{r abstract, echo=FALSE}
-abstract <- "The range size of an animal is often used of as a proxy for the animal's overall needs while also accounting for several latent variables, such as access to resources, vagility, competition, predation, and reproductive behaviour. However, most work historically focused on typical or average conditions and assumed that the variation around typical conditions was negligible or at least consistent over time. Recently, environmental unpredictability has gained more recognition as a driver of movement behaviour. Here, we use a large GPS dataset of 1599 terrestrial mammals to present empirical evidence that environmental stochasticity causes them to expand their range, spend more time exploring, and move faster and more ballistically throughout the landscape. Our results suggest that growing environmental stochasticity will..."
+abstract <- "The range size of an animal is often used of as a proxy for the animal's overall needs while also accounting for several latent variables, such as access to resources, vagility, competition, predation, and reproductive behaviour. ***log(hr) ~ log(mass) scales w 3/4 scale, but there's strong variability around the noise (Brown paper). However, most work historically focused on typical or average conditions and assumed that the variation around typical conditions was negligible or at least consistent over time. Recently, environmental unpredictability has gained more recognition as a driver of movement behaviour. Here, we use a large GPS dataset of 1599 terrestrial mammals to present empirical evidence that environmental stochasticity causes them to expand their range, spend more time exploring, and move faster and more ballistically throughout the landscape. Our results suggest that growing environmental stochasticity will..."
 n_words_abstract <- stringi::stri_count_words(abstract)
 if (FALSE){
   n_words_abstract
@@ -131,10 +132,14 @@ if (n_words_abstract > 300) warning(paste("Absract has", n_words_abstract, "> 3,
 # Introduction
 
 like H = C / R paper [@harestad_ref_xxxx], but:
-- R is now a random variable with mean and variance
+- R is now a random variable with mean and variation around the mean
+- Increased interest in environmental stochasticity has promoted thinking of env stoch (unpredictability) as a driver of animal movement (https://www.sciencedirect.com/science/article/pii/S0169534719302885)
+- variance in R is also important
 - relationship can now be nonlinear
 
 @mezzini_how_2025
+
+https://pubmed.ncbi.nlm.nih.gov/23020517/
 
 * We should use the EDF for the hr size as a measure of confidence in the HR size whether was exact weights (and adding a random effect for each individual) or as normalized weights by dividing by the mean weight. 
 Both options imply that we are measuring at the spatiotemporal scale of a range crossing, which varies among animals
@@ -160,6 +165,18 @@ papers to use for structure:
 - the search behavior of terrestrial mammals (https://www.biorxiv.org/content/10.1101/2022.12.31.521874v1)
 
 # Materials and Methods
+
+for buffalo data, cite:
+
+- W. M. Getz, S. Fortmann-Roe, P. C. Cross, A. J. Lyons, S. J. Ryan, C. C. Wilmers. LoCoH: Nonparameteric kernel methods for constructing home ranges and utilization distributions. PLoS ONE 2:2, e207 (2007).
+- P. C. Cross, J. A. Bowers, C. T. Hay, J. Wolhuter, P. Buss, M. Hofmeyr, J. T. du Toit, W. M. Getz. Data from: Nonparameteric kernel methods for constructing home ranges and utilization distributions. Movebank Data Repository. DOI:10.5441/001/1.j900f88t (2016).
+
+for coati data, cite:
+
+- R. A. Powell, S. Ellwood, R. Kays. Stink or swim: techniques to meet the challenges for the study and conservation of small critters that hide, swim or climb and may otherwise make themselves unpleasant. In L. Harrington and D. W. Macdonald; Biology and Conservation of Mustelids and Procyonids (in preparation).
+- R. Kays, B. T. Hirsch Data from: Stink or swim: techniques to meet the challenges for the study and conservation of small critters that hide, swim or climb and may otherwise make themselves unpleasant. Movebank Data Repository. DOI:10.5441/001/1.41076dq1 (2015).
+
+for maned wolf, contact: Rogerio Cunha de Paula (rogercunha\@gmail.com)
 
 
 \clearpage

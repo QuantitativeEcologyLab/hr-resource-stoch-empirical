@@ -131,6 +131,7 @@ if (any(!any(parametric_terms(m_hr) == 'log(mass_kg)'))) {
     arrange(AIC)
 }
 
+#' *HERE*
 
 # perform the same analysis but for speed ----
 m_speed_0 <- gam(speed ~ log(mass_kg) + s(species, bs = 're'),
