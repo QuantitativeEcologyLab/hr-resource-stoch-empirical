@@ -83,7 +83,7 @@ Huge > huge > LARGE > Large > large > normalsize > small > footnotesize > script
 -->
 
 ```{r abstract, echo=FALSE}
-abstract <- "The range size of an animal is often used of as a proxy for the animal's overall needs while also accounting for several latent variables, such as access to resources, vagility, competition, predation, and reproductive behaviour. ***log(hr) ~ log(mass) scales w 3/4 scale, but there's strong variability around the noise (Brown paper). However, most work historically focused on typical or average conditions and assumed that the variation around typical conditions was negligible or at least consistent over time. Recently, environmental unpredictability has gained more recognition as a driver of movement behaviour. Here, we use a large GPS dataset of 1599 terrestrial mammals to present empirical evidence that environmental stochasticity causes them to expand their range, spend more time exploring, and move faster and more ballistically throughout the landscape. Our results suggest that growing environmental stochasticity will..."
+abstract <- "The range size of an animal is often used of as a proxy for the animal's overall needs while also accounting for several latent variables, such as access to resources, vagility, competition, predation, and reproductive behaviour. Animals' average range sizes follow a strong power relationship with the animals' average mass and an exponent near 3/4, which suggests that average range sizes scale with animals' average metabolic needs. However, such a model only explains approximately 80% of the deviance in range size at the individual level. A great majority of the remaining 20% can be explained by accouning for inidividual-level variation in resource abundance and stochasticity (unpredictability). Using a large GPS dataset of 1599 terrestrial mammals, we present empirical evidence that the combination of mean and variance in NDVI explain causes them to expand their range, spend more time exploring, and move faster and more ballistically throughout the landscape. Our results suggest that growing environmental stochasticity will..."
 n_words_abstract <- stringi::stri_count_words(abstract)
 if (FALSE){
   n_words_abstract
@@ -97,7 +97,7 @@ if (FALSE){
 \noindent \textbf{Words in abstract}: `r n_words_abstract`
 
 ```{r}
-if (n_words_abstract > 300) warning(paste("Absract has", n_words_abstract, "> 3,000 words!"))
+if (n_words_abstract > 300) warning(paste("Abstract has", n_words_abstract, "> 300 words!"))
 ```
 
 \noindent \textbf{Words in main text}: `r suppressMessages(wordcountaddin::word_count()) - 25` <!-- does not include abstract or figure captions; "- 25" approximately removes the stuff on page 2 -->
@@ -131,19 +131,21 @@ if (n_words_abstract > 300) warning(paste("Absract has", n_words_abstract, "> 3,
 
 # Introduction
 
-like H = C / R paper [@harestad_ref_xxxx], but:
+like H = C / R paper [@harestad_home_1979], but:
 - R is now a random variable with mean and variation around the mean
 - Increased interest in environmental stochasticity has promoted thinking of env stoch (unpredictability) as a driver of animal movement (https://www.sciencedirect.com/science/article/pii/S0169534719302885)
 - variance in R is also important
 - relationship can now be nonlinear
+- because both factors are occurring at once and interacting, a multivariate approach is essential [@polazzo_measuring_2024]
 
 @mezzini_how_2025
 
+@brown_toward_2004
+
+mass-only model explains ~80% of deviance
+
 https://pubmed.ncbi.nlm.nih.gov/23020517/
 
-* We should use the EDF for the hr size as a measure of confidence in the HR size whether was exact weights (and adding a random effect for each individual) or as normalized weights by dividing by the mean weight. 
-Both options imply that we are measuring at the spatiotemporal scale of a range crossing, which varies among animals
-* Using the EDF as weights results in highly uncertain estimates for animals with large HRs or scarce data, so we need a good model structure with random effects, coviariates such as body mass, and post-stratification to avoid biasing towards animals with frequent range crossings.
 * Migrating animals will have larger range sizes and smaller EDF values, and they will also be more susceptible to interannual variation. 
 These two points work well together because they imply we should estimate changes in the mean as smooth changes that occur across years rather than among years, which means i should keep the k for years relatively low (e.g., (2025 - 1981) / 4 = 11 ≈ 10)
 
@@ -163,6 +165,13 @@ papers to use for structure:
 - jetz scaling of animal space use (https://pubmed.ncbi.nlm.nih.gov/15472074/)
   - tucker moving in the anthropocene (https://www.science.org/doi/10.1126/science.aam9712)
 - the search behavior of terrestrial mammals (https://www.biorxiv.org/content/10.1101/2022.12.31.521874v1)
+
+artificial feeding can alter community structures in ways that are not reflected by NDVI: https://doi.org/10.1002/ecs2.70368
+
+
+useful refs:
+- uses ndvi variance: https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecm.1348
+- 
 
 # Materials and Methods
 
