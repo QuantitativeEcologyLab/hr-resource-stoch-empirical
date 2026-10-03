@@ -85,3 +85,5 @@ data/hfi-raster/other-hfi-sources.txt
 /models/movement-models
 /figures/variograms
 /models/akdes
+/models
+!/models/REAMDE.md
