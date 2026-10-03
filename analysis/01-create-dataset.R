@@ -473,7 +473,7 @@ d <- d %>%
       return(summary(.akde)$DOF['area'])
     }
   }),
-  keep_for_gam = akde_ess_area >= 4,
+  keep_for_gam = akde_ess_area >= 4 & range_resident,
   #' add normalized weights based on `sqrt(ESS)`
   weight = if_else(keep_for_gam, sqrt(akde_ess_area), NA_real_),
   weight = weight / mean(weight, na.rm = TRUE),
