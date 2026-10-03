@@ -7,6 +7,7 @@ library('ggplot2')
 library('khroma')
 library('gratia')
 source('analysis/figures/default-ggplot-theme.R')
+source('functions/deviance.R')
 
 d <- readRDS('data/gam-dataset-2026-09-26.rds') %>%
   filter(mean_ndvi != 0) # drop individuals outside the current rasters
@@ -54,28 +55,29 @@ d %>%
   pairs()
 
 # to get exponent for historical context
-m_hr_mass_only <- gam(list(hr_95_km2 ~ log(mass_kg) + s(species, bs = 're'),
+m_hr_0 <- gam(list(hr_95_km2 ~ log(mass_kg) + s(species, bs = 're'),
                            ~ 1),
                       family = gammals(),
                       data = d,
-                      subset = keep_for_gam)
-summary(m_hr_mass_only)
-exp(coef(m_hr_mass_only)[1:2])
+                      subset = keep_for_gam & range_resident)
+summary(m_hr_0)
+exp(coef(m_hr_0)[1:2])
 
 # add NDVI variables to account for deviations
 m_hr_ndvi <- gam(list(hr_95_km2 ~
-                     # global effects
-                     s(mean_ndvi, k = 5) +
-                     log(mass_kg) +
-                     # species-level effects
-                     s(species, bs = 're') +
-                     s(mean_ndvi, species, bs = 'fs', k = 5),
-                   ~ s(species, bs = 're') +
-                     s(mean_ndvi, k = 5)),
-              family = gammals(),
-              data = d,
-              subset = keep_for_gam,
-              method = 'REML')
+                        # global effects
+                        s(mean_ndvi, k = 5) +
+                        log(mass_kg) +
+                        # species-level effects
+                        s(species, bs = 're') +
+                        s(mean_ndvi, species, bs = 'fs', k = 5),
+                      ~ s(species, bs = 're') +
+                        s(mean_ndvi, k = 5)),
+                 family = gammals(),
+                 data = d,
+                 subset = keep_for_gam & range_resident,
+                 method = 'REML')
+summary(m_hr_ndvi)
 
 m_hr <- gam(list(hr_95_km2 ~
                    # global effects
@@ -91,11 +93,11 @@ m_hr <- gam(list(hr_95_km2 ~
                    te(mean_ndvi, var_ndvi, k = 5)),
             family = gammals(),
             data = d,
-            subset = keep_for_gam &
-              # in too urban of an area
-              dataset_name != 'DeNicola et al. (2025) (Staten Island)',
+            subset = keep_for_gam & range_resident,
             method = 'REML')
-draw(m_hr, dist = 1)
+draw(m_hr, dist = 1) +
+  scale_x_continuous(transform = "log", breaks = 10^seq(-2, 3, by = 2),
+                     labels = as.character)
 ggsave('figures/hr-hgam-terms.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white', scale = 2)
 
@@ -103,90 +105,117 @@ appraise(m_hr, point_alpha = 0.2)
 ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white')
 
+summary(m_hr_ndvi)
+
 # generalized likelihood test for model comparison
-anova(m_hr_mass_only, m_hr, test = 'Chisq')
+anova(m_hr_0, m_hr, test = 'Chisq')
 anova(m_hr_ndvi, m_hr, test = 'Chisq')
 
-# change in deviance explained
-(1 - m_hr$deviance / m_hr$null.deviance) * 100 -
-  (1 - m_hr_ndvi$deviance / m_hr_ndvi$null.deviance) * 100
-
-# percentage of previously unexplained deviance now explained
-((1 - m_hr$deviance / m_hr$null.deviance) - (1 - m_hr_ndvi$deviance / m_hr_ndvi$null.deviance)) /
-  (m_hr_ndvi$deviance / m_hr_ndvi$null.deviance) * 100
+# change in deviance relative to model with mean NDVI
+perc_dev_change(m_hr, m_hr_ndvi)
+perc_dev_prev_unexpl(m_hr, m_hr_ndvi)
 
 # relative to mass-only model
-(1 - m_hr$deviance / m_hr$null.deviance) * 100 -
-  (1 - m_hr_mass_only$deviance / m_hr_mass_only$null.deviance) * 100
+perc_dev_change(m_hr, m_hr_0)
+perc_dev_prev_unexpl(m_hr, m_hr_0)
 
-# percentage of previously unexplained deviance now explained
-((1 - m_hr$deviance / m_hr$null.deviance) - (1 - m_hr_mass_only$deviance / m_hr_mass_only$null.deviance)) /
-  (m_hr_mass_only$deviance / m_hr_mass_only$null.deviance) * 100
-
-if (any(!any(parametric_terms(m_hr) == 'log(mass_kg)'))) {
-  stop("The model does not have a term of mass and is thus not comparable to m_hr_ndvi!")
-} else {
-  AIC(m_hr_ndvi, m_hr, m_hr_mass_only) %>%
-    mutate(AIC = AIC - min(AIC)) %>%
-    arrange(AIC)
-}
-
-#' *HERE*
+compare_aic(m_hr, m_hr_ndvi, m_hr_0)
 
 # perform the same analysis but for speed ----
-m_speed_0 <- gam(speed ~ log(mass_kg) + s(species, bs = 're'),
+m_speed_0 <- gam(speed_km_day ~ log(mass_kg) + s(species, bs = 're'),
                  family = Gamma(link = 'log'),
                  data = d,
-                 subset = keep_for_gam)
+                 subset = is.finite(speed_km_day))
+summary(m_speed_0)
 
-m_speed <- bam(speed ~
-                 # global effects
-                 s(mean_ndvi, k = 5) +
-                 s(var_ndvi, k = 5) +
-                 ti(mean_ndvi, var_ndvi, k = 5) +
-                 # s(mass_kg, k = 5) +
-                 # species-level effects
-                 s(species, bs = 're') +
-                 s(mean_ndvi, species, bs = 'fs', k = 5) +
-                 s(var_ndvi, species, bs = 'fs', k = 5),
-               family = Gamma(link = 'log'),
+m_speed_ndvi <- gam(list(speed_km_day ~
+                           # global effects
+                           s(mean_ndvi, k = 5) +
+                           log(mass_kg) +
+                           # species-level effects
+                           s(species, bs = 're') +
+                           s(mean_ndvi, species, bs = 'fs', k = 5),
+                         ~ s(species, bs = 're') +
+                           s(mean_ndvi, k = 5)),
+                    family = gammals(),
+                    data = d,
+                    subset = is.finite(speed_km_day),
+                    method = 'REML')
+summary(m_speed_ndvi)
+perc_dev_change(m_speed_ndvi, m_speed_0)
+perc_dev_prev_unexpl(m_speed_ndvi, m_speed_0)
+
+m_speed <- gam(list(speed_km_day ~
+                      # global effects
+                      s(mean_ndvi, k = 5) +
+                      s(var_ndvi, k = 5) +
+                      ti(mean_ndvi, var_ndvi, k = 3) +
+                      log(mass_kg) +
+                      # species-level effects
+                      s(species, bs = 're') +
+                      s(mean_ndvi, species, bs = 'fs', k = 5) +
+                      s(var_ndvi, species, bs = 'fs', k = 5),
+                    ~ s(species, bs = 're') +
+                      te(mean_ndvi, var_ndvi, k = 5)),
+               family = gammals(),
                data = d,
-               method = 'fREML',
-               discrete = TRUE)
-draw(m_speed, residuals = TRUE)
-appraise(m_speed, point_alpha = 0.2)
+               subset = is.finite(speed_km_day),
+               method = 'REML')
 summary(m_speed)
-AIC(m_speed_0, m_speed) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
+perc_dev_change(m_speed, m_speed_ndvi)
+perc_dev_prev_unexpl(m_speed, m_speed_ndvi)
+
+perc_dev_change(m_speed, m_speed_0)
+perc_dev_prev_unexpl(m_speed, m_speed_0)
+
+draw(m_speed, dist = 1)
+appraise(m_speed, point_alpha = 0.2)
+compare_aic(m_speed, m_speed_ndvi, m_speed_0)
 
 # perform the same analysis but for diffusion
-m_diff_0 <- gam(diffusion ~ log(mass_kg) + s(species, bs = 're'),
+m_diff_0 <- gam(diffusion_km2_day ~ log(mass_kg) + s(species, bs = 're'),
                 family = Gamma(link = 'log'),
-                data = d,
-                subset = keep_for_gam)
+                data = d)
 
-m_diff <- bam(diffusion ~
-                # global effects
-                s(mean_ndvi, k = 5) +
-                s(var_ndvi, k = 5) +
-                ti(mean_ndvi, var_ndvi, k = 5) +
-                # s(mass_kg, k = 5) +
-                # species-level effects
-                s(species, bs = 're') +
-                s(mean_ndvi, species, bs = 'fs', k = 5) +
-                s(var_ndvi, species, bs = 'fs', k = 5),
-              family = Gamma(link = 'log'),
+m_diff_ndvi <- gam(list(diffusion_km2_day ~
+                        # global effects
+                        s(mean_ndvi, k = 5) +
+                        log(mass_kg) +
+                        # species-level effects
+                        s(species, bs = 're') +
+                        s(mean_ndvi, species, bs = 'fs', k = 5),
+                      ~ s(species, bs = 're') +
+                        s(mean_ndvi, k = 5)),
+                 family = gammals(),
+                 data = d,
+                 subset = keep_for_gam & range_resident,
+                 method = 'REML')
+summary(m_diff_ndvi)
+
+m_diff <- gam(list(diffusion_km2_day ~
+                     # global effects
+                     s(mean_ndvi, k = 5) +
+                     s(var_ndvi, k = 5) +
+                     ti(mean_ndvi, var_ndvi, k = 3) +
+                     log(mass_kg) +
+                     # species-level effects
+                     s(species, bs = 're') +
+                     s(mean_ndvi, species, bs = 'fs', k = 5) +
+                     s(var_ndvi, species, bs = 'fs', k = 5),
+                   ~ s(species, bs = 're') +
+                     te(mean_ndvi, var_ndvi, k = 5)),
+              family = gammals(),
               data = d,
-              method = 'fREML',
-              discrete = TRUE)
-draw(m_diff, residuals = TRUE)
+              method = 'REML')
+draw(m_diff, dist = 1)
 appraise(m_diff, point_alpha = 0.2)
 summary(m_diff)
-AIC(m_diff_0, m_diff) %>% mutate(AIC = AIC - min(AIC)) %>% arrange(AIC)
+compare_aic(m_diff, m_diff_ndvi, m_diff_0)
 
 # save models ----
-saveRDS(m_hr, file = 'models/hr-null-hgam.rds')
-saveRDS(m_speed, file = 'models/diffusion-null-hgam.rds')
-saveRDS(m_diff, file = 'models/speed-null-hgam.rds')
+saveRDS(m_hr_0, file = 'models/hr-hgam-mass-only.rds')
+saveRDS(m_speed_0, file = 'models/diffusion-hgam-mass-only.rds')
+saveRDS(m_diff_0, file = 'models/speed-hgam-mass-only.rds')
 
 saveRDS(m_hr_ndvi, file = 'models/hr-ndvi-only-hgam.rds')
 saveRDS(m_speed_ndvi, file = 'models/diffusion-ndvi-only-hgam.rds')
