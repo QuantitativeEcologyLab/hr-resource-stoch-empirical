@@ -31,6 +31,7 @@ elton_traits <-
 
 # TODO: update to the newest dataset
 d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
+  filter(keep_for_gam) %>%
   # TODO: drop this filter after updating the dataset (but rm maned wolves!)
   filter(!grepl("Chrysocyon brachyurus", animal)) %>%
   # product of UD with mean NDVI and variance

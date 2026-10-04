@@ -123,5 +123,5 @@ compare_aic(m_hr, m_hr_ndvi, m_hr_0)
 
 # save models ----
 saveRDS(m_hr_0, file = 'models/hr-hgam-mass-only.rds')
-saveRDS(m_hr_ndvi, file = 'models/hr-ndvi-only-hgam.rds')
-saveRDS(m_hr, file = 'models/hr-full-hgam.rds')
+saveRDS(m_hr_ndvi, file = 'models/hr-hgam-ndvi-mass.rds')
+saveRDS(m_hr, file = 'models/hr-hgam-full.rds')
