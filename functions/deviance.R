@@ -20,8 +20,7 @@ compare_aic <- function(...) {
   dataset_size <- purrr::map(list(...), \(x) nrow(x$model))
   if (any(!any(parametric_terms(m_hr) == 'log(mass_kg)'))) {
     stop("The model does not have a term of mass and is thus not comparable to m_hr_ndvi!")
-  } else if (!all.equal(nrow(m_hr$model), nrow(m_hr_ndvi$model),
-                        nrow(m_hr_mass_only$model))) {
+  } else if (length(unique(purrr::map_int(models, \(x) nrow(x$model)))) > 1) {
     stop("Datasets are not the same size!")
   } else {
     AIC(...) %>%
