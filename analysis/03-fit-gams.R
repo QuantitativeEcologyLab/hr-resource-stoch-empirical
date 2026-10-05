@@ -9,14 +9,21 @@ library('gratia')
 source('analysis/figures/default-ggplot-theme.R')
 source('functions/deviance.R')
 
-d <- readRDS('data/gam-dataset-2026-09-26.rds') %>%
-  filter(mean_ndvi != 0) # drop individuals outside the current rasters
+d <- readRDS('data/gam-dataset-2026-10-04.rds')
+
+cli::cli_alert_info(paste0("The dataset has ", nrow(d),
+                           " animals, of which ", sum(d$range_resident),
+                           " were range-resident, and ",
+                           sum(d$keep_for_gam & d$range_resident),
+                           " used for the HGAM, across ",
+                           n_distinct(d$dataset_name),
+                           " datasests and ", n_distinct(d$species),
+                           " species."))
 
 # HR size and mass
 ggplot(d, aes(log(mass_kg), log(hr_95_km2))) +
   geom_point(alpha = 0.4) +
-  labs(x = 'Mass (kg)',
-       y = expression(paste(bold('95% HR size'~'(km'^'2'), bold(')')))) +
+  labs(x = 'Mass (kg)', y = '95% HR size (km\U00B2)') +
   theme(legend.position = 'top')
 
 # plot unconditional relationships
@@ -83,7 +90,7 @@ m_hr <- gam(list(hr_95_km2 ~
                    # global effects
                    s(mean_ndvi, k = 5) +
                    s(var_ndvi, k = 5) +
-                   ti(mean_ndvi, var_ndvi, k = 3) +
+                   ti(mean_ndvi, var_ndvi, k = 5) +
                    log(mass_kg) +
                    # species-level effects
                    s(species, bs = 're') +
