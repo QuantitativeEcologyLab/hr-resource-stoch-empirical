@@ -44,13 +44,17 @@ d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
   }),
   raster_covariates = map(ud_raster, function(.r) {
     if (is.null(.r)) {
-      tibble(mean_ndvi = NA_real_,
+      tibble(prop_inside = NA_real_,
+             mean_ndvi = NA_real_,
              var_ndvi = NA_real_)
     } else {
-      tibble(mean_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
-                             na.rm = TRUE),
-             var_ndvi = sum(values(.r * project(r_var_ndvi, .r)),
-                            na.rm = TRUE))
+      tibble(
+        prop_inside = sum(values(.r * !is.na(project(r_mean_ndvi, .r))),
+                          na.rm = TRUE),
+        mean_ndvi = sum(values(.r * project(r_mean_ndvi, .r)),
+                        na.rm = TRUE),
+        var_ndvi = sum(values(.r * project(r_var_ndvi, .r)),
+                       na.rm = TRUE))
     }
   }, .progress = 'Calculating raster covariates...')) %>%
   unnest(raster_covariates) %>%
@@ -62,6 +66,8 @@ d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
   # add mass and diet composition
   left_join(elton_traits, by = join_by('species' == 'scientific')) %>%
   mutate(species = factor(species))
+
+table(d$prop_inside[d$prop_inside < 0.2])
 
 # ensure all species have data
 if (sum(is.na(d$mass_kg)) > 0) {
@@ -75,9 +81,10 @@ if (sum(is.na(d$mass_kg)) > 0) {
 if (sum(is.na(d)) > 0) {
   cli::cli_alert_warning(
     paste0('There are NA values in columns ',
-          paste0(colnames(d)[colSums(is.na(d)) > 0], collapse = ', '), '. ',
-          'Save the dataset manually to confirm.'))
+           paste0(colnames(d)[colSums(is.na(d)) > 0], collapse = ', '), '. ',
+           'Save the dataset manually to confirm.'))
 }
 d %>%
+  filter(prop_inside > 0.75) %>% # drop animals too far outside of rasters
   select(! c(tel, movement_model, akde, ud_raster)) %>%
   saveRDS(paste0('data/gam-dataset-', Sys.Date(), '.rds'))
