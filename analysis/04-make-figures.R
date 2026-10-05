@@ -15,8 +15,7 @@ library('patchwork')
 source('analysis/figures/default-ggplot-theme.R')
 
 # TODO: update with latest dataset
-d <- readRDS('data/gam-dataset-2026-09-26.rds') %>%
-  filter(mean_ndvi != 0) %>% # drop individuals outside the rasters
+d <- readRDS('data/gam-dataset-2026-10-04.rds') %>%
   filter(keep_for_gam, range_resident)
 
 m_hr_0 <- readRDS('models/hr-hgam-mass-only.rds')
@@ -34,6 +33,7 @@ r_var_ndvi <- ifel(r_var_ndvi > 0.04, 0.04, r_var_ndvi)
 
 # TODO: update with latest dataset
 mean_locations <- readRDS("data/akde-tibble-2026-09-13.rds") %>%
+  filter_out(dataset_name == "DeNicola et al. (2025) (Staten Island)") %>%
   # TODO: drop after updating AKDE dataset
   filter(species != "Chrysocyon brachyurus") %>%
   filter(keep_for_gam, !map_lgl(movement_model, is.null)) %>%
@@ -67,7 +67,7 @@ p_1a <- ggplot() +
   theme(legend.position = "right", legend.key.height = rel(2))
 ggsave("figures/p-1a.png", p_1a, width = 8, height = 4, dpi = 300)
 
-# b DENVar
+# b NDVI variance
 p_1b <- ggplot() +
   geom_sf(data = world, fill = "grey") +
   geom_spatraster(data = r_var_ndvi) +
@@ -76,7 +76,7 @@ p_1b <- ggplot() +
   geom_sf(data = mean_locations, size = 0.25, color = "white") +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_devon(name = "DENVar", na.value = "white", reverse = TRUE) +
+  scale_fill_devon(name = "NDVI variance", na.value = "white", reverse = TRUE) +
   theme(legend.position = "right", legend.key.height = rel(2))
 ggsave("figures/p-1b.png", p_1b, width = 8, height = 4, dpi = 300)
 
@@ -108,10 +108,9 @@ p_1c <- ggplot(null_preds) +
   scale_x_continuous("Mass (kg)",
                      breaks = log(10^(-2:4)),
                      labels = \(x) as.character(exp(x))) +
-  scale_y_continuous("Home range size (km\U00B2)",
+  scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 2)),
                      labels = \(x) as.character(exp(x)))
-p_1c
 ggsave("figures/p-1c.png", p_1c, width = 8, height = 5, dpi = 300)
 
 # d zoomed in versions of areas with NDVI
@@ -128,20 +127,18 @@ p_1d <-
                        na.value = "white", limits = c(-1, 1))
 ggsave("figures/p-1d.png", p_1d, width = 8, height = 2.5, dpi = 300)
 
-# e zoomed in versions of areas with DENVar
+# e zoomed in versions of areas with NDVI variance
 p_1e <-
   expand_grid(x = 1:10, y = 1:10, species = paste("Species", 1:4)) %>%
-  mutate(DENVar = rbeta(n(), 2, 2)) %>%
+  mutate(var_ndvi = rbeta(n(), 2, 2)) %>%
   ggplot() +
   coord_equal() +
   facet_wrap(~ species, nrow = 1) +
-  geom_raster(aes(x, y, fill = DENVar), show.legend = FALSE) +
+  geom_raster(aes(x, y, fill = var_ndvi), show.legend = FALSE) +
   scale_x_continuous(NULL, expand = c(0, 0)) +
   scale_y_continuous(NULL, expand = c(0, 0)) +
-  scale_fill_devon(name = "DENVar", reverse = TRUE)
+  scale_fill_devon(name = "NDVI variance", reverse = TRUE)
 ggsave("figures/p-1e.png", p_1e, width = 8, height = 2.5, dpi = 300)
-
-plot_gri
 
 p_1 <- ((p_1a | p_1b) / (p_1c | (p_1d / p_1e))) +
   plot_annotation(tag_levels = 'A')
@@ -152,13 +149,16 @@ cli::cli_alert_info("Jittered masses to aid in visualization, but each species h
 # fig 2 regression plots for HR model ----
 p_2a <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi)) %>%
+  mutate(mass_kg = 1e4) %>%
   bind_cols(fitted_values(
-    m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)")) %>%
+    object = m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)")) %>%
       filter(.parameter == "location")) %>%
   ggplot() +
+  coord_cartesian(ylim = c(0, 30)) +
+  geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
+              fill = pal[1], alpha = 0.3) +
   geom_line(aes(mean_ndvi, .fitted), color = pal[1], lwd = 1) +
-  labs(x = "Mean NDVI", y = "Home range size (km\U00B2)")
-p_2a
+  labs(x = "Mean NDVI", y = "Home-range size (km\U00B2)")
 
 p_2b <-
   data_slice(m_hr, data = d, var_ndvi = evenly(var_ndvi)) %>%
@@ -166,21 +166,18 @@ p_2b <-
     m_hr, data = ., terms = c("(Intercept)", "s(var_ndvi)")) %>%
       filter(.parameter == "location")) %>%
   ggplot() +
+  coord_cartesian(ylim = c(0, 30)) +
+  geom_ribbon(aes(var_ndvi, ymin = .lower_ci, ymax = .upper_ci),
+              fill = pal[2], alpha = 0.3) +
   geom_line(aes(var_ndvi, .fitted), color = pal[2], lwd = 1) +
-  labs(x = "Variance in NDVI", y = "Home range size (km\U00B2)")
-p_2b
+  labs(x = "NDVI variance", y = "Home-range size (km\U00B2)")
 
-p_2 <- (p_2a | p_2b) +
-  plot_annotation(tag_levels = 'A')
-p_2
-
-# fig 3 interaction terms ----
-p_3 <-
+p_2c <-
   data_slice(m_hr, data = d,
              mean_ndvi = evenly(mean_ndvi),
              var_ndvi = evenly(var_ndvi)) %>%
   mutate(too_far = too_far(mean_ndvi, var_ndvi, d$mean_ndvi, d$var_ndvi,
-                           dist = 0.2)) %>%
+                           dist = 0.3)) %>%
   filter(!too_far) %>%
   bind_cols(fitted_values(
     m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)",
@@ -188,10 +185,14 @@ p_3 <-
       filter(.parameter == "location")) %>%
   ggplot() +
   geom_raster(aes(mean_ndvi, var_ndvi, fill = log(.fitted))) +
-  labs(x = "Mean NDVI", y = "Variance in NDVI") +
-  scale_fill_gradient("Home range size (km\U00B2)",
+  geom_contour(aes(mean_ndvi, var_ndvi, z = log(.fitted)),
+               color = "black") +
+  labs(x = "Mean NDVI", y = "NDVI variance") +
+  scale_fill_gradient("Home-range size (km\U00B2)",
                       low = 'grey90', high = pal[3],
                       labels = exp, breaks = log(10^c(-1, 0, 1, 2, 3))) +
   theme(legend.position = "top", legend.key.width = rel(2))
-p_3
 
+p_2 <- ((p_2a | p_2b) / p_2c) +
+  plot_annotation(tag_levels = 'A')
+ggsave("figures/p-2.png", p_2, width = 8, height = 8, dpi = 300)
