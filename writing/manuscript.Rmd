@@ -1,5 +1,5 @@
 ---
-title: "\\Large Environmental stochasticity drives mammals to increase their ranges and movement rates"
+title: "\\Large Environmental stochasticity drives mammals to increase their ranges"
 author:
   - name: Stefano Mezzini
     email: stefano.mezzini@ubc.ca
@@ -168,10 +168,21 @@ papers to use for structure:
 
 artificial feeding can alter community structures in ways that are not reflected by NDVI: https://doi.org/10.1002/ecs2.70368
 
+tapir results from first paper match the main figure! variance has u-shaped effect at low means: some variance at low means is beneficial because it allows to move across patches as they deplete, if animal can find good patches.
 
 useful refs:
 - uses ndvi variance: https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecm.1348
 - 
+
+```{r data-fig, fig.cap = "Caption"}
+knitr::include_graphics("../figures/p-1.png")
+```
+
+
+
+```{r results-fig, fig.cap = "Caption"}
+knitr::include_graphics("../figures/p-2.png")
+```
 
 # Materials and Methods
 
