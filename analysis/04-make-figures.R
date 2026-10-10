@@ -79,29 +79,27 @@ ggsave("figures/p-1b.png", p_1b, width = 8, height = 4, dpi = 300)
 
 p_1 <- (p_1a / p_1b) + plot_annotation(tag_levels = 'A')
 
-ggsave("figures/p-1.png", p_1, width = 8 * 2, height = 5 * 2, dpi = 300)
-cli::cli_alert_info("Jittered masses to aid in visualization, but each species has a single mass.")
+ggsave("figures/p-1.png", p_1, width = 8, height = 4, dpi = 300)
 
 # fig 2 regression plots for HR model ----
-# c HR ~ mass
-null_preds <- tibble(mass_kg = exp(seq(log(0.01), log(1e4), length.out = 400)),
-                     species = d$species[1]) %>%
-  bind_cols(fitted_values(object = m_hr_0, data = ., scale = "link",
-                          exclude = c("s(species)")) %>%
-              filter(.parameter == "location"))
+mass_preds <- data_slice(m_hr, data = d, mass_kg = evenly(mass_kg)) %>%
+  bind_cols(fitted_values(object = m_hr, data = ., scale = "link", 
+                          terms = c("(Intercept)", "log(mass_kg)")) %>%
+      filter(.parameter == "location"))
 
+# find species for phylopics
 unique(d$species[which.min(d$mass_kg)])
 unique(d$species[which.min(abs(d$mass_kg - 10))])
 unique(d$species[which.max(d$mass_kg)])
 
-p_1c <- ggplot(null_preds) +
+p_2a <- ggplot(mass_preds) +
   # Carollia castanea not available
   add_phylopic(name = "Desmodus rotundus", x = log(0.01), y = log(3),
                height = 1, verbose = TRUE) +
   # to pick specific phylopic
   add_phylopic(uuid = "ab6cfd4f-aef7-40fa-b5a5-1b79b7d112aa", x = log(10),
                y = log(1), height = 2, verbose = TRUE) +
-  add_phylopic(name = "Loxodonta africana", x = log(5e3), y = log(50),
+  add_phylopic(name = "Loxodonta africana", x = log(3e3), y = log(50),
                height = 3, verbose = TRUE) +
   geom_ribbon(aes(log(mass_kg), ymin = .lower_ci, ymax = .upper_ci),
               alpha = 0.25) +
@@ -114,10 +112,10 @@ p_1c <- ggplot(null_preds) +
   scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 2)),
                      labels = \(x) as.character(exp(x)))
-ggsave("figures/p-1c.png", p_1c, width = 8, height = 5, dpi = 300)
+ggsave("figures/p-2a.png", p_2a, width = 8, height = 5, dpi = 300)
+cli::cli_alert_info("Jittered masses to aid in visualization, but each species has a single mass.")
 
-
-p_2a <-
+p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi)) %>%
   mutate(mass_kg = 1e4) %>%
   bind_cols(fitted_values(
@@ -129,8 +127,9 @@ p_2a <-
               fill = pal[1], alpha = 0.3) +
   geom_line(aes(mean_ndvi, .fitted), color = pal[1], lwd = 1) +
   labs(x = "Mean NDVI", y = "Home-range size (km\U00B2)")
+ggsave("figures/p-2b.png", p_2b, width = 8, height = 5, dpi = 300)
 
-p_2b <-
+p_2c <-
   data_slice(m_hr, data = d, var_ndvi = evenly(var_ndvi)) %>%
   bind_cols(fitted_values(
     m_hr, data = ., terms = c("(Intercept)", "s(var_ndvi)")) %>%
@@ -141,8 +140,13 @@ p_2b <-
               fill = pal[2], alpha = 0.3) +
   geom_line(aes(var_ndvi, .fitted), color = pal[2], lwd = 1) +
   labs(x = "NDVI variance", y = "Home-range size (km\U00B2)")
+ggsave("figures/p-2c.png", p_2c, width = 8, height = 5, dpi = 300)
 
-p_2c <-
+p_2 <- (p_2a / p_2b / p_2c) + plot_annotation(tag_levels = 'A')
+ggsave("figures/p-2.png", p_2, width = 8, height = 15, dpi = 300)
+
+# fig 3 interaction effects of HR model ----
+p_3 <-
   data_slice(m_hr, data = d,
              mean_ndvi = evenly(mean_ndvi),
              var_ndvi = evenly(var_ndvi)) %>%
@@ -162,7 +166,4 @@ p_2c <-
                       low = 'grey90', high = pal[3],
                       labels = exp, breaks = log(10^c(-1, 0, 1, 2, 3))) +
   theme(legend.position = "top", legend.key.width = rel(2))
-
-p_2 <- ((p_2a | p_2b) / p_2c) +
-  plot_annotation(tag_levels = 'A')
-ggsave("figures/p-2.png", p_2, width = 8, height = 8, dpi = 300)
+ggsave("figures/p-3.png", p_3, width = 6, height = 6, dpi = 300)
