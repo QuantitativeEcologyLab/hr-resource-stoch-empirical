@@ -18,6 +18,49 @@ source('analysis/figures/default-ggplot-theme.R')
 d <- readRDS('data/gam-dataset-2026-10-04.rds') %>%
   filter(keep_for_gam, range_resident)
 
+# find animals for panels 1C and 1D
+plot(var_ndvi ~ mean_ndvi, d)
+
+d_sub <- slice(d,
+               c(which.min((mean_ndvi - 0.2)^2 + 20 * (var_ndvi - 0.005)^2),
+                 which.min((mean_ndvi - 0.4)^2 + 20 * (var_ndvi - 0.02)^2),
+                 which.min((mean_ndvi - 0.6)^2 + 20 * (var_ndvi - 0.04)^2)))
+
+points(var_ndvi ~ mean_ndvi, d_sub, col = "red", pch = 19)
+
+# TODO: update with latest dataset
+d_akde <-  readRDS('data/akde-tibble-2026-09-13.rds') %>%
+  filter(grepl(paste(c("LA12 from African elephants in Etosha National Park (data from Tsalyuk et al. 2018) (Loxodonta africana)",
+                       "paf_pne (Capra ibex)", as.character(d_sub$animal)) %>%
+                       gsub("\\(", "\\\\(", .) %>%
+                       gsub("\\)", "\\\\)", .),
+                     collapse = "|"
+  ), animal))
+layout(t(1:3))
+plot(d_akde$tel[[1]], main = d_akde$animal[1])
+plot(d_akde$tel[[2]][d_akde$tel[[1]]$y > -2e4, ], main = d_akde$animal[2])
+plot(d_akde$tel[[3]], main = d_akde$animal[3])
+plot(d_akde$tel[[4]], main = d_akde$animal[4])
+plot(d_akde$tel[[5]], main = d_akde$animal[5])
+
+extract_raster <- function(.tel, .raster) {
+  .bbox <- as.sf(.tel) %>% st_bbox() %>% st_as_sfc() %>% st_as_sf()
+  crop(.raster,
+       st_transform(.bbox) %>% st_buffer(1e4)%>%
+         st_transform(crs(.raster))) %>%
+    project(., .tel@info$projection) %>%
+    crop(.bbox %>% st_buffer(1000))
+}
+
+layout(matrix(1:10, ncol = 2, byrow = TRUE))
+for(i in 1:5) {
+  plot(extract_raster(d_akde$tel[[i]], .raster = r_mean_ndvi), main = "NDVI")
+  plot(d_akde$tel[[i]], add = TRUE, error = FALSE, col = "black")
+  
+  plot(extract_raster(d_akde$tel[[i]], .raster = r_var_ndvi), main = "DENVar")
+  plot(d_akde$tel[[i]], add = TRUE, error = FALSE, col = "black")
+}
+
 m_hr <- readRDS('models/hr-hgam-full.rds')
 
 # fig 1 maps and HR ~ mass model ----
