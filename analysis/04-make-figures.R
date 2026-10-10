@@ -18,8 +18,6 @@ source('analysis/figures/default-ggplot-theme.R')
 d <- readRDS('data/gam-dataset-2026-10-04.rds') %>%
   filter(keep_for_gam, range_resident)
 
-m_hr_0 <- readRDS('models/hr-hgam-mass-only.rds')
-m_hr_ndvi <- readRDS('models/hr-hgam-ndvi-mass.rds')
 m_hr <- readRDS('models/hr-hgam-full.rds')
 
 # fig 1 maps and HR ~ mass model ----
@@ -80,6 +78,40 @@ p_1b <- ggplot() +
   theme(legend.position = "right", legend.key.height = rel(2))
 ggsave("figures/p-1b.png", p_1b, width = 8, height = 4, dpi = 300)
 
+# d zoomed in versions of areas with NDVI
+p_1c <-
+  expand_grid(x = 1:10, y = 1:10, species = paste("Species", 1:4)) %>%
+  mutate(NDVI = rbeta(n(), 2, 2)) %>%
+  ggplot() +
+  coord_equal() +
+  facet_wrap(~ species, nrow = 1) +
+  geom_raster(aes(x, y, fill = NDVI), show.legend = FALSE) +
+  scale_x_continuous(NULL, expand = c(0, 0)) +
+  scale_y_continuous(NULL, expand = c(0, 0)) +
+  scale_fill_gradientn("NDVI", colors = ndvi_pal,
+                       na.value = "white", limits = c(-1, 1))
+ggsave("figures/p-1c.png", p_1d, width = 8, height = 2.5, dpi = 300)
+
+# e zoomed in versions of areas with NDVI variance
+p_1d <-
+  expand_grid(x = 1:10, y = 1:10, species = paste("Species", 1:4)) %>%
+  mutate(var_ndvi = rbeta(n(), 2, 2)) %>%
+  ggplot() +
+  coord_equal() +
+  facet_wrap(~ species, nrow = 1) +
+  geom_raster(aes(x, y, fill = var_ndvi), show.legend = FALSE) +
+  scale_x_continuous(NULL, expand = c(0, 0)) +
+  scale_y_continuous(NULL, expand = c(0, 0)) +
+  scale_fill_devon(name = "NDVI variance", reverse = TRUE)
+ggsave("figures/p-1d.png", p_1e, width = 8, height = 2.5, dpi = 300)
+
+p_1 <- ((p_1a | p_1b) / (p_1d / p_1e)) +
+  plot_annotation(tag_levels = 'A')
+
+ggsave("figures/p-1.png", p_1, width = 8 * 2, height = 5 * 2, dpi = 300)
+cli::cli_alert_info("Jittered masses to aid in visualization, but each species has a single mass.")
+
+# fig 2 regression plots for HR model ----
 # c HR ~ mass
 null_preds <- tibble(mass_kg = exp(seq(log(0.01), log(1e4), length.out = 400)),
                      species = d$species[1]) %>%
@@ -113,40 +145,7 @@ p_1c <- ggplot(null_preds) +
                      labels = \(x) as.character(exp(x)))
 ggsave("figures/p-1c.png", p_1c, width = 8, height = 5, dpi = 300)
 
-# d zoomed in versions of areas with NDVI
-p_1d <-
-  expand_grid(x = 1:10, y = 1:10, species = paste("Species", 1:4)) %>%
-  mutate(NDVI = rbeta(n(), 2, 2)) %>%
-  ggplot() +
-  coord_equal() +
-  facet_wrap(~ species, nrow = 1) +
-  geom_raster(aes(x, y, fill = NDVI), show.legend = FALSE) +
-  scale_x_continuous(NULL, expand = c(0, 0)) +
-  scale_y_continuous(NULL, expand = c(0, 0)) +
-  scale_fill_gradientn("NDVI", colors = ndvi_pal,
-                       na.value = "white", limits = c(-1, 1))
-ggsave("figures/p-1d.png", p_1d, width = 8, height = 2.5, dpi = 300)
 
-# e zoomed in versions of areas with NDVI variance
-p_1e <-
-  expand_grid(x = 1:10, y = 1:10, species = paste("Species", 1:4)) %>%
-  mutate(var_ndvi = rbeta(n(), 2, 2)) %>%
-  ggplot() +
-  coord_equal() +
-  facet_wrap(~ species, nrow = 1) +
-  geom_raster(aes(x, y, fill = var_ndvi), show.legend = FALSE) +
-  scale_x_continuous(NULL, expand = c(0, 0)) +
-  scale_y_continuous(NULL, expand = c(0, 0)) +
-  scale_fill_devon(name = "NDVI variance", reverse = TRUE)
-ggsave("figures/p-1e.png", p_1e, width = 8, height = 2.5, dpi = 300)
-
-p_1 <- ((p_1a | p_1b) / (p_1c | (p_1d / p_1e))) +
-  plot_annotation(tag_levels = 'A')
-
-ggsave("figures/p-1.png", p_1, width = 8 * 2, height = 5 * 2, dpi = 300)
-cli::cli_alert_info("Jittered masses to aid in visualization, but each species has a single mass.")
-
-# fig 2 regression plots for HR model ----
 p_2a <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi)) %>%
   mutate(mass_kg = 1e4) %>%
