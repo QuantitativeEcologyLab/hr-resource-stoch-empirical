@@ -20,6 +20,7 @@ d <- readRDS('data/gam-dataset-2026-10-04.rds') %>%
 m_hr <- readRDS('models/hr-hgam-full.rds')
 
 # fig 1 maps and HR ~ mass model ----
+# TODO: drop antarctica
 world <- geoboundaries(adm_lvl = 0, type = 'simplified') %>%
   st_geometry()
 r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[1]]
@@ -59,7 +60,7 @@ p_1a <- ggplot() +
   geom_sf(data = mean_locations, size = 0.25, color = "white") +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_gradientn("NDVI", colors = ndvi_pal,
+  scale_fill_gradientn("Mean NDVI", colors = ndvi_pal,
                        na.value = "white", limits = c(-1, 1)) +
   theme(legend.position = "right", legend.key.height = rel(2))
 ggsave("figures/p-1a.png", p_1a, width = 8, height = 4, dpi = 300)
@@ -79,7 +80,7 @@ ggsave("figures/p-1b.png", p_1b, width = 8, height = 4, dpi = 300)
 
 p_1 <- (p_1a / p_1b) + plot_annotation(tag_levels = 'A')
 
-ggsave("figures/p-1.png", p_1, width = 8, height = 4, dpi = 300)
+ggsave("figures/p-1.png", p_1, width = 8, height = 7, dpi = 300)
 
 # fig 2 regression plots for HR model ----
 mass_preds <- data_slice(m_hr, data = d, mass_kg = evenly(mass_kg)) %>%
@@ -118,28 +119,32 @@ cli::cli_alert_info("Jittered masses to aid in visualization, but each species h
 p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi)) %>%
   mutate(mass_kg = 1e4) %>%
-  bind_cols(fitted_values(
-    object = m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)")) %>%
+  bind_cols(fitted_values(object = m_hr, data = ., scale = "link",
+                          terms = c("(Intercept)", "s(mean_ndvi)")) %>%
       filter(.parameter == "location")) %>%
   ggplot() +
-  coord_cartesian(ylim = c(0, 30)) +
   geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
               fill = pal[1], alpha = 0.3) +
   geom_line(aes(mean_ndvi, .fitted), color = pal[1], lwd = 1) +
-  labs(x = "Mean NDVI", y = "Home-range size (km\U00B2)")
+  xlab("Mean NDVI") +
+  scale_y_continuous("Home-range size (km\U00B2)",
+                     breaks = log(10^seq(-2, 6, by = 1)),
+                     labels = \(x) as.character(exp(x)))
 ggsave("figures/p-2b.png", p_2b, width = 8, height = 5, dpi = 300)
 
 p_2c <-
   data_slice(m_hr, data = d, var_ndvi = evenly(var_ndvi)) %>%
-  bind_cols(fitted_values(
-    m_hr, data = ., terms = c("(Intercept)", "s(var_ndvi)")) %>%
+  bind_cols(fitted_values(m_hr, data = ., scale = "link",
+                          terms = c("(Intercept)", "s(var_ndvi)")) %>%
       filter(.parameter == "location")) %>%
   ggplot() +
-  coord_cartesian(ylim = c(0, 30)) +
   geom_ribbon(aes(var_ndvi, ymin = .lower_ci, ymax = .upper_ci),
               fill = pal[2], alpha = 0.3) +
   geom_line(aes(var_ndvi, .fitted), color = pal[2], lwd = 1) +
-  labs(x = "NDVI variance", y = "Home-range size (km\U00B2)")
+  xlab("NDVI variance") +
+  scale_y_continuous("Home-range size (km\U00B2)",
+                     breaks = log(10^seq(-2, 6, by = 1)),
+                     labels = \(x) as.character(exp(x)))
 ggsave("figures/p-2c.png", p_2c, width = 8, height = 5, dpi = 300)
 
 p_2 <- (p_2a / p_2b / p_2c) + plot_annotation(tag_levels = 'A')
