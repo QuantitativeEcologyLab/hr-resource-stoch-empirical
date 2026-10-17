@@ -174,14 +174,22 @@ useful refs:
 - uses ndvi variance: https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecm.1348
 - 
 
-```{r data-fig, fig.cap = "Caption"}
+```{r data-fig, fig.cap = "Maps of the rasters of mean NDVI (A) and variance in NDVI (B) used as proxies for mean and variance in resource abundance. The bottom three panels show examples of environments with: (C) low mean NDVI and variance (\\emph{Canis mesomelas} near the Etosha Pan in Namibia), (D) intermediate mean NDVI and variance (\\emph{Capra ibex} in the Alps), and (E) high mean NDVI and variance (\\emph{Choloepus hoffmanni} in Costa Rica)."}
 knitr::include_graphics("../figures/p-1.png")
 ```
 
 
 
-```{r results-fig, fig.cap = "Caption"}
+```{r partial-fx-fig, fig.cap = "Partial effects of body size (A), mean NDVI (B), and NDVI variance (C) on home range size. Y axes are on the log scale. Masses in panel A are jittered horizontally to aid in visualization, but each species has a single value for mass. The animals in the bottom right corner of panel C have masses in the bottom 8th percentile of the dataset (species: \\emph{Bradypus variegatus}, \\emph{Carollia castanea}, \\emph{Carollia perspicillata}, \\emph{Choloepus hoffmanni}, \\emph{Dasyprocta punctata}, \\emph{Nasua narica}).", out.width="65%"}
 knitr::include_graphics("../figures/p-2.png")
+```
+
+```{r interaction-fig, fig.cap="Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale. Contour lines indicate surface areas with identical home range size."}
+knitr::include_graphics("../figures/p-3.png")
+```
+
+```{r interaction-fig-3d, fig.cap="Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale in both the z axis and the fill scale."}
+knitr::include_graphics("../figures/p-3-3D.png")
 ```
 
 # Materials and Methods
@@ -203,6 +211,7 @@ for maned wolf, contact: Rogerio Cunha de Paula (rogercunha\@gmail.com)
 
 # References and notes
 
-\references
+::: {#refs}
+:::
 
 # Acknowledgments
