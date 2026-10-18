@@ -538,26 +538,3 @@ ggplot(d, aes(akde_ess_area)) +
   scale_x_log10('Area ESS (log scale)',
                 breaks = c(1, 4, 10, 100, 1000)) +
   ylab('Count')
-
-# drop animals with excessively large HRs (might be fixed now)
-layout(1:2)
-hist(d$hr_95_km2, breaks = 100)
-hist(filter(d, keep_for_gam)$hr_95_km2, breaks = 100, xlim = range(d$hr_95_km2))
-layout(1)
-filter(d, keep_for_gam, hr_95_km2 > 8000) %>% pull(animal)
-
-large_hrs <- filter(d, keep_for_gam, hr_95_km2 > 8000)
-DIM <- ceiling(sqrt(nrow(large_hrs)))
-
-layout(matrix(1:(DIM)^2, ncol = DIM))
-for(i in 1:nrow(large_hrs)) {
-  plot(large_hrs$akde[[i]])
-  plot(large_hrs$tel[[i]], add= TRUE, error = FALSE, type = 'l')
-  title(paste0(large_hrs$animal[i], '\n95% HR:\t\t\t', round(d$hr_95_km2[i]),
-               ' km\U00B2'))
-}
-layout(1)
-
-map_dbl(large_hrs$akde, function(.akde) {
-  round(summary(.akde)$DOF['area'], 2)
-})
