@@ -109,9 +109,7 @@ m_hr <- gam(list(hr_95_km2 ~
             data = d,
             subset = keep_for_gam & range_resident,
             method = 'REML')
-draw(m_hr, dist = 1) +
-  scale_x_continuous(transform = "log", breaks = 10^seq(-2, 3, by = 2),
-                     labels = as.character)
+draw(m_hr, dist = 1)
 ggsave('figures/hr-hgam-terms.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white', scale = 2)
 
