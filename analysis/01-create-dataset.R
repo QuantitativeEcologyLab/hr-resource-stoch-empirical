@@ -436,7 +436,9 @@ d <- d %>%
     # ...from akdes that can still be fit
     #' *NOTE:* can't use i column because filtering breaks the indexing
     d %>%
-      filter(map_lgl(akde, is.null), range_resident, !map_lgl(tel, is.null),
+      filter(map_lgl(akde, is.null),
+             range_resident,
+             !map_lgl(tel, is.null),
              !map_lgl(movement_model, is.null)) %>%
       mutate(
         # fit remaining AKDEs
