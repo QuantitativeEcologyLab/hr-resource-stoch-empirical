@@ -361,10 +361,21 @@ d <-
       }, .progress = TRUE, .options = furrr_options(seed = NULL))))
 
 # ensure all movement models used the correct data
-stopifnot(
-  with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
-     all(map_chr(tel, \(.tel) .tel@info$identity) ==
-           map_chr(movement_model, \(.mm) .mm@info$identity))))
+# goats were fit in BC mammals project: IDs being different is ok
+filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)) %>%
+  mutate(tel_name = map_chr(tel, \(.t) .t@info$identity),
+         mm_name = map_chr(movement_model, \(.mm) .mm@info$identity),
+         animal = stringr::str_replace_all(animal, "\\(|\\[|\\)|\\]", ""),
+         tel_name = stringr::str_replace_all(tel_name, "\\(|\\[|\\)|\\]", ""),
+         mm_name = stringr::str_replace_all(mm_name, "\\(|\\[|\\)|\\]", "")) %>%
+  filter(!(stringr::str_detect(animal, mm_name) &
+           stringr::str_detect(tel_name, mm_name))) %>%
+  select(dataset_name, animal, tel_name, mm_name) %>%
+  pull(dataset_name) %>%
+  unique() %>%
+  `%in%`("Oreamnos_americanus") %>%
+  all() %>%
+  stopifnot()
 
 # add missing AKDEs ----
 # flag animals that are not range resident (can still use speed & diffusion)
