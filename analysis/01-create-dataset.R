@@ -364,9 +364,10 @@ d <-
       }, .progress = TRUE, .options = furrr_options(seed = NULL))))
 
 # ensure all movement models used the correct data
-with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
+stopifnot(
+  with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
      all(map_chr(tel, \(.tel) .tel@info$identity) ==
-           map_chr(movement_model, \(.mm) .mm@info$identity)))
+           map_chr(movement_model, \(.mm) .mm@info$identity))))
 
 # add missing AKDEs ----
 # flag animals that are not range resident (can still use speed & diffusion)
