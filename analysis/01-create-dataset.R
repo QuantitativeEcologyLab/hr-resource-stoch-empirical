@@ -315,9 +315,6 @@ d <-
          }) %>%
            round())
 
-# telemetries are not available for ctmm maned wolf
-filter(d, n_days < 0)
-
 d$i <- 1:nrow(d)
 
 # plot variograms ----
@@ -364,9 +361,21 @@ d <-
       }, .progress = TRUE, .options = furrr_options(seed = NULL))))
 
 # ensure all movement models used the correct data
-with(filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)),
-     all(map_chr(tel, \(.tel) .tel@info$identity) ==
-           map_chr(movement_model, \(.mm) .mm@info$identity)))
+# goats were fit in BC mammals project: IDs being different is ok
+filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)) %>%
+  mutate(tel_name = map_chr(tel, \(.t) .t@info$identity),
+         mm_name = map_chr(movement_model, \(.mm) .mm@info$identity),
+         animal = stringr::str_replace_all(animal, "\\(|\\[|\\)|\\]", ""),
+         tel_name = stringr::str_replace_all(tel_name, "\\(|\\[|\\)|\\]", ""),
+         mm_name = stringr::str_replace_all(mm_name, "\\(|\\[|\\)|\\]", "")) %>%
+  filter(!(stringr::str_detect(animal, mm_name) &
+             stringr::str_detect(tel_name, mm_name))) %>%
+  select(dataset_name, animal, tel_name, mm_name) %>%
+  pull(dataset_name) %>%
+  unique() %>%
+  `%in%`("Oreamnos_americanus") %>%
+  all() %>%
+  stopifnot()
 
 # add missing AKDEs ----
 # flag animals that are not range resident (can still use speed & diffusion)
@@ -415,7 +424,7 @@ mean(map_lgl(d$akde, is.null) & d$range_resident)
 
 # using 62 or 42 cores was maxing out the RAM and crashing the machine
 plan(multisession,
-     workers = max(min(availableCores(logical = FALSE) - 12, 30), 1))
+     workers = max(min(availableCores(logical = FALSE) - 12, 10), 1))
 
 d <- d %>%
   bind_rows(
@@ -427,7 +436,9 @@ d <- d %>%
     # ...from akdes that can still be fit
     #' *NOTE:* can't use i column because filtering breaks the indexing
     d %>%
-      filter(map_lgl(akde, is.null), range_resident, !map_lgl(tel, is.null),
+      filter(map_lgl(akde, is.null),
+             range_resident,
+             !map_lgl(tel, is.null),
              !map_lgl(movement_model, is.null)) %>%
       mutate(
         # fit remaining AKDEs
@@ -481,20 +492,20 @@ d <- d %>%
     if (is.null(.mm)) {
       return(NA_real_)
     }
-    'km/day' %#% suppressWarnings(speed(.mm, units = FALSE)$CI[, 'est']))
+    'km/day' %#% suppressWarnings(speed(.mm, units = FALSE)$CI[, 'est'])
   }, .progress = 'Estimating speeds...'),
-diffusion_km2_day =  'km^2/day' %#%
-  map_dbl(movement_model, function(.mm) {
-    if (is.null(.mm)) {
-      return(NA_real_)
-    }
-    if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
-      return(summary(.mm, units = FALSE)$
-               CI['diffusion (square meters/second)', 'est'])
-    } else {
-      return(NA_real_)
-    }
-  }))
+  diffusion_km2_day =  'km^2/day' %#%
+    map_dbl(movement_model, function(.mm) {
+      if (is.null(.mm)) {
+        return(NA_real_)
+      }
+      if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
+        return(summary(.mm, units = FALSE)$
+                 CI['diffusion (square meters/second)', 'est'])
+      } else {
+        return(NA_real_)
+      }
+    }))
 
 # warnings about fractal movement are ok: no speed was estimated
 unique(dplyr::last_dplyr_warnings())
@@ -527,26 +538,3 @@ ggplot(d, aes(akde_ess_area)) +
   scale_x_log10('Area ESS (log scale)',
                 breaks = c(1, 4, 10, 100, 1000)) +
   ylab('Count')
-
-# drop animals with excessively large HRs (might be fixed now)
-layout(1:2)
-hist(d$hr_95_km2, breaks = 100)
-hist(filter(d, keep_for_gam)$hr_95_km2, breaks = 100, xlim = range(d$hr_95_km2))
-layout(1)
-filter(d, keep_for_gam, hr_95_km2 > 8000) %>% pull(animal)
-
-large_hrs <- filter(d, keep_for_gam, hr_95_km2 > 8000)
-DIM <- ceiling(sqrt(nrow(large_hrs)))
-
-layout(matrix(1:(DIM)^2, ncol = DIM))
-for(i in 1:nrow(large_hrs)) {
-  plot(large_hrs$akde[[i]])
-  plot(large_hrs$tel[[i]], add= TRUE, error = FALSE, type = 'l')
-  title(paste0(large_hrs$animal[i], '\n95% HR:\t\t\t', round(d$hr_95_km2[i]),
-               ' km\U00B2'))
-}
-layout(1)
-
-map_dbl(large_hrs$akde, function(.akde) {
-  round(summary(.akde)$DOF['area'], 2)
-})
