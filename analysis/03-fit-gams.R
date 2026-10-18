@@ -71,7 +71,7 @@ m_hr_0 <- gam(list(hr_95_km2 ~
               data = d,
               subset = keep_for_gam & range_resident)
 summary(m_hr_0)
-exp(coef(m_hr_0)[1:2])
+exp(coef(m_hr_0)["log(mass_kg)"])
 
 # add NDVI variables to account for deviations
 m_hr_ndvi <- gam(list(hr_95_km2 ~
@@ -114,22 +114,26 @@ ggsave('figures/hr-hgam-terms.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white', scale = 2)
 
 appraise(m_hr, point_alpha = 0.2)
-ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8, units = 'in',
-       dpi = 300, bg = 'white')
+ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8,
+       units = 'in', dpi = 300, bg = 'white')
 
 summary(m_hr)
+
+# ensure model nesting
+stopifnot(all(parametric_terms(m_hr_0) %in% parametric_terms(m_hr_ndvi)))
+stopifnot(all(parametric_terms(m_hr_ndvi) %in% parametric_terms(m_hr)))
+stopifnot(all(smooths(m_hr_0) %in% smooths(m_hr_ndvi)))
+stopifnot(all(smooths(m_hr_ndvi) %in% smooths(m_hr)))
 
 # generalized likelihood test for model comparison
 anova(m_hr_0, m_hr, test = 'Chisq')
 anova(m_hr_ndvi, m_hr, test = 'Chisq')
 
 # change in deviance relative to model with mean NDVI
-perc_dev_change(m_hr, m_hr_ndvi)
-perc_dev_prev_unexpl(m_hr, m_hr_ndvi)
+cli::cli_alert_info("Adding NDVI variance explained {perc_dev_prev_unexpl(m_hr, m_hr_ndvi)} of the previously unexplained deviance ({perc_dev_change(m_hr, m_hr_ndvi)} overall).")
 
 # relative to mass-only model
-perc_dev_change(m_hr, m_hr_0)
-perc_dev_prev_unexpl(m_hr, m_hr_0)
+cli::cli_alert_info("Adding mean NDVI and NDVI variance explained {perc_dev_prev_unexpl(m_hr, m_hr_0)} of the previously unexplained deviance ({perc_dev_change(m_hr, m_hr_0)} overall).")
 
 compare_aic(m_hr, m_hr_ndvi, m_hr_0)
 
