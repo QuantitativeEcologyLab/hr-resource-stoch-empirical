@@ -62,19 +62,23 @@ d %>%
   pairs()
 
 # to get exponent for historical context
-m_hr_0 <- gam(list(hr_95_km2 ~ log(mass_kg) + s(species, bs = 're'),
-                           ~ 1),
-                      family = gammals(),
-                      data = d,
-                      subset = keep_for_gam & range_resident)
+m_hr_0 <- gam(list(hr_95_km2 ~
+                     s(log(akde_ess_area)) +
+                     log(mass_kg) +
+                     s(species, bs = 're'),
+                   ~ s(species, bs = 're')),
+              family = gammals(),
+              data = d,
+              subset = keep_for_gam & range_resident)
 summary(m_hr_0)
 exp(coef(m_hr_0)[1:2])
 
 # add NDVI variables to account for deviations
 m_hr_ndvi <- gam(list(hr_95_km2 ~
+                        s(log(akde_ess_area)) +
+                        log(mass_kg) +
                         # global effects
                         s(mean_ndvi, k = 5) +
-                        log(mass_kg) +
                         # species-level effects
                         s(species, bs = 're') +
                         s(mean_ndvi, species, bs = 'fs', k = 5),
@@ -87,17 +91,20 @@ m_hr_ndvi <- gam(list(hr_95_km2 ~
 summary(m_hr_ndvi)
 
 m_hr <- gam(list(hr_95_km2 ~
+                   s(log(akde_ess_area)) +
+                   log(mass_kg) +
                    # global effects
                    s(mean_ndvi, k = 5) +
                    s(var_ndvi, k = 5) +
                    ti(mean_ndvi, var_ndvi, k = 5) +
-                   log(mass_kg) +
                    # species-level effects
                    s(species, bs = 're') +
                    s(mean_ndvi, species, bs = 'fs', k = 5) +
                    s(var_ndvi, species, bs = 'fs', k = 5),
                  ~ s(species, bs = 're') +
-                   te(mean_ndvi, var_ndvi, k = 5)),
+                   s(mean_ndvi, k = 5) +
+                   s(var_ndvi, k = 5) +
+                   ti(mean_ndvi, var_ndvi, k = 5)),
             family = gammals(),
             data = d,
             subset = keep_for_gam & range_resident,
