@@ -416,7 +416,7 @@ mean(map_lgl(d$akde, is.null) & d$range_resident)
 
 # using 62 or 42 cores was maxing out the RAM and crashing the machine
 plan(multisession,
-     workers = max(min(availableCores(logical = FALSE) - 12, 30), 1))
+     workers = max(min(availableCores(logical = FALSE) - 12, 10), 1))
 
 d <- d %>%
   bind_rows(
