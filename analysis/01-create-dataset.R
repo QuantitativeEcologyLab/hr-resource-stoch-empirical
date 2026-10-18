@@ -369,7 +369,7 @@ filter(d, !map_lgl(tel, is.null), !map_lgl(movement_model, is.null)) %>%
          tel_name = stringr::str_replace_all(tel_name, "\\(|\\[|\\)|\\]", ""),
          mm_name = stringr::str_replace_all(mm_name, "\\(|\\[|\\)|\\]", "")) %>%
   filter(!(stringr::str_detect(animal, mm_name) &
-           stringr::str_detect(tel_name, mm_name))) %>%
+             stringr::str_detect(tel_name, mm_name))) %>%
   select(dataset_name, animal, tel_name, mm_name) %>%
   pull(dataset_name) %>%
   unique() %>%
@@ -492,20 +492,20 @@ d <- d %>%
     if (is.null(.mm)) {
       return(NA_real_)
     }
-    'km/day' %#% suppressWarnings(speed(.mm, units = FALSE)$CI[, 'est']))
+    'km/day' %#% suppressWarnings(speed(.mm, units = FALSE)$CI[, 'est'])
   }, .progress = 'Estimating speeds...'),
-diffusion_km2_day =  'km^2/day' %#%
-  map_dbl(movement_model, function(.mm) {
-    if (is.null(.mm)) {
-      return(NA_real_)
-    }
-    if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
-      return(summary(.mm, units = FALSE)$
-               CI['diffusion (square meters/second)', 'est'])
-    } else {
-      return(NA_real_)
-    }
-  }))
+  diffusion_km2_day =  'km^2/day' %#%
+    map_dbl(movement_model, function(.mm) {
+      if (is.null(.mm)) {
+        return(NA_real_)
+      }
+      if(any(grepl('diffusion', rownames(summary(.mm)$CI)))) {
+        return(summary(.mm, units = FALSE)$
+                 CI['diffusion (square meters/second)', 'est'])
+      } else {
+        return(NA_real_)
+      }
+    }))
 
 # warnings about fractal movement are ok: no speed was estimated
 unique(dplyr::last_dplyr_warnings())
