@@ -315,9 +315,6 @@ d <-
          }) %>%
            round())
 
-# telemetries are not available for ctmm maned wolf
-filter(d, n_days < 0)
-
 d$i <- 1:nrow(d)
 
 # plot variograms ----
