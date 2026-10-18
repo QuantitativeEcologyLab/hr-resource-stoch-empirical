@@ -15,6 +15,17 @@ library('patchwork')
 library('maptiles')
 source('analysis/figures/default-ggplot-theme.R')
 
+# robinson objects
+robinson_crs <- 'ESRI:54030'
+
+bounds <-
+  dplyr::tibble(x = c(-180:180, rep(180, 181), 180:-180, rep(-180, 181)),
+                y = c(rep(-90, 361), -90:90, rep(90, 361), 90:-90)) %>%
+  st_as_sf(coords = c('x', 'y'), crs = 'EPSG:4326') %>%
+  dplyr::summarise(geometry = st_combine(geometry)) %>%
+  st_cast('POLYGON') %>%
+  st_transform(robinson_crs)
+
 # TODO: update with latest dataset
 d <- readRDS('data/gam-dataset-2026-10-04.rds') %>%
   filter(keep_for_gam, range_resident)
@@ -22,13 +33,16 @@ m_hr <- readRDS('models/hr-hgam-full.rds')
 
 # fig 1 maps and HR ~ mass model ----
 world <- geoboundaries(adm_lvl = 0, type = 'simplified') %>%
-  filter(shapeName != "Antarctica") %>%
-  st_geometry()
+  # filter(shapeName != "Antarctica") %>%
+  st_geometry() %>%
+  st_transform(robinson_crs)
 r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[1]]
 r_mean_ndvi <- ifel(r_mean_ndvi < -1, -1, r_mean_ndvi)
+r_mean_ndvi <- project(r_mean_ndvi, robinson_crs)
 r_var_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[2]]
 r_var_ndvi <- ifel(r_var_ndvi < 0, 0, r_var_ndvi)
 r_var_ndvi <- ifel(r_var_ndvi > 0.04, 0.04, r_var_ndvi)
+r_var_ndvi <- project(r_var_ndvi, robinson_crs)
 
 # row of examples
 plot(var_ndvi ~ mean_ndvi, d)
@@ -69,7 +83,7 @@ mean_locations <- d_akde %>%
     as.data.frame(.mm$mu) %>%
       st_as_sf(coords = c('x', 'y')) %>%
       st_set_crs(.mm@info$projection) %>%
-      st_transform("EPSG:4326")
+      st_transform(robinson_crs)
   })) %>%
   select(animal, species, dataset_name, mean) %>%
   unnest(mean) %>%
@@ -82,32 +96,41 @@ mean_locations <- d_akde %>%
 
 # a mean NDVI
 p_1a <- ggplot() +
+  geom_sf(data = bounds, fill = "white") +
   geom_sf(data = world, fill = "grey") +
   geom_spatraster(data = r_mean_ndvi) +
   geom_sf(data = world, fill = "transparent", color = "black") +
   geom_sf(data = mean_locations) +
   geom_sf(data = mean_locations, size = 0.25, color = "white") +
-  scale_x_continuous(expand = c(0, 0)) +
-  scale_y_continuous(expand = c(0, 0)) +
   scale_fill_gradientn("Mean NDVI", colors = ndvi_pal,
-                       na.value = "white", limits = c(-1, 1)) +
-  theme(legend.position = "top", legend.key.height = rel(0.5),
-        legend.key.width = rel(3), legend.title = element_text(vjust = 1))
-ggsave("figures/p-1a.png", p_1a, width = 8, height = 4, dpi = 300)
+                       na.value = "transparent", limits = c(-1, 1)) +
+  theme_void() +
+  theme(text = element_text(face = "bold"),
+        legend.position = "top", legend.key.height = rel(0.5),
+        legend.key.width = rel(3), legend.title = element_text(vjust = 1),
+        legend.key.justification = "center",
+        legend.box.margin = margin(t = 10))
+ggsave("figures/p-1a.png", p_1a, width = 7, height = 4, dpi = 300,
+       bg = "white")
 
 # b NDVI variance
 p_1b <- ggplot() +
+  geom_sf(data = bounds, fill = "white") +
   geom_sf(data = world, fill = "grey") +
   geom_spatraster(data = r_var_ndvi) +
   geom_sf(data = world, fill = "transparent", color = "black") +
   geom_sf(data = mean_locations) +
   geom_sf(data = mean_locations, size = 0.25, color = "white") +
-  scale_x_continuous(expand = c(0, 0)) +
-  scale_y_continuous(expand = c(0, 0)) +
-  scale_fill_devon(name = "NDVI variance", na.value = "white", reverse = TRUE) +
-  theme(legend.position = "top", legend.key.height = rel(0.5),
-        legend.key.width = rel(3), legend.title = element_text(vjust = 1))
-ggsave("figures/p-1b.png", p_1b, width = 8, height = 4, dpi = 300)
+  scale_fill_devon(name = "NDVI variance", na.value = "transparent",
+                   reverse = TRUE) +
+  theme_void() +
+  theme(text = element_text(face = "bold"),
+        legend.position = "top", legend.key.height = rel(0.5),
+        legend.key.width = rel(3), legend.title = element_text(vjust = 1),
+        legend.key.justification = "center",
+        legend.box.margin = margin(t = 10))
+ggsave("figures/p-1b.png", p_1b, width = 7, height = 4, dpi = 300,
+       bg = "white")
 
 # bottom panels of examples telemetries ----
 plot_tel <- function(tel, zoom, buff, decimals = 3) {
@@ -173,9 +196,10 @@ p_1 <-
   AAAA
   BBBB
   BBBB
-  CCCC")
+  CCCC") & 
+  theme(plot.tag = element_text(face = "bold"))
 
-ggsave("figures/p-1.png", p_1, width = 8, height = 10, dpi = 300)
+ggsave("figures/p-1.png", p_1, width = 7.5, height = 10, dpi = 300)
 
 # fig 2 regression plots for HR model ----
 mass_preds <- data_slice(m_hr, data = d, mass_kg = evenly(mass_kg)) %>%
