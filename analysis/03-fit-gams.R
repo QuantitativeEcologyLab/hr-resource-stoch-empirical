@@ -117,7 +117,7 @@ appraise(m_hr, point_alpha = 0.2)
 ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white')
 
-summary(m_hr_ndvi)
+summary(m_hr)
 
 # generalized likelihood test for model comparison
 anova(m_hr_0, m_hr, test = 'Chisq')
