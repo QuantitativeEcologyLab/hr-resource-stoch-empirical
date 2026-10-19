@@ -17,8 +17,8 @@ source('analysis/figures/default-ggplot-theme.R')
 
 d_sim <- expand_grid(x = 1:20,
             y = 1:20,
-            mu = c(0.1, 0.8),
-            sigma2 = c(0.005, 0.035)) %>%
+            mu = c(0.1, 0.9),
+            sigma2 = c(0.005, 0.08)) %>%
   mutate(phi = sigma2 / (mu * (1 - mu)),
          a = mu * (1 / phi - 1),
          b = (1 - mu) * (1 / phi - 1),
@@ -36,7 +36,7 @@ d_sim %>%
             mu = unique(mu),
             var = var(r),
             .by = c(mu, sigma2))
-
+set.seed(3)
 p_patches <-
   d_sim %>%
   ggplot() +
