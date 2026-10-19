@@ -15,6 +15,41 @@ library('patchwork')
 library('maptiles')
 source('analysis/figures/default-ggplot-theme.R')
 
+d_sim <- expand_grid(x = 1:20,
+            y = 1:20,
+            mu = c(0.1, 0.8),
+            sigma2 = c(0.005, 0.035)) %>%
+  mutate(phi = sigma2 / (mu * (1 - mu)),
+         a = mu * (1 / phi - 1),
+         b = (1 - mu) * (1 / phi - 1),
+         r = rbeta(n(), a, b),
+         mu = if_else(mu == min(mu), "Low", "High") %>%
+           paste("mean") %>%
+           factor(., unique(.)),
+         sigma2 = if_else(sigma2 == min(sigma2), "Low", "High") %>%
+           paste("variance") %>%
+           factor(., unique(.)))
+d_sim %>%
+  summarize(min = min(r),
+            max = max(r),
+            range = max - min,
+            mu = unique(mu),
+            var = var(r),
+            .by = c(mu, sigma2))
+
+p_patches <-
+  d_sim %>%
+  ggplot() +
+  facet_grid(sigma2 ~ mu) +
+  geom_raster(aes(x, y, fill = r)) +
+  # theme(legend.position = "top") +
+  scale_x_continuous(NULL, breaks = NULL, expand = c(0, 0)) +
+  scale_y_continuous(NULL, breaks = NULL, expand = c(0, 0)) +
+  scale_fill_gradientn("Resources", colours = ndvi_pal, limits = c(-1, 1))
+
+ggsave("figures/p-patches.png", width = 5, height = 5, dpi = 300,
+       bg = "white")
+
 # robinson objects
 robinson_crs <- 'ESRI:54030'
 
