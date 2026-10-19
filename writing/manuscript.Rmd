@@ -1,5 +1,5 @@
 ---
-title: "\\Large Environmental stochasticity drives mammals to increase their ranges"
+title: "\\Large Moving beyond the average: environmental stochasticity as a driver of mammalian movement"
 author:
   - name: Stefano Mezzini
     email: stefano.mezzini@ubc.ca
@@ -83,7 +83,17 @@ Huge > huge > LARGE > Large > large > normalsize > small > footnotesize > script
 -->
 
 ```{r abstract, echo=FALSE}
-abstract <- "The range size of an animal is often used of as a proxy for the animal's overall needs while also accounting for several latent variables, such as access to resources, vagility, competition, predation, and reproductive behaviour. Animals' average range sizes follow a strong power relationship with the animals' average mass and an exponent near 3/4, which suggests that average range sizes scale with animals' average metabolic needs. However, such a model only explains approximately 80% of the deviance in range size at the individual level. A great majority of the remaining 20% can be explained by accouning for inidividual-level variation in resource abundance and stochasticity (unpredictability). Using a large GPS dataset of 1599 terrestrial mammals, we present empirical evidence that the combination of mean and variance in NDVI explain causes them to expand their range, spend more time exploring, and move faster and more ballistically throughout the landscape. Our results suggest that growing environmental stochasticity will..."
+library("dplyr")
+d <- list.files(path = "../data/",
+                    pattern = "gam-dataset-202",
+                    full.names = TRUE) %>%
+  max() %>%
+  readRDS() %>%
+  filter(range_resident)
+n_animals <- nrow(d)
+n_species <- n_distinct(d$species)
+
+abstract <- paste0("The range size of an animal is often used of as a proxy for the animal's overall needs, inlcluding access to food, water, shelter, and mates. Range sizes also depend on several latent variables, such as vagility, competition, predation, foraging behaviour, patch depletion, and reproductive behaviour. Animals' range sizes and mass follow a well-documented power relationship with exponent near 3/4, which suggests that animals' range sizes scale with their average metabolic needs. While this simple power relationship can explain the great majority of the deviance in range size, most of the remaining deviance can be explained by accouning for resource abundance and stochasticity (unpredictability). Using an intercontnental GPS dataset of ", n_animals, " terrestrial mammals across ", n_species, " species, we present empirical evidence that, on average, mammals reduce their range size with increasing resource abundance and increase their range with increasing resource stochasticity. Additionally, the two variables interact, such that higlhy predictable or stocastic environments result in stronger range contractions as resources increase. Conversely, environments with very scarce or abudant resources cause mammals to respond to resource stochasticity in a concave response. When resources were scarce, ranges were smallest at intermediate stochasticity and largest when in higly predictable or stochastic environments. When resources were abundant, the relationship flipped: ranges were smallest at low and high stochasticity, and largest at intermediate stochasticity. Thus, environmental stochasticity shapes how mammals respond to resource availability, and accounting for environmental stochasticity is essential for understanding how mammals respond to dynamic environments. As environmental stochasticity increases due to climate change and anthropogenic landscape transformation (e.g., tree harvesting, mining, farming, urban expansion), moving beyond average conditions and accounting for resource stochasticity will provide a more complete picture of the drivers of mammalian movement. \\textcolor{red}{NEED A CLOSING SENTENCE OR TWO.}")
 n_words_abstract <- stringi::stri_count_words(abstract)
 if (FALSE){
   n_words_abstract
@@ -131,26 +141,26 @@ if (n_words_abstract > 300) warning(paste("Abstract has", n_words_abstract, "> 3
 
 # Introduction
 
-like H = C / R paper [@harestad_home_1979], but:
-- R is now a random variable with mean and variation around the mean
-- Increased interest in environmental stochasticity has promoted thinking of env stoch (unpredictability) as a driver of animal movement (https://www.sciencedirect.com/science/article/pii/S0169534719302885)
-- variance in R is also important
-- relationship can now be nonlinear
-- because both factors are occurring at once and interacting, a multivariate approach is essential [@polazzo_measuring_2024]
+The drivers of animal movement are many and complex, including searching for resources, avoiding unwanted competition, and escaping danger [@nathan_movement_2008]. However, this complexity implies that the range size of an animal can used as a proxy for the animal's needs [@burt_territoriality_1943]. This hypothesis is supported by the fact that range size and body size scale with an exponent near $\frac34$ across several animal classes [@brown_toward_2004], which matches the scaling of metabolic needs with body size [@kleiber_body_1947]. Thus, body size alone can explain most of the variation in range size across species [@brown_toward_2004], but other drivers are also important. Range size often decreases with resource abundance, since greater average resource abundance allows animals to remain within smaller areas [@harestad_home_1979]. In addition, the variation around the average, i.e., resource stochasticity, also impacts how and where animals move [@riotte-lambert_environmental_2020].
 
-@mezzini_how_2025
+To understand how resource abundance and stochasticity interact, it helps to think of resources as a random variable [@mezzini_how_2025]. Each patch in a habitat is then a realization of the random variable, with the typical value of a patch is given by its resource abundance, while the patchiness of the environment and the stability of individual patches are determined by resource stochasticity. Importantly, the two parameters interact: at low resource abundance, increasing resource stochasticity transforms a homogeneous and predictable habitat (e.g., a steppe with some greener areas) into a heterogeneous and unpredictable habitat that has very rare but lush patches (e.g., a desert with scattered oases). Increasing environmental stochasticity at high resource abundance results in a similar but opposite trend, since resources increase across the whole habitat with the exception of rare `dead' patches.
 
-@brown_toward_2004
+Since each of the four habitat types will have different carrying capacities and selective pressures, species will develop different strategies and competitive behaviours. Resource-poor habitats may promote territoriality and caching [@wolverine_ref_andrea] or nomadism [@mongolian_gazelle], while resource-rich habitats may have low rates of competition [@ref]. Inversely, predictable habitats may favor species coexistence [@ref] and diversity [@marcus_environmental_2026], while stochastic habitats may promote despotic competition that forces low-rank individuals towards low-quality patches [@murray_dominance_2007]. Understanding the combined effects of resource abundance and stochasticity thus requires accounting for both variables concurrently [@mezzini_how_2025], along with any other confounding variables, such as competitive pressure and resource depletion [@polazzo_measuring_2024].
 
-mass-only model explains ~80% of deviance
+
+Here, we present results on resource abundance and stochasticity using a large intercontinental telemetry dataset with `r n_animals` animals from `r n_species` distinct species (Fig. \@ref(fig:data-fig)).
+
+<!-- • Move into results: describe dataset and model. -->
+<!-- • Explain why used a hierarchical GAM. -->
+<!-- • Importance of marginal effects. -->
+<!-- • Variance is possibly linear because of difficulty estimating the effect due to correlation with mean -->
+<!-- • Interaction effect: variance has weak effect at intermediate mean but strong u shape in some areas. Could be because of increased competition and pressure when resources are high. -->
+<!-- • Need more studies that account for competition and other factors. Ndvi is just a proxy any not necessarily appropriate for carnivores, but results are still great. Residuals do not have trends with diet types -->
 
 https://pubmed.ncbi.nlm.nih.gov/23020517/
 
 * Migrating animals will have larger range sizes and smaller EDF values, and they will also be more susceptible to interannual variation. 
 These two points work well together because they imply we should estimate changes in the mean as smooth changes that occur across years rather than among years, which means i should keep the k for years relatively low (e.g., (2025 - 1981) / 4 = 11 ≈ 10)
-
-
-wolverines have very low E(R), very large HR, and cache food
 
 human activity is increasing stochasticity and conseuqnetly HR size, but it's also constraining movement capacities (Tucker paper) and attracting to urban traps
 
@@ -168,7 +178,7 @@ papers to use for structure:
 
 artificial feeding can alter community structures in ways that are not reflected by NDVI: https://doi.org/10.1002/ecs2.70368
 
-tapir results from first paper match the main figure! variance has u-shaped effect at low means: some variance at low means is beneficial because it allows to move across patches as they deplete, if animal can find good patches.
+variance has u-shaped effect at low means: some variance at low means is beneficial because it allows to move across patches as they deplete, if animal can find good patches.
 
 useful refs:
 - uses ndvi variance: https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecm.1348
@@ -178,14 +188,12 @@ useful refs:
 knitr::include_graphics("../figures/p-1.png")
 ```
 
-
-
 ```{r partial-fx-fig, fig.cap = "Partial effects of body size (A), mean NDVI (B), and NDVI variance (C) on home range size. Y axes are on the log scale. Masses in panel A are jittered horizontally to aid in visualization, but each species has a single value for mass. The animals in the bottom right corner of panel C have masses in the bottom 8th percentile of the dataset (species: \\emph{Bradypus variegatus}, \\emph{Carollia castanea}, \\emph{Carollia perspicillata}, \\emph{Choloepus hoffmanni}, \\emph{Dasyprocta punctata}, \\emph{Nasua narica}).", out.width="65%"}
 knitr::include_graphics("../figures/p-2.png")
 ```
 
 ```{r interaction-fig, fig.cap="Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale. Contour lines indicate surface areas with identical home range size."}
-knitr::include_graphics("../figures/p-3.png")
+# knitr::include_graphics("../figures/p-3.png")
 ```
 
 ```{r interaction-fig-3d, fig.cap="Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale in both the z axis and the fill scale."}
@@ -203,9 +211,6 @@ for coati data, cite:
 
 - R. A. Powell, S. Ellwood, R. Kays. Stink or swim: techniques to meet the challenges for the study and conservation of small critters that hide, swim or climb and may otherwise make themselves unpleasant. In L. Harrington and D. W. Macdonald; Biology and Conservation of Mustelids and Procyonids (in preparation).
 - R. Kays, B. T. Hirsch Data from: Stink or swim: techniques to meet the challenges for the study and conservation of small critters that hide, swim or climb and may otherwise make themselves unpleasant. Movebank Data Repository. DOI:10.5441/001/1.41076dq1 (2015).
-
-for maned wolf, contact: Rogerio Cunha de Paula (rogercunha\@gmail.com)
-
 
 \clearpage
 
