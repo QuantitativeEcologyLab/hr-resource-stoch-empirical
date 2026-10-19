@@ -25,9 +25,10 @@ compare_aic <- function(...) {
   } else {
     AIC(...) %>%
       mutate(model = model_names,
-             AIC = AIC - min(AIC)) %>%
+             delta_df = df - (df)[n()],
+             delta_AIC = AIC - (AIC)[n()]) %>%
       relocate(model, .before = 1) %>%
-      arrange(AIC) %>%
+      arrange(delta_AIC) %>%
       `rownames<-`(NULL)
   }
 }
