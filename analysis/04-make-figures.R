@@ -247,8 +247,6 @@ unique(d$species[which.min(d$mass_kg)])
 unique(d$species[which.min(abs(d$mass_kg - 10))])
 unique(d$species[which.max(d$mass_kg)])
 
-partial_residuals(m_hr, select = "s(var_ndvi)")
-
 p_2a <- ggplot(mass_preds) +
   # Carollia castanea not available
   add_phylopic(name = "Desmodus rotundus", x = log(0.01), y = log(3),
@@ -272,55 +270,48 @@ p_2a <- ggplot(mass_preds) +
 ggsave("figures/p-2a.png", p_2a, width = 8, height = 5, dpi = 300)
 cli::cli_alert_info("Jittered masses to aid in visualization, but each species has a single mass.")
 
-# TODO: switch data to partial residuals on response scale?
 p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
-             var_ndvi = evenly(var_ndvi)) %>%
+             var_ndvi = median(var_ndvi), mass_kg = median(mass_kg)) %>%
   bind_cols(fitted_values(object = m_hr, data = ., scale = "link",
-                          terms = c("(Intercept)",
-                                    "s(mean_ndvi)", "s(var_ndvi)",
-                                    "ti(mean_ndvi,var_ndvi)")) %>%
+                          exclude = c("s(log(akde_ess_area))",
+                                      "ti(mean_ndvi,var_ndvi)",
+                                      "s(species)",
+                                      "s(mean_ndvi,species)",
+                                      "s(var_ndvi,species)")) %>%
               filter(.parameter == "location")) %>%
-  select(-c(.lower_ci, .upper_ci)) %>%
-  summarise(.fitted = mean(.fitted),
-            .se = sqrt(mean(.se^2)),
-            .by = mean_ndvi) %>%
-  rename(.estimate = .fitted) %>%
-  add_confint() %>%
   ggplot() +
   geom_point(aes(mean_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
   geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
               fill = pal[1], alpha = 0.3) +
-  geom_line(aes(mean_ndvi, .estimate), color = pal[1], lwd = 1) +
+  geom_line(aes(mean_ndvi, .fitted), color = pal[1], lwd = 1) +
   xlab("Mean NDVI") +
   scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 1)),
                      labels = \(x) as.character(exp(x)))
+p_2b
 ggsave("figures/p-2b.png", p_2b, width = 8, height = 5, dpi = 300)
 
 p_2c <-
-  data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
-             var_ndvi = evenly(var_ndvi)) %>%
+  data_slice(m_hr, data = d, mean_ndvi = median(mean_ndvi),
+             var_ndvi = evenly(var_ndvi), mass_kg = median(mass_kg)) %>%
   bind_cols(fitted_values(object = m_hr, data = ., scale = "link",
-                          terms = c("(Intercept)",
-                                    "s(mean_ndvi)", "s(var_ndvi)",
-                                    "ti(mean_ndvi,var_ndvi)")) %>%
+                          exclude = c("s(log(akde_ess_area))",
+                                      "ti(mean_ndvi,var_ndvi)",
+                                      "s(species)",
+                                      "s(mean_ndvi,species)",
+                                      "s(var_ndvi,species)")) %>%
               filter(.parameter == "location")) %>%
-  select(-c(.lower_ci, .upper_ci)) %>%
-  summarise(.fitted = mean(.fitted),
-            .se = sqrt(mean(.se^2)),
-            .by = var_ndvi) %>%
-  rename(.estimate = .fitted) %>%
-  add_confint() %>%
   ggplot() +
   geom_point(aes(var_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
   geom_ribbon(aes(var_ndvi, ymin = .lower_ci, ymax = .upper_ci),
               fill = pal[2], alpha = 0.3) +
-  geom_line(aes(var_ndvi, .estimate), color = pal[2], lwd = 1) +
+  geom_line(aes(var_ndvi, .fitted), color = pal[2], lwd = 1) +
   xlab("NDVI variance") +
   scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 1)),
                      labels = \(x) as.character(exp(x)))
+p_2c
 
 # check animals in bottom right corner
 table(as.character(filter(d, var_ndvi > 0.036)$species))
@@ -345,11 +336,13 @@ p_3 <-
              var_ndvi = evenly(var_ndvi),
   ) %>%
   mutate(too_far = too_far(mean_ndvi, var_ndvi, d$mean_ndvi, d$var_ndvi,
-                           dist = 0.5)) %>%
+                           dist = 0.3)) %>%
   filter(!too_far) %>%
   bind_cols(fitted_values(
-    m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)", "log(mass_kg)",
-                              "s(var_ndvi)", "ti(mean_ndvi,var_ndvi)")) %>%
+    m_hr, data = ., exclude = c("s(log(akde_ess_area))",
+                                "s(species)",
+                                "s(mean_ndvi,species)",
+                                "s(var_ndvi,species)")) %>%
       filter(.parameter == "location")) %>%
   ggplot() +
   geom_raster(aes(mean_ndvi, var_ndvi, fill = log(.fitted))) +
@@ -357,9 +350,8 @@ p_3 <-
                color = "black") +
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
-  scale_fill_gradient("Home-range size (km\U00B2)",
-                      low = 'grey90', high = pal[3],
-                      labels = exp, breaks = log(10^c(-1:4))) +
+  scale_fill_cork(name = "Home-range size (km\U00B2)",
+                   labels = exp, breaks = log(10^seq(0, 8, by = 2))) +
   theme(legend.position = "top", legend.key.width = rel(2))
 cli::cli_alert_info(paste0(
   "Interaction plot is for an animal with a mass of ",
@@ -369,12 +361,9 @@ ggsave("figures/p-3.png", p_3, width = 6, height = 6, dpi = 300)
 library("ggcube")
 p_3_persp <-
   data_slice(m_hr, data = d,
-           mean_ndvi = evenly(mean_ndvi),
-           var_ndvi = evenly(var_ndvi),
-) %>%
-  mutate(too_far = too_far(mean_ndvi, var_ndvi, d$mean_ndvi, d$var_ndvi,
-                           dist = 0.5)) %>%
-  filter(!too_far) %>%
+             mean_ndvi = evenly(mean_ndvi),
+             var_ndvi = evenly(var_ndvi),
+  ) %>%
   bind_cols(fitted_values(
     m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)", "log(mass_kg)",
                               "s(var_ndvi)", "ti(mean_ndvi,var_ndvi)")) %>%
@@ -386,8 +375,7 @@ p_3_persp <-
            yaw = 45, ) +
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
-  scale_fill_gradient("Home-range size (km\U00B2)",
-                      low = 'grey90', high = pal[3],
-                      labels = exp, breaks = log(10^c(-1:4))) +
+  scale_fill_cork(name = "Home-range size (km\U00B2)",
+                  labels = exp, breaks = log(10^seq(0, 8, by = 2))) +
   theme(legend.position = "top", legend.key.width = rel(2))
 ggsave("figures/p-3-3D.png", p_3_persp, width = 6, height = 6, dpi = 300)
