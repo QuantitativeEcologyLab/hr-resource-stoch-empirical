@@ -231,8 +231,8 @@ p_1 <-
   AAAA
   BBBB
   BBBB
-  CCCC") & 
-  theme(plot.tag = element_text(face = "bold"))
+  CCCC") &
+  theme(plot.tag = element_text(face = "bold", size = 12))
 
 ggsave("figures/p-1.png", p_1, width = 7.5, height = 10, dpi = 300)
 
