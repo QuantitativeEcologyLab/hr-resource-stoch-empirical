@@ -21,7 +21,7 @@ data('coati')
 # can't use ctmm::wolf because it's projected (not GPS) data, so no CRS
 
 # set up plan to run processes in parallel
-plan(multisession, workers = availableCores(logical = FALSE) - 2)
+plan(multisession, workers = availableCores(logical = FALSE) - 12)
 
 # clean pronghorn data and fit models ----
 # Aikens at al. (collected by H. Sawyer)
@@ -315,6 +315,8 @@ d <-
          }) %>%
            round())
 
+rm(movebank_data)
+gc(full = TRUE)
 d$i <- 1:nrow(d)
 
 # plot variograms ----
@@ -331,7 +333,7 @@ d <-
     dev.off()
     
     ctmm.guess(.tel, interactive = FALSE)
-  }, .progress = TRUE))
+  }, .progress = TRUE, .options = furrr_options(scheduling = Inf)))
 
 # add missing movement models ----
 # not using a single pipeline to have a more realistic ETA
@@ -418,13 +420,31 @@ d <- d %>%
       } else {
         return(NULL)
       }
-    }, .progress = TRUE))
+    }, .progress = TRUE, .options = furrr_options(scheduling = Inf)))
 
 mean(map_lgl(d$akde, is.null) & d$range_resident)
+sum(map_lgl(d$akde, is.null) & d$range_resident)
 
 # using 62 or 42 cores was maxing out the RAM and crashing the machine
-plan(multisession,
-     workers = max(min(availableCores(logical = FALSE) - 12, 10), 1))
+# plan(multisession,
+#      workers = max(min(availableCores(logical = FALSE) - 12, 10), 1))
+
+# refit movement models with discordant projections, if any
+d <- d %>%
+  mutate(movement_model = future_map(1:n(), \(.i) {
+    .tel <- tel[[.i]]
+    .mm <- movement_model[[.i]]
+    
+    if(is.null(.tel)) return(.mm)
+    if (.tel@info$projection == .mm@info$projection) return(.mm)
+    
+    .a <- as.character(animal[.i])
+    model_filename <- paste0("models/movement-models/", .a, ".rds")
+    .vg <- ctmm.guess(.tel, interactive = FALSE)
+    .mm <- ctmm.select(data = .tel, CTMM = .vg)
+    saveRDS(.mm, model_filename)
+    .mm
+  }, .progress = TRUE, .options = furrr_options(scheduling = Inf)))
 
 d <- d %>%
   bind_rows(
