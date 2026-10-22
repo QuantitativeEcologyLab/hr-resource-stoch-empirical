@@ -475,16 +475,17 @@ d <- d %>%
           if (is.null(.tel) | is.null(.mm)) {
             return(NULL)
           }
+          
           akde_filename <- paste0("models/akdes/", .a, ".rds")
           temp_filename <- paste0(.tel@info$identity, '-temp.png')
           png(temp_filename)
           .akde <- ctmm::akde(data = .tel, CTMM = .mm, debias = TRUE,
-                              weights = TRUE)
+                              weights = FALSE) # turned off for last 84 akdes
           dev.off()
           unlink(temp_filename)
           saveRDS(.akde, akde_filename)
           .akde
-        }, .progress = TRUE)))
+        }, .progress = TRUE, .options = furrr_options(scheduling = Inf))))
 
 # estimate movement parameters ----
 d <- d %>%
