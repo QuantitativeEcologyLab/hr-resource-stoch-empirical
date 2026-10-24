@@ -165,11 +165,18 @@ These two points work well together because they imply we should estimate change
 human activity is increasing stochasticity and conseuqnetly HR size, but it's also constraining movement capacities (Tucker paper) and attracting to urban traps
 
 follow up after main figure:
-- effects of HFI
 - changes in variance over time: spatial needs will increase in the future, exacerbating issues
 - increases in variances => increases in movement rates => increases in energy expenditure, which increases HR size further? what if animals can't achieve an energetic balance?
 - increases in variances => increases in movement rates => increases in encounter rates => how will this affect trophic structures and predation rates? what if prey are forced to alter the predator/prey dynamics to try to survive?
 - increases in env var can have strong cascading effects that then increase the var of other processes and lead to a series of strong cascades and maybe collapse
+
+difficulties with estimating effect of variance:
+
+- mean and variance are correlated
+- variance effect seems to be weaker than effect of mean
+- importance of scale (rasters are at ~5 km res)
+- temporal vs spatial variance
+- variance in NDVI may not be representative of environmental variance: a light in a boreal forest snow can change NDVI substantially without impacting nutrient availability
 
 papers to use for structure:
 - jetz scaling of animal space use (https://pubmed.ncbi.nlm.nih.gov/15472074/)
