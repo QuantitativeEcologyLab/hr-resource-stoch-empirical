@@ -409,7 +409,7 @@ if (!dir.exists("models/akdes")) dir.create("models/akdes")
 # import existing AKDEs
 d <- d %>%
   mutate(
-    akde = future_map2(animal, akde, \(.a, .ud) {
+    akde = map2(animal, akde, \(.a, .ud) { # much faster when sequential
       if (!is.null(.ud)) {
         return(.ud)
       }
@@ -420,16 +420,13 @@ d <- d %>%
       } else {
         return(NULL)
       }
-    }, .progress = TRUE, .options = furrr_options(scheduling = Inf)))
+    }, .progress = TRUE))
 
 mean(map_lgl(d$akde, is.null) & d$range_resident)
 sum(map_lgl(d$akde, is.null) & d$range_resident)
 
-# using 62 or 42 cores was maxing out the RAM and crashing the machine
-# plan(multisession,
-#      workers = max(min(availableCores(logical = FALSE) - 12, 10), 1))
-
 # refit movement models with discordant projections, if any
+# ~100 models had this issue. fixed now
 d <- d %>%
   mutate(movement_model = future_map(1:n(), \(.i) {
     .tel <- tel[[.i]]
@@ -446,46 +443,48 @@ d <- d %>%
     .mm
   }, .progress = TRUE, .options = furrr_options(scheduling = Inf)))
 
-d <- d %>%
-  bind_rows(
-    # separate individuals that already have or can't have AKDEs...
-    d %>% filter(!map_lgl(akde, is.null) |
-                   !range_resident |
-                   map_lgl(tel, is.null) |
-                   map_lgl(movement_model, is.null)),
-    # ...from akdes that can still be fit
-    #' *NOTE:* can't use i column because filtering breaks the indexing
-    d %>%
-      filter(map_lgl(akde, is.null),
-             range_resident,
-             !map_lgl(tel, is.null),
-             !map_lgl(movement_model, is.null)) %>%
-      mutate(
-        # fit remaining AKDEs
-        akde = future_map(1:n(), \(.i) {
-          .tel <- tel[[.i]]
-          .mm <- movement_model[[.i]]
-          .a <- animal[[.i]]
-          .akde <- akde[[.i]]
-          
-          if (!is.null(.akde)) {
-            return(.akde)
-          }
-          
-          if (is.null(.tel) | is.null(.mm)) {
-            return(NULL)
-          }
-          
-          akde_filename <- paste0("models/akdes/", .a, ".rds")
-          temp_filename <- paste0(.tel@info$identity, '-temp.png')
-          png(temp_filename)
-          .akde <- ctmm::akde(data = .tel, CTMM = .mm, debias = TRUE,
-                              weights = FALSE) # turned off for last 84 akdes
-          dev.off()
-          unlink(temp_filename)
-          saveRDS(.akde, akde_filename)
-          .akde
-        }, .progress = TRUE, .options = furrr_options(scheduling = Inf))))
+if (any(map_lgl(d$akde, is.null) & d$range_resident)) {
+  d <- d %>%
+    bind_rows(
+      # separate individuals that already have or can't have AKDEs...
+      d %>% filter(!map_lgl(akde, is.null) |
+                     !range_resident |
+                     map_lgl(tel, is.null) |
+                     map_lgl(movement_model, is.null)),
+      # ...from akdes that can still be fit
+      #' *NOTE:* can't use i column because filtering breaks the indexing
+      d %>%
+        filter(map_lgl(akde, is.null),
+               range_resident,
+               !map_lgl(tel, is.null),
+               !map_lgl(movement_model, is.null)) %>%
+        mutate(
+          # fit remaining AKDEs
+          akde = future_map(1:n(), \(.i) {
+            .tel <- tel[[.i]]
+            .mm <- movement_model[[.i]]
+            .a <- animal[[.i]]
+            .akde <- akde[[.i]]
+            
+            if (!is.null(.akde)) {
+              return(.akde)
+            }
+            
+            if (is.null(.tel) | is.null(.mm)) {
+              return(NULL)
+            }
+            
+            akde_filename <- paste0("models/akdes/", .a, ".rds")
+            temp_filename <- paste0(.tel@info$identity, '-temp.png')
+            png(temp_filename)
+            .akde <- ctmm::akde(data = .tel, CTMM = .mm, debias = TRUE,
+                                weights = FALSE) # turned off for last 84 akdes
+            dev.off()
+            unlink(temp_filename)
+            saveRDS(.akde, akde_filename)
+            .akde
+          }, .progress = TRUE, .options = furrr_options(scheduling = Inf))))
+}
 
 # estimate movement parameters ----
 d <- d %>%
@@ -504,7 +503,7 @@ d <- d %>%
     } else {
       return(summary(.akde)$DOF['area'])
     }
-  }),
+  }, .progress = "Estimating area ESS..."),
   keep_for_gam = akde_ess_area >= 4 & range_resident,
   #' add normalized weights based on `sqrt(ESS)`
   weight = if_else(keep_for_gam, sqrt(akde_ess_area), NA_real_),
@@ -526,10 +525,7 @@ d <- d %>%
       } else {
         return(NA_real_)
       }
-    }))
-
-# warnings about fractal movement are ok: no speed was estimated
-unique(dplyr::last_dplyr_warnings())
+    }, .progress = "Estimating diffusion..."))
 
 # save the final dataset
 saveRDS(d, paste0('data/akde-tibble-', Sys.Date(), '.rds'))
@@ -553,9 +549,10 @@ d %>%
   janitor::adorn_totals(where = 'row', na.rm = TRUE, fill = 'non-numeric')
 
 # currently dropping individuals with HR ESS < 4
-ggplot(d, aes(akde_ess_area)) +
-  geom_histogram(bins = 50, fill = 'grey', color = 'black') +
+ggplot(d, aes(akde_ess_area, hr_95_km2)) +
+  geom_point(color = 'black', alpha = 0.3) +
   geom_vline(xintercept = 4, lty = 'dashed') +
   scale_x_log10('Area ESS (log scale)',
                 breaks = c(1, 4, 10, 100, 1000)) +
-  ylab('Count')
+  scale_y_log10("Esimated 95% HR")
+ggsave("figures/ess-hr.png", width = 6, height = 4, dpi = 300, bg = "white")

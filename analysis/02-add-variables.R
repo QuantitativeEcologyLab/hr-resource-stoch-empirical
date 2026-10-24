@@ -8,6 +8,10 @@ library('sf')
 
 r_mean_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[1]]
 r_var_ndvi <- rast('../ndvi-stochasticity/output/long-term-estimates.tif')[[2]]
+
+# animals aren't in the few areas with bad values. fixing only for the plot
+r_mean_ndvi <- ifel(r_mean_ndvi < -1, -1, r_mean_ndvi)
+r_var_ndvi <- ifel(r_var_ndvi < 0, 0, r_var_ndvi)
 r_var_ndvi <- ifel(r_var_ndvi > 0.04, 0.04, r_var_ndvi)
 
 layout(1:2)
@@ -29,11 +33,8 @@ elton_traits <-
   mutate(scientific = if_else(scientific == "Martes pennanti", # update fisher
                               "Pekania pennanti", scientific))
 
-# TODO: update to the newest dataset
-d <- readRDS('data/akde-tibble-2026-09-13.rds') %>%
+d <- readRDS('data/akde-tibble-2026-10-24.rds') %>%
   filter(keep_for_gam) %>%
-  # TODO: drop this filter after updating the dataset (but rm maned wolves!)
-  filter(!grepl("Chrysocyon brachyurus", animal)) %>%
   # product of UD with mean NDVI and variance
   # add raster of UD to calculate exposure to mean and variance of NDVI
   mutate(ud_raster = map(akde, function(.akde) {
