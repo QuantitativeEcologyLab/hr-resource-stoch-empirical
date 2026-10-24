@@ -6,8 +6,10 @@ library('khroma')
 library('gratia')
 source('analysis/default-ggplot-theme.R')
 source('functions/deviance.R')
+gratia_theme_set(theme(gratia.alpha.diagnostic.point = 0.2))
 
-d <- readRDS('data/gam-dataset-2026-10-04.rds')
+# TODO: add smoother of space to account for spatia trends?
+d <- readRDS('data/gam-dataset-2026-10-24.rds')
 
 cli::cli_alert_info(paste0("The dataset has ", nrow(d),
                            " animals, of which ", sum(d$range_resident),
@@ -69,7 +71,7 @@ m_hr_0 <- gam(list(hr_95_km2 ~
               data = d,
               subset = keep_for_gam & range_resident)
 summary(m_hr_0)
-exp(coef(m_hr_0)["log(mass_kg)"])
+coef(m_hr_0)["log(mass_kg)"]
 
 # add NDVI variables to account for deviations
 m_hr_ndvi <- gam(list(hr_95_km2 ~
@@ -111,7 +113,7 @@ draw(m_hr, dist = 1)
 ggsave('figures/hr-hgam-terms.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white', scale = 2)
 
-appraise(m_hr, point_alpha = 0.2)
+appraise(m_hr)
 ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8,
        units = 'in', dpi = 300, bg = 'white')
 

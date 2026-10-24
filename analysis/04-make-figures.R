@@ -16,9 +16,9 @@ library('maptiles')
 source('analysis/default-ggplot-theme.R')
 
 d_sim <- expand_grid(x = 1:20,
-            y = 1:20,
-            mu = c(0.1, 0.9),
-            sigma2 = c(0.005, 0.08)) %>%
+                     y = 1:20,
+                     mu = c(0.1, 0.9),
+                     sigma2 = c(0.005, 0.08)) %>%
   mutate(phi = sigma2 / (mu * (1 - mu)),
          a = mu * (1 / phi - 1),
          b = (1 - mu) * (1 / phi - 1),
@@ -61,8 +61,7 @@ bounds <-
   st_cast('POLYGON') %>%
   st_transform(robinson_crs)
 
-# TODO: update with latest dataset
-d <- readRDS('data/gam-dataset-2026-10-04.rds') %>%
+d <- readRDS('data/gam-dataset-2026-10-24.rds') %>%
   filter(keep_for_gam, range_resident)
 m_hr <- readRDS('models/hr-hgam-full.rds')
 
@@ -87,8 +86,7 @@ d_sub <- slice(d,
                  which.min((mean_ndvi - 0.6)^2 + 20 * (var_ndvi - 0.04)^2)))
 points(var_ndvi ~ mean_ndvi, d_sub, col = "red", pch = 19)
 
-# TODO: update with latest dataset
-d_akde <-  readRDS('data/akde-tibble-2026-09-13.rds')
+d_akde <-  readRDS('data/akde-tibble-2026-10-24.rds')
 
 d_akde_sub <- d_akde %>%
   filter(grepl(paste(as.character(d_sub$animal) %>%
@@ -109,8 +107,6 @@ transmute(d_sub,
           longitude = map_dbl(d_akde_sub$tel, \(.t) mean(.t$longitude)))
 
 mean_locations <- d_akde %>%
-  # TODO: drop after updating AKDE dataset
-  filter(species != "Chrysocyon brachyurus") %>%
   filter(keep_for_gam, !map_lgl(movement_model, is.null)) %>%
   filter(animal %in% d$animal) %>%
   # some CRSs removed due to data sensitivity
@@ -128,6 +124,7 @@ mean_locations <- d_akde %>%
   st_centroid() %>%
   select(!Group.1) %>%
   mutate(has_panel = dataset_name %in% d_sub$dataset_name)
+rm(d_akde)
 
 # a mean NDVI
 p_1a <- ggplot() +
@@ -238,9 +235,9 @@ ggsave("figures/p-1.png", p_1, width = 7.5, height = 10, dpi = 300)
 
 # fig 2 regression plots for HR model ----
 mass_preds <- data_slice(m_hr, data = d, mass_kg = evenly(mass_kg)) %>%
-  bind_cols(fitted_values(object = m_hr, data = ., scale = "link", 
-                          terms = c("(Intercept)", "log(mass_kg)")) %>%
-              filter(.parameter == "location"))
+  fitted_values(m_hr, data = ., terms = c("(Intercept)", "log(mass_kg)"),
+                quantity = "expectation") %>%
+  mutate(across(c(.fitted, .lower_ci, .upper_ci), log))
 
 # find species for phylopics
 unique(d$species[which.min(d$mass_kg)])
@@ -273,13 +270,13 @@ cli::cli_alert_info("Jittered masses to aid in visualization, but each species h
 p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
              var_ndvi = median(var_ndvi), mass_kg = median(mass_kg)) %>%
-  bind_cols(fitted_values(object = m_hr, data = ., scale = "link",
-                          exclude = c("s(log(akde_ess_area))",
-                                      "ti(mean_ndvi,var_ndvi)",
-                                      "s(species)",
-                                      "s(mean_ndvi,species)",
-                                      "s(var_ndvi,species)")) %>%
-              filter(.parameter == "location")) %>%
+  fitted_values(object = m_hr, data = ., quantity = "expectation",
+                exclude = c("s(log(akde_ess_area))",
+                            "ti(mean_ndvi,var_ndvi)",
+                            "s(species)",
+                            "s(mean_ndvi,species)",
+                            "s(var_ndvi,species)")) %>%
+  mutate(across(c(.fitted, .lower_ci, .upper_ci), log)) %>%
   ggplot() +
   geom_point(aes(mean_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
   geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
@@ -295,13 +292,13 @@ ggsave("figures/p-2b.png", p_2b, width = 8, height = 5, dpi = 300)
 p_2c <-
   data_slice(m_hr, data = d, mean_ndvi = median(mean_ndvi),
              var_ndvi = evenly(var_ndvi), mass_kg = median(mass_kg)) %>%
-  bind_cols(fitted_values(object = m_hr, data = ., scale = "link",
-                          exclude = c("s(log(akde_ess_area))",
-                                      "ti(mean_ndvi,var_ndvi)",
-                                      "s(species)",
-                                      "s(mean_ndvi,species)",
-                                      "s(var_ndvi,species)")) %>%
-              filter(.parameter == "location")) %>%
+  fitted_values(object = m_hr, data = ., quantity = "expectation",
+                exclude = c("s(log(akde_ess_area))",
+                            "ti(mean_ndvi,var_ndvi)",
+                            "s(species)",
+                            "s(mean_ndvi,species)",
+                            "s(var_ndvi,species)")) %>%
+  mutate(across(c(.fitted, .lower_ci, .upper_ci), log)) %>%
   ggplot() +
   geom_point(aes(var_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
   geom_ribbon(aes(var_ndvi, ymin = .lower_ci, ymax = .upper_ci),
@@ -336,14 +333,13 @@ p_3 <-
              var_ndvi = evenly(var_ndvi),
   ) %>%
   mutate(too_far = too_far(mean_ndvi, var_ndvi, d$mean_ndvi, d$var_ndvi,
-                           dist = 0.3)) %>%
+                           dist = 0.5)) %>%
   filter(!too_far) %>%
-  bind_cols(fitted_values(
-    m_hr, data = ., exclude = c("s(log(akde_ess_area))",
-                                "s(species)",
-                                "s(mean_ndvi,species)",
-                                "s(var_ndvi,species)")) %>%
-      filter(.parameter == "location")) %>%
+  fitted_values(m_hr, data = ., quantity = "expectation",
+                exclude = c("s(log(akde_ess_area))",
+                            "s(species)",
+                            "s(mean_ndvi,species)",
+                            "s(var_ndvi,species)")) %>%
   ggplot() +
   geom_raster(aes(mean_ndvi, var_ndvi, fill = log(.fitted))) +
   geom_contour(aes(mean_ndvi, var_ndvi, z = log(.fitted)),
@@ -351,7 +347,7 @@ p_3 <-
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
   scale_fill_cork(name = "Home-range size (km\U00B2)",
-                   labels = exp, breaks = log(10^seq(0, 8, by = 2))) +
+                  labels = exp, breaks = log(10^seq(0, 8, by = 2))) +
   theme(legend.position = "top", legend.key.width = rel(2))
 cli::cli_alert_info(paste0(
   "Interaction plot is for an animal with a mass of ",
@@ -364,10 +360,9 @@ p_3_persp <-
              mean_ndvi = evenly(mean_ndvi),
              var_ndvi = evenly(var_ndvi),
   ) %>%
-  bind_cols(fitted_values(
-    m_hr, data = ., terms = c("(Intercept)", "s(mean_ndvi)", "log(mass_kg)",
-                              "s(var_ndvi)", "ti(mean_ndvi,var_ndvi)")) %>%
-      filter(.parameter == "location")) %>%
+  fitted_values(m_hr, data = ., quantity = "expectation",
+                terms = c("(Intercept)", "s(mean_ndvi)", "log(mass_kg)",
+                          "s(var_ndvi)", "ti(mean_ndvi,var_ndvi)")) %>%
   ggplot(aes(mean_ndvi, var_ndvi, z = log(.fitted))) +
   geom_surface_3d(color = "black") +
   coord_3d(ratio = c(1.5, 2, 1), expand = FALSE, panels = "zmin",
