@@ -8,7 +8,7 @@ library('ctmm')      # for converting data to telemetry format
 library('lutz')      # for getting time zones based on coordinates
 library('lubridate') # for working with dates
 library('ggplot2')   # for fancy plots
-source('analysis/figures/default-ggplot-theme.R')
+source('analysis/default-ggplot-theme.R')
 source('functions/import_rda.R')
 source('functions/outlier_plots.R') # to plot outlier diagnostic plots
 source('functions/check_animal.R') # to run diagnostic plots

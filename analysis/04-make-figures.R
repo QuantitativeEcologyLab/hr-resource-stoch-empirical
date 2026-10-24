@@ -13,7 +13,7 @@ library('rgeoboundaries')
 library('rphylopic')
 library('patchwork')
 library('maptiles')
-source('analysis/figures/default-ggplot-theme.R')
+source('analysis/default-ggplot-theme.R')
 
 d_sim <- expand_grid(x = 1:20,
             y = 1:20,

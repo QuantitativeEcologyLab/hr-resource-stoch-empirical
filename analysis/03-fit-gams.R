@@ -6,7 +6,7 @@ library('mgcv')
 library('ggplot2')
 library('khroma')
 library('gratia')
-source('analysis/figures/default-ggplot-theme.R')
+source('analysis/default-ggplot-theme.R')
 source('functions/deviance.R')
 
 d <- readRDS('data/gam-dataset-2026-10-04.rds')
