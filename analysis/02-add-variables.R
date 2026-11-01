@@ -66,7 +66,21 @@ d <- readRDS('data/akde-tibble-2026-10-24.rds') %>%
   )) %>%
   # add mass and diet composition
   left_join(elton_traits, by = join_by('species' == 'scientific')) %>%
-  mutate(species = factor(species))
+  mutate(species = factor(species)) %>%
+  # add mean location for each animal
+  mutate(mean = map(movement_model, function(.mm) {
+    as.data.frame(.mm$mu) %>%
+      st_as_sf(coords = c('x', 'y')) %>%
+      st_set_crs(.mm@info$projection) %>%
+      st_transform("EPSG:4326")
+  })) %>%
+  unnest(mean) %>%
+  st_as_sf() %>%
+  bind_cols(.,
+            st_coordinates(.) %>%
+              as.data.frame() %>%
+              rename(long = X, lat = Y)) %>%
+  st_drop_geometry()
 
 table(d$prop_inside[d$prop_inside < 0.2])
 
