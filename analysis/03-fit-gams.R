@@ -8,8 +8,9 @@ source('analysis/default-ggplot-theme.R')
 source('functions/deviance.R')
 gratia_theme_set(theme(gratia.alpha.diagnostic.point = 0.2))
 
-# TODO: add smoother of space to account for spatia trends?
-d <- readRDS('data/gam-dataset-2026-10-24.rds')
+# this dataset is a subset of the range-resident individuals kept for the
+# GAM. the starting dataset had 1591 animals.
+d <- readRDS("data/gam-dataset-2026-11-01.rds")
 
 cli::cli_alert_info(paste0("The dataset has ", nrow(d),
                            " animals, of which ", sum(d$range_resident),
@@ -41,79 +42,53 @@ d %>%
   theme(strip.placement = 'outside', strip.background = element_blank(),
         legend.position = 'none')
 
-# plot unconditional relationships by species
-d %>%
-  pivot_longer(c(mean_ndvi, var_ndvi)) %>%
-  ggplot(aes(value, hr_95_km2)) +
-  facet_grid(~ name, scales = 'free', switch = 'x') +
-  geom_point(alpha = 0.2) +
-  geom_smooth(aes(color = name, fill = name, group = species),
-              alpha = 0.3, method = 'gam', formula = y ~ x) +
-  xlab(NULL) +
-  scale_y_log10() +
-  scale_color_manual(values = c('#F09D00', '#3388E1'),
-                     aesthetics = c('color', 'fill')) +
-  theme(strip.placement = 'outside', strip.background = element_blank(),
-        legend.position = 'none')
-
 # mean ndvi and DENVar are correlated
 d %>%
-  select(mass_kg, mean_ndvi, var_ndvi, hr_95_km2) %>%
+  transmute(log_mass_kg = log(mass_kg),
+            mean_ndvi,
+            var_ndvi,
+            log_hr = log(hr_95_km2)) %>%
   pairs()
 
 # to get exponent for historical context
-m_hr_0 <- gam(list(hr_95_km2 ~
-                     s(log(akde_ess_area)) +
-                     log(mass_kg) +
-                     s(species, bs = 're'),
-                   ~ s(species, bs = 're')),
-              family = gammals(),
-              data = d,
-              subset = keep_for_gam & range_resident)
+m_hr_0 <- gam(hr_95_km2 ~
+                s(species, bs = 're') +
+                s(log(akde_ess_area)) +
+                log(mass_kg),
+              family = Gamma(link = "log"),
+              data = d)
 summary(m_hr_0)
 coef(m_hr_0)["log(mass_kg)"]
+appraise(m_hr_0)
 
 # add NDVI variables to account for deviations
-m_hr_ndvi <- gam(list(hr_95_km2 ~
-                        s(log(akde_ess_area)) +
-                        log(mass_kg) +
-                        # global effects
-                        s(mean_ndvi, k = 5) +
-                        # species-level effects
-                        s(species, bs = 're') +
-                        s(mean_ndvi, species, bs = 'fs', k = 5),
-                      ~ s(species, bs = 're') +
-                        s(mean_ndvi, k = 5)),
-                 family = gammals(),
-                 data = d,
-                 subset = keep_for_gam & range_resident,
-                 method = 'REML')
-summary(m_hr_ndvi)
-
-m_hr <- gam(list(hr_95_km2 ~
+m_hr_ndvi <- gam(hr_95_km2 ~
+                   s(species, bs = 're') +
                    s(log(akde_ess_area)) +
                    log(mass_kg) +
-                   # global effects
-                   s(mean_ndvi, k = 5) +
-                   s(var_ndvi, k = 5) +
-                   ti(mean_ndvi, var_ndvi, k = 5) +
-                   # species-level effects
-                   s(species, bs = 're') +
-                   s(mean_ndvi, species, bs = 'fs', k = 5) +
-                   s(var_ndvi, species, bs = 'fs', k = 5),
-                 ~ s(species, bs = 're') +
-                   s(mean_ndvi, k = 5) +
-                   s(var_ndvi, k = 5) +
-                   ti(mean_ndvi, var_ndvi, k = 5)),
-            family = gammals(),
+                   s(mean_ndvi, k = 5),
+                 family = Gamma(link = "log"),
+                 data = d,
+                 method = 'REML')
+summary(m_hr_ndvi)
+appraise(m_hr_ndvi)
+
+# add variance in NDVI
+m_hr <- gam(hr_95_km2 ~
+              s(species, bs = 're') +
+              s(log(akde_ess_area)) +
+              log(mass_kg) +
+              s(mean_ndvi, k = 5) +
+              s(var_ndvi, k = 5) +
+              ti(mean_ndvi, var_ndvi, k = 5),
+            family = Gamma("log"),
             data = d,
-            subset = keep_for_gam & range_resident,
             method = 'REML')
 draw(m_hr, dist = 1)
 ggsave('figures/hr-hgam-terms.png', width = 8, height = 8, units = 'in',
        dpi = 300, bg = 'white', scale = 2)
 
-appraise(m_hr)
+appraise(m_hr, method= "simulate")
 ggsave('figures/hr-hgam-diagnostics.png', width = 8, height = 8,
        units = 'in', dpi = 300, bg = 'white')
 
