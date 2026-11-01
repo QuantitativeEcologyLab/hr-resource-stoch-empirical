@@ -97,7 +97,7 @@ nrow(pronghorn)
 
 movebank_data <- readRDS('data/telemetry-data/movebank-data-2026-08-17.rds')
 
-# compile full dataset ----
+# compile full dataset (1591 animals) ----
 d <-
   bind_rows(
     movebank_data %>%
