@@ -14,3 +14,4 @@ ndvi_pal <- c(ndvi_pal[c(seq(1, 40, length.out = (-0.1 + 1) * 10),
               '#112A12')
 create_ndvi_pal <- colorRampPalette(ndvi_pal)
 ndvi_pal <- create_ndvi_pal(1e3)
+hr_pal <- colorRampPalette(color("cork")(200)[101:200])(100)

@@ -13,22 +13,20 @@ library('rgeoboundaries')
 library('rphylopic')
 library('patchwork')
 library('maptiles')
+library("ggcube")
 source('analysis/default-ggplot-theme.R')
 
+set.seed(3)
 d_sim <- expand_grid(x = 1:20,
                      y = 1:20,
-                     mu = c(0.1, 0.9),
-                     sigma2 = c(0.005, 0.08)) %>%
+                     mu = c(0.1, 0.35, 0.6),
+                     sigma2 = c(0.01, 0.02, 0.03)) %>%
   mutate(phi = sigma2 / (mu * (1 - mu)),
          a = mu * (1 / phi - 1),
          b = (1 - mu) * (1 / phi - 1),
          r = rbeta(n(), a, b),
-         mu = if_else(mu == min(mu), "Low", "High") %>%
-           paste("mean") %>%
-           factor(., unique(.)),
-         sigma2 = if_else(sigma2 == min(sigma2), "Low", "High") %>%
-           paste("variance") %>%
-           factor(., unique(.)))
+         mu = paste("Mean =", mu),
+         sigma2 = paste("Variance =", sigma2))
 d_sim %>%
   summarize(min = min(r),
             max = max(r),
@@ -36,10 +34,8 @@ d_sim %>%
             mu = unique(mu),
             var = var(r),
             .by = c(mu, sigma2))
-set.seed(3)
 p_patches <-
-  d_sim %>%
-  ggplot() +
+  ggplot(d_sim) +
   facet_grid(sigma2 ~ mu) +
   geom_raster(aes(x, y, fill = r)) +
   # theme(legend.position = "top") +
@@ -61,8 +57,7 @@ bounds <-
   st_cast('POLYGON') %>%
   st_transform(robinson_crs)
 
-d <- readRDS('data/gam-dataset-2026-10-24.rds') %>%
-  filter(keep_for_gam, range_resident)
+d <- readRDS("data/gam-dataset-2026-11-01.rds")
 m_hr <- readRDS('models/hr-hgam-full.rds')
 
 # fig 1 maps and HR ~ mass model ----
@@ -86,9 +81,16 @@ d_sub <- slice(d,
                  which.min((mean_ndvi - 0.6)^2 + 20 * (var_ndvi - 0.04)^2)))
 points(var_ndvi ~ mean_ndvi, d_sub, col = "red", pch = 19)
 
-d_akde <-  readRDS('data/akde-tibble-2026-10-24.rds')
+mean_locations <- d %>%
+  select(species, dataset_name, long, lat) %>%
+  st_as_sf(coords = c("long", "lat"), crs = "EPSG:4326") %>%
+  mutate(id = paste(species, dataset_name)) %>%
+  summarize(species = unique(species),
+            dataset_name = unique(dataset_name),
+            geometry = st_centroid(st_union(geometry)), .by = id) %>%
+  mutate(has_panel = dataset_name %in% d_sub$dataset_name)
 
-d_akde_sub <- d_akde %>%
+d_akde_sub <-  readRDS('data/akde-tibble-2026-10-24.rds') %>%
   filter(grepl(paste(as.character(d_sub$animal) %>%
                        gsub("\\(", "\\\\(", .) %>%
                        gsub("\\)", "\\\\)", .),
@@ -97,34 +99,6 @@ d_akde_sub <- d_akde %>%
 plot(d_akde_sub$tel[[1]], main = d_akde_sub$animal[1])
 plot(d_akde_sub$tel[[2]], main = d_akde_sub$animal[2])
 plot(d_akde_sub$tel[[3]], main = d_akde_sub$animal[3])
-
-transmute(d_sub,
-          animal,
-          species,
-          mean_ndvi,
-          var_ndvi,
-          latitude = map_dbl(d_akde_sub$tel, \(.t) mean(.t$latitude)),
-          longitude = map_dbl(d_akde_sub$tel, \(.t) mean(.t$longitude)))
-
-mean_locations <- d_akde %>%
-  filter(keep_for_gam, !map_lgl(movement_model, is.null)) %>%
-  filter(animal %in% d$animal) %>%
-  # some CRSs removed due to data sensitivity
-  mutate(mean = map(movement_model, function(.mm) {
-    as.data.frame(.mm$mu) %>%
-      st_as_sf(coords = c('x', 'y')) %>%
-      st_set_crs(.mm@info$projection) %>%
-      st_transform(robinson_crs)
-  })) %>%
-  select(animal, species, dataset_name, mean) %>%
-  unnest(mean) %>%
-  st_as_sf() %>%
-  aggregate(by = list(.$dataset_name), 
-            function(x) x = x[1]) %>%
-  st_centroid() %>%
-  select(!Group.1) %>%
-  mutate(has_panel = dataset_name %in% d_sub$dataset_name)
-rm(d_akde)
 
 # a mean NDVI
 p_1a <- ggplot() +
@@ -271,11 +245,11 @@ p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
              var_ndvi = median(var_ndvi), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
-                exclude = c("s(log(akde_ess_area))",
-                            "ti(mean_ndvi,var_ndvi)",
+                exclude = c("log(akde_ess_area)",
                             "s(species)",
                             "s(mean_ndvi,species)",
-                            "s(var_ndvi,species)")) %>%
+                            "s(var_ndvi,species)",
+                            "ti(mean_ndvi,var_ndvi)")) %>%
   mutate(across(c(.fitted, .lower_ci, .upper_ci), log)) %>%
   ggplot() +
   geom_point(aes(mean_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
@@ -293,11 +267,9 @@ p_2c <-
   data_slice(m_hr, data = d, mean_ndvi = median(mean_ndvi),
              var_ndvi = evenly(var_ndvi), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
-                exclude = c("s(log(akde_ess_area))",
+                exclude = c("log(akde_ess_area)",
                             "ti(mean_ndvi,var_ndvi)",
-                            "s(species)",
-                            "s(mean_ndvi,species)",
-                            "s(var_ndvi,species)")) %>%
+                            "s(species)")) %>%
   mutate(across(c(.fitted, .lower_ci, .upper_ci), log)) %>%
   ggplot() +
   geom_point(aes(var_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
@@ -327,50 +299,65 @@ p_2 <- (p_2a / p_2b / p_2c) + plot_annotation(tag_levels = 'A')
 ggsave("figures/p-2.png", p_2, width = 8, height = 15, dpi = 300)
 
 # fig 3 interaction effects of HR model ----
-p_3 <-
-  data_slice(m_hr, data = d,
-             mean_ndvi = evenly(mean_ndvi),
-             var_ndvi = evenly(var_ndvi),
-  ) %>%
+pred_3 <- data_slice(m_hr, data = d,
+                     mean_ndvi = seq(-0.1, 1, length.out = 400),
+                     var_ndvi = seq(0, 0.05, length.out = 400)) %>%
   mutate(too_far = too_far(mean_ndvi, var_ndvi, d$mean_ndvi, d$var_ndvi,
-                           dist = 0.5)) %>%
+                           dist = 0.1)) %>%
   filter(!too_far) %>%
   fitted_values(m_hr, data = ., quantity = "expectation",
-                exclude = c("s(log(akde_ess_area))",
-                            "s(species)",
-                            "s(mean_ndvi,species)",
-                            "s(var_ndvi,species)")) %>%
-  ggplot() +
+                exclude = c("log(akde_ess_area)",
+                            "s(species)"))
+
+p_3 <-
+  ggplot(pred_3) +
   geom_raster(aes(mean_ndvi, var_ndvi, fill = log(.fitted))) +
   geom_contour(aes(mean_ndvi, var_ndvi, z = log(.fitted)),
                color = "black") +
+  geom_point(aes(mean_ndvi, var_ndvi), d, alpha = 0.3) +
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
-  scale_fill_cork(name = "Home-range size (km\U00B2)",
-                  labels = exp, breaks = log(10^seq(0, 8, by = 2))) +
+  scale_fill_gradientn(name = "Home-range size (km\U00B2)", colors = hr_pal,
+                       labels = exp, breaks = log(10^seq(-3, 8, by = 1))) +
   theme(legend.position = "top", legend.key.width = rel(2))
 cli::cli_alert_info(paste0(
   "Interaction plot is for an animal with a mass of ",
-  round(unique(p_3@data$mass_kg)), " kg."))
+  round(unique(pred_3$mass_kg)), " kg."))
 ggsave("figures/p-3.png", p_3, width = 6, height = 6, dpi = 300)
 
-library("ggcube")
+d_est <- tibble(mean_ndvi = d$mean_ndvi,
+                var_ndvi = d$var_ndvi,
+                mass_kg = unique(pred_3$mass_kg),
+                akde_ess_area = 1e6,
+                species = d$species[1]) %>%
+  fitted_values(object = m_hr, data = ., quantity = "expectation",
+                exclude = c("log(akde_ess_area)", "s(species)"))
+
 p_3_persp <-
   data_slice(m_hr, data = d,
              mean_ndvi = evenly(mean_ndvi),
              var_ndvi = evenly(var_ndvi),
   ) %>%
   fitted_values(m_hr, data = ., quantity = "expectation",
-                terms = c("(Intercept)", "s(mean_ndvi)", "log(mass_kg)",
-                          "s(var_ndvi)", "ti(mean_ndvi,var_ndvi)")) %>%
+                exclude = c("log(akde_ess_area)", "s(species)")) %>%
+  # dropping too far values makes the plot take much longer to save
   ggplot(aes(mean_ndvi, var_ndvi, z = log(.fitted))) +
-  geom_surface_3d(color = "black") +
+  geom_surface_3d(
+    # color = "black",
+    alpha = 1,
+    annotate = 
+      annotate_3d(
+        type = "point",
+        x = d_est$mean_ndvi,
+        y = d_est$var_ndvi,
+        z = log(d_est$.fitted) + 0.1,
+        size = 0.5)) +
   coord_3d(ratio = c(1.5, 2, 1), expand = FALSE, panels = "zmin",
-           light = light(direction = c(1, 1, 0)),
-           yaw = 45, ) +
+           light = "none",
+           yaw = 45) +
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
-  scale_fill_cork(name = "Home-range size (km\U00B2)",
-                  labels = exp, breaks = log(10^seq(0, 8, by = 2))) +
+  scale_fill_gradientn(name = "Home-range size (km\U00B2)", colors = hr_pal,
+                       labels = exp, breaks = log(10^seq(0, 8, by = 1))) +
   theme(legend.position = "top", legend.key.width = rel(2))
 ggsave("figures/p-3-3D.png", p_3_persp, width = 6, height = 6, dpi = 300)
