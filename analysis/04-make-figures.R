@@ -243,7 +243,7 @@ cli::cli_alert_info("Jittered masses to aid in visualization, but each species h
 
 p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
-             var_ndvi = evenly(var_ndvi, n = 3), mass_kg = median(mass_kg)) %>%
+             var_ndvi = c(0.005, 0.02, 0.035), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
                 exclude = c("s(species)",
                             "s(log(akde_ess_area))")) %>%
@@ -270,10 +270,13 @@ p_2b <-
         legend.key.justification = "center",
         legend.box.margin = margin(t = 10))
 p_2b
+cli::cli_alert_info(
+  c("Variance values for Fig. 2b are ",
+    paste(round(unique(p_2b@data$var_ndvi), 3), collapse = ", "), "."))
 ggsave("figures/p-2b.png", p_2b, width = 8, height = 5, dpi = 300)
 
 p_2c <-
-  data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi, 3),
+  data_slice(m_hr, data = d, mean_ndvi = c(0, 0.3, 0.6),
              var_ndvi = evenly(var_ndvi), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
                 exclude = c("s(log(akde_ess_area))",
@@ -300,6 +303,9 @@ p_2c <-
         legend.key.justification = "center",
         legend.box.margin = margin(t = 10))
 p_2c
+cli::cli_alert_info(
+  c("Mean values for Fig. 2c are ",
+    paste(round(unique(p_2c@data$mean_ndvi), 3), collapse = ", "), "."))
 ggsave("figures/p-2c.png", p_2c, width = 8, height = 5, dpi = 300)
 
 p_2 <- (p_2a / p_2b / p_2c) + plot_annotation(tag_levels = 'A')
