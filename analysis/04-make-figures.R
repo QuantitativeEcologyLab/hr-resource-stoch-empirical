@@ -243,95 +243,195 @@ cli::cli_alert_info("Jittered masses to aid in visualization, but each species h
 
 p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
-             var_ndvi = median(var_ndvi), mass_kg = median(mass_kg)) %>%
+             var_ndvi = evenly(var_ndvi, n = 3), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
-                exclude = c("log(akde_ess_area)",
-                            "s(species)",
-                            "s(mean_ndvi,species)",
-                            "s(var_ndvi,species)",
-                            "ti(mean_ndvi,var_ndvi)")) %>%
+                exclude = c("s(species)",
+                            "s(log(akde_ess_area))")) %>%
   mutate(across(c(.fitted, .lower_ci, .upper_ci), log)) %>%
-  ggplot() +
-  geom_point(aes(mean_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
-  geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
-              fill = pal[1], alpha = 0.3) +
-  geom_line(aes(mean_ndvi, .fitted), color = pal[1], lwd = 1) +
+  ggplot(aes(group = var_ndvi, color = var_ndvi, fill = var_ndvi)) +
+  geom_point(aes(mean_ndvi, log(hr_95_km2)), d, alpha = 0.5) +
+  geom_point(aes(mean_ndvi, log(hr_95_km2)), d, alpha = 0.3, shape = 1,
+             color = "black") +
+  # geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
+  #             alpha = 0.3, fill = "grey", color = "black", lwd = 1) +
+  # geom_ribbon(aes(mean_ndvi, ymin = .lower_ci, ymax = .upper_ci),
+  #             alpha = 0.3) +
+  geom_line(aes(mean_ndvi, .fitted), lwd = 1.5, color = "black") +
+  geom_line(aes(mean_ndvi, .fitted), lwd = 1) +
   xlab("Mean NDVI") +
   scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 1)),
-                     labels = \(x) as.character(exp(x)))
+                     labels = \(x) as.character(exp(x))) +
+  scale_color_devon(name = "NDVI variance") +
+  scale_fill_devon(name = "NDVI variance") +
+  theme(text = element_text(face = "bold"),
+        legend.position = "top", legend.key.height = rel(0.5),
+        legend.key.width = rel(3), legend.title = element_text(vjust = 1),
+        legend.key.justification = "center",
+        legend.box.margin = margin(t = 10))
 p_2b
 ggsave("figures/p-2b.png", p_2b, width = 8, height = 5, dpi = 300)
 
 p_2c <-
-  data_slice(m_hr, data = d, mean_ndvi = median(mean_ndvi),
+  data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi, 3),
              var_ndvi = evenly(var_ndvi), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
-                exclude = c("log(akde_ess_area)",
-                            "ti(mean_ndvi,var_ndvi)",
+                exclude = c("s(log(akde_ess_area))",
                             "s(species)")) %>%
   mutate(across(c(.fitted, .lower_ci, .upper_ci), log)) %>%
-  ggplot() +
-  geom_point(aes(var_ndvi, log(hr_95_km2)), d, alpha = 0.3) +
-  geom_ribbon(aes(var_ndvi, ymin = .lower_ci, ymax = .upper_ci),
-              fill = pal[2], alpha = 0.3) +
-  geom_line(aes(var_ndvi, .fitted), color = pal[2], lwd = 1) +
+  ggplot(aes(group = mean_ndvi, color = mean_ndvi, fill = mean_ndvi)) +
+  geom_point(aes(var_ndvi, log(hr_95_km2)), d, alpha = 0.5) +
+  geom_point(aes(var_ndvi, log(hr_95_km2)), d, alpha = 0.3,
+             shape = 1, color = "black") +
+  # geom_ribbon(aes(var_ndvi, ymin = .lower_ci, ymax = .upper_ci),
+  #             alpha = 0.3) +
+  geom_line(aes(var_ndvi, .fitted), lwd = 1.5, color = "black") +
+  geom_line(aes(var_ndvi, .fitted), lwd = 1) +
   xlab("NDVI variance") +
   scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 1)),
-                     labels = \(x) as.character(exp(x)))
+                     labels = \(x) as.character(exp(x))) +
+  scale_fill_gradientn("Mean NDVI", colors = ndvi_pal,
+                       aesthetics = c("color", "fill"),
+                       na.value = "transparent", limits = c(-1, 1)) +
+  theme(text = element_text(face = "bold"),
+        legend.position = "top", legend.key.height = rel(0.5),
+        legend.key.width = rel(3), legend.title = element_text(vjust = 1),
+        legend.key.justification = "center",
+        legend.box.margin = margin(t = 10))
 p_2c
-
-# check animals in bottom right corner
-table(as.character(filter(d, var_ndvi > 0.036)$species))
-ecdf(d$mass_kg)(max(filter(d, var_ndvi > 0.036)$mass_kg))
-cli::cli_alert_info(
-  paste0("The animals in the bottom right corner have masses in the ",
-         "bottom ",
-         round(
-           ecdf(d$mass_kg)(max(filter(d, var_ndvi > 0.036)$mass_kg)) * 100
-         ),
-         "th percentile.")
-)
 ggsave("figures/p-2c.png", p_2c, width = 8, height = 5, dpi = 300)
 
 p_2 <- (p_2a / p_2b / p_2c) + plot_annotation(tag_levels = 'A')
-ggsave("figures/p-2.png", p_2, width = 8, height = 15, dpi = 300)
+ggsave("figures/p-2.png", p_2, width = 6, height = 15, dpi = 300)
 
 # fig 3 interaction effects of HR model ----
+r_values <- cbind(as.data.frame(round(r_mean_ndvi, 2)),
+                  as.data.frame(round(r_var_ndvi, 3))) %>%
+  distinct() %>%
+  filter(mu_hat > -0.1)
+
+DIST <- 0.1
 pred_3 <- data_slice(m_hr, data = d,
-                     mean_ndvi = seq(-0.1, 1, length.out = 400),
-                     var_ndvi = seq(0, 0.05, length.out = 400)) %>%
-  mutate(too_far = too_far(mean_ndvi, var_ndvi, d$mean_ndvi, d$var_ndvi,
-                           dist = 0.1)) %>%
-  filter(!too_far) %>%
+                     mean_ndvi = seq(-0.1, 0.7, length.out = 400),
+                     var_ndvi = seq(0, 0.04, length.out = 400)) %>%
   fitted_values(m_hr, data = ., quantity = "expectation",
-                exclude = c("log(akde_ess_area)",
-                            "s(species)"))
+                exclude = c("s(log(akde_ess_area))",
+                            "s(species)")) %>%
+  mutate(too_far_a = too_far(mean_ndvi, var_ndvi, # in animal data,
+                             d$mean_ndvi, d$var_ndvi,
+                             dist = DIST),
+         # dist from raster values didn't make a difference, but keeping
+         # for stability
+         too_far_w = too_far(mean_ndvi, var_ndvi, # in world rasters
+                             r_values$mu_hat, r_values$s2_hat,
+                             dist = DIST)) %>%
+  filter(any(!is.na(.fitted)), .by = mean_ndvi)
 
 p_3 <-
   ggplot(pred_3) +
   geom_raster(aes(mean_ndvi, var_ndvi, fill = log(.fitted))) +
   geom_contour(aes(mean_ndvi, var_ndvi, z = log(.fitted)),
-               color = "black") +
+               color = "black", na.rm = TRUE) +
   geom_point(aes(mean_ndvi, var_ndvi), d, alpha = 0.3) +
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
-  scale_fill_gradientn(name = "Home-range size (km\U00B2)", colors = hr_pal,
-                       labels = exp, breaks = log(10^seq(-3, 8, by = 1))) +
+  scale_fill_gradientn(name = "Home-range size (km\U00B2)",
+                       colors = hr_pal, labels = exp,
+                       na.value = "transparent",
+                       breaks = log(10^seq(-2, 8, by = 2))) +
   theme(legend.position = "top", legend.key.width = rel(2))
+p_3
 cli::cli_alert_info(paste0(
   "Interaction plot is for an animal with a mass of ",
   round(unique(pred_3$mass_kg)), " kg."))
 ggsave("figures/p-3.png", p_3, width = 6, height = 6, dpi = 300)
 
+# find panels to wrap around the interaction plot ----
+p_3 + annotate("point", r_values$mu_hat, r_values$s2_hat, size = 0.1)
+
+# cutoffs for mean
+low_mean <- r_mean_ndvi < 0.2; plot(low_mean)
+med_mean <- abs(r_mean_ndvi - 0.4) < 0.05; plot(med_mean)
+high_mean <- r_mean_ndvi > 0.5; plot(high_mean)
+
+# cutoffs for variance (not even because distribution is skewed)
+round(quantile(values(r_var_ndvi), na.rm = TRUE), 3)
+low_var <- r_var_ndvi < 0.005; plot(low_var)
+med_var <- abs(r_var_ndvi - 0.011) < 0.0025; plot(med_var)
+high_var <- r_var_ndvi > 0.02; plot(high_var)
+
+plot(low_mean & low_var) # Namibia
+plot(med_mean & low_var) # Northern Australia
+plot(high_mean & low_var) # Angola
+plot(low_mean & med_var) # Canada
+plot(med_mean & med_var) # Ukraine
+plot(high_mean & med_var) # Brazil
+plot(low_mean & high_var) # Southern Alaksa or Northern Finland
+plot(med_mean & high_var) # Gabon
+plot(high_mean & high_var) # Indonesia
+
+ex_coords <- tribble(
+  ~mean, ~variance, ~country, ~long, ~lat,
+  "low", "high", "Namibia", 19.14, -27.45,
+  "medium", "high", "Australia", -5.36, 10.85,
+  "high", "high", "Angola", 18.4, -13.56,
+  "low", "medium", "Canada", -129.19, 64.31,
+  "medium", "medium", "Ukraine", 25.71, 50.71,
+  "high", "medium", "Brazil", -54.79, -10.58,
+  "low", "low", "Finland", 26.75, 67.68,
+  "medium", "low", "Gabon", 10.74, -0.83,
+  "high", "low", "Indonesia", 115.27, 0.08
+) %>%
+  mutate(mean = factor(mean, c("low", "medium", "high")),
+         variance = factor(variance, c("low", "medium", "high"))) %>%
+  st_as_sf(coords = c("long", "lat"), crs = "EPSG:4326")
+
+p_ex_locations <- ggplot() +
+  geom_sf(data = bounds, fill = "white") +
+  geom_sf(data = world, fill = "grey", color = "black") +
+  geom_sf(aes(shape = variance), size = 2.5,
+          st_transform(ex_coords, robinson_crs)) +
+  geom_sf(aes(color = mean, shape = variance),
+          st_transform(ex_coords, robinson_crs)) +
+  scale_color_manual("Mean NDVI",
+                     values = c("#B48D5E", "#627224", "#175614")) +
+  scale_shape("NDVI Variance") +
+  theme_void() +
+  theme(text = element_text(face = "bold"),
+        legend.position = "top",
+        legend.key.justification = "center",
+        legend.box = "vertical",
+        legend.box.just = "left",
+        legend.box.margin = margin(t = 10))
+ggsave("figures/p-ex-locations.png", p_ex_locations,
+       width = 7, height = 4.5, dpi = 300, bg = "white")
+
+# TODO: create figure of examples, then join to p_ex_locations  
+# use a 5 km buffer
+map(1:nrow(ex_coords), function(.i) {
+  .d <- slice(ex_coords, .i)
+  r <- .d %>%
+    st_buffer(10e3) %>%
+    crop(get_tiles(., provider = "Esri.WorldImagery", zoom = 13), .)
+  
+  ggplot() +
+    geom_spatraster_rgb(data = r) +
+    scale_x_continuous(expand = c(0, 0)) +
+    scale_y_continuous(expand = c(0, 0)) +
+    ggtitle(paste0(.d$mean, " m, ", .d$variance, " v"),
+            subtitle = .d$country)
+}) %>%
+  wrap_plots()
+
+# 3D version of p_3 ----
 d_est <- tibble(mean_ndvi = d$mean_ndvi,
                 var_ndvi = d$var_ndvi,
                 mass_kg = unique(pred_3$mass_kg),
                 akde_ess_area = 1e6,
                 species = d$species[1]) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
-                exclude = c("log(akde_ess_area)", "s(species)"))
+                exclude = c("s(log(akde_ess_area))", "s(species)"))
 
 p_3_persp <-
   data_slice(m_hr, data = d,
@@ -339,7 +439,7 @@ p_3_persp <-
              var_ndvi = evenly(var_ndvi),
   ) %>%
   fitted_values(m_hr, data = ., quantity = "expectation",
-                exclude = c("log(akde_ess_area)", "s(species)")) %>%
+                exclude = c("s(log(akde_ess_area))", "s(species)")) %>%
   # dropping too far values makes the plot take much longer to save
   ggplot(aes(mean_ndvi, var_ndvi, z = log(.fitted))) +
   geom_surface_3d(
@@ -353,8 +453,7 @@ p_3_persp <-
         z = log(d_est$.fitted) + 0.1,
         size = 0.5)) +
   coord_3d(ratio = c(1.5, 2, 1), expand = FALSE, panels = "zmin",
-           light = "none",
-           yaw = 45) +
+           light = "none", yaw = 45) +
   scale_x_continuous("Mean NDVI", expand = c(0, 0)) +
   scale_y_continuous("NDVI variance", expand = c(0, 0)) +
   scale_fill_gradientn(name = "Home-range size (km\U00B2)", colors = hr_pal,
