@@ -53,7 +53,7 @@ d %>%
 # to get exponent for historical context
 m_hr_0 <- gam(hr_95_km2 ~
                 s(species, bs = 're') +
-                log(akde_ess_area) +
+                s(log(akde_ess_area)) +
                 log(mass_kg),
               family = Gamma(link = "log"),
               data = d)
@@ -64,7 +64,7 @@ appraise(m_hr_0)
 # add NDVI variables to account for deviations
 m_hr_ndvi <- gam(hr_95_km2 ~
                    s(species, bs = 're') +
-                   log(akde_ess_area) +
+                   s(log(akde_ess_area)) +
                    log(mass_kg) +
                    s(mean_ndvi, k = 5),
                  family = Gamma(link = "log"),
@@ -76,7 +76,7 @@ appraise(m_hr_ndvi)
 # add variance in NDVI
 m_hr <- gam(hr_95_km2 ~
               s(species, bs = 're') +
-              log(akde_ess_area) +
+              s(log(akde_ess_area)) +
               log(mass_kg) +
               s(mean_ndvi, k = 5) +
               s(var_ndvi, k = 5) +
