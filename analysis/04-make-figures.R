@@ -262,11 +262,13 @@ p_2b <-
   scale_y_continuous("Home-range size (km\U00B2)",
                      breaks = log(10^seq(-2, 6, by = 1)),
                      labels = \(x) as.character(exp(x))) +
-  scale_color_devon(name = "NDVI variance") +
-  scale_fill_devon(name = "NDVI variance") +
+  scale_color_devon(name = "NDVI variance", reverse = TRUE,
+                    limits = c(0, NA)) +
+  scale_fill_devon(name = "NDVI variance", reverse = TRUE,
+                   limits = c(0, NA)) +
   theme(text = element_text(face = "bold"),
         legend.position = "top", legend.key.height = rel(0.5),
-        legend.key.width = rel(3), legend.title = element_text(vjust = 1),
+        legend.key.width = rel(2.75), legend.title = element_text(vjust = 1),
         legend.key.justification = "center",
         legend.box.margin = margin(t = 10))
 p_2b
@@ -299,7 +301,7 @@ p_2c <-
                        na.value = "transparent", limits = c(-1, 1)) +
   theme(text = element_text(face = "bold"),
         legend.position = "top", legend.key.height = rel(0.5),
-        legend.key.width = rel(3), legend.title = element_text(vjust = 1),
+        legend.key.width = rel(2.75), legend.title = element_text(vjust = 1),
         legend.key.justification = "center",
         legend.box.margin = margin(t = 10))
 p_2c
