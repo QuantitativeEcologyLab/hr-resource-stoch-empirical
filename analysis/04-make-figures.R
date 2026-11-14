@@ -319,7 +319,7 @@ r_values <- cbind(as.data.frame(round(r_mean_ndvi, 2)),
 
 DIST <- 0.1
 pred_3 <- data_slice(m_hr, data = d,
-                     mean_ndvi = seq(-0.1, 0.7, length.out = 400),
+                     mean_ndvi = seq(0, 0.7, length.out = 400),
                      var_ndvi = seq(0, 0.04, length.out = 400)) %>%
   fitted_values(m_hr, data = ., quantity = "expectation",
                 exclude = c("s(log(akde_ess_area))",
@@ -334,7 +334,7 @@ pred_3 <- data_slice(m_hr, data = d,
                              dist = DIST)) %>%
   filter(any(!is.na(.fitted)), .by = mean_ndvi)
 
-p_3 <-
+p_int <-
   ggplot(pred_3) +
   geom_raster(aes(mean_ndvi, var_ndvi, fill = log(.fitted))) +
   geom_contour(aes(mean_ndvi, var_ndvi, z = log(.fitted)),
@@ -347,14 +347,15 @@ p_3 <-
                        na.value = "transparent",
                        breaks = log(10^seq(-2, 8, by = 2))) +
   theme(legend.position = "top", legend.key.width = rel(2))
-p_3
+p_int
 cli::cli_alert_info(paste0(
   "Interaction plot is for an animal with a mass of ",
   round(unique(pred_3$mass_kg)), " kg."))
-ggsave("figures/p-3.png", p_3, width = 6, height = 6, dpi = 300)
+ggsave("figures/p-3-interaction.png", p_int, width = 6, height = 6,
+       dpi = 300)
 
 # find panels to wrap around the interaction plot ----
-p_3 + annotate("point", r_values$mu_hat, r_values$s2_hat, size = 0.1)
+p_int + annotate("point", r_values$mu_hat, r_values$s2_hat, size = 0.1)
 
 # cutoffs for mean
 low_mean <- r_mean_ndvi < 0.2; plot(low_mean)
@@ -367,27 +368,27 @@ low_var <- r_var_ndvi < 0.005; plot(low_var)
 med_var <- abs(r_var_ndvi - 0.011) < 0.0025; plot(med_var)
 high_var <- r_var_ndvi > 0.02; plot(high_var)
 
-plot(low_mean & low_var) # Namibia
-plot(med_mean & low_var) # Northern Australia
-plot(high_mean & low_var) # Angola
-plot(low_mean & med_var) # Canada
-plot(med_mean & med_var) # Ukraine
-plot(high_mean & med_var) # Brazil
-plot(low_mean & high_var) # Southern Alaksa or Northern Finland
+plot(low_mean & high_var) # Northern Finland
 plot(med_mean & high_var) # Gabon
 plot(high_mean & high_var) # Indonesia
+plot(low_mean & med_var) # Canada
+plot(med_mean & med_var) # Ukraine
+plot(high_mean & med_var) # Brazil (Mato Grosso)
+plot(low_mean & low_var) # Namibia
+plot(med_mean & low_var) # Burkina Faso
+plot(high_mean & low_var) # Brazil (Pará)
 
 ex_coords <- tribble(
   ~mean, ~variance, ~country, ~long, ~lat,
-  "low", "high", "Namibia", 19.14, -27.45,
-  "medium", "high", "Australia", -5.36, 10.85,
-  "high", "high", "Angola", 18.4, -13.56,
+  "low", "high", "Finland", 26.75, 67.68,
+  "medium", "high", "Gabon", 10.74, -0.83,
+  "high", "high", "Indonesia", 115.27, 0.08,
   "low", "medium", "Canada", -129.19, 64.31,
   "medium", "medium", "Ukraine", 25.71, 50.71,
-  "high", "medium", "Brazil", -54.79, -10.58,
-  "low", "low", "Finland", 26.75, 67.68,
-  "medium", "low", "Gabon", 10.74, -0.83,
-  "high", "low", "Indonesia", 115.27, 0.08
+  "high", "medium", "Brazil (Mato Grosso)", -54.79, -10.58,
+  "low", "low", "Namibia", 19.14, -27.45,
+  "medium", "low", "Burkina Faso", -5.36, 10.85,
+  "high", "low", "Brazil (Pará)", -57.12, 0.10
 ) %>%
   mutate(mean = factor(mean, c("low", "medium", "high")),
          variance = factor(variance, c("low", "medium", "high"))) %>%
@@ -413,24 +414,76 @@ p_ex_locations <- ggplot() +
 ggsave("figures/p-ex-locations.png", p_ex_locations,
        width = 7, height = 4.5, dpi = 300, bg = "white")
 
-# TODO: create figure of examples, then join to p_ex_locations  
-# use a 5 km buffer
-map(1:nrow(ex_coords), function(.i) {
-  .d <- slice(ex_coords, .i)
-  r <- .d %>%
-    st_buffer(10e3) %>%
-    crop(get_tiles(., provider = "Esri.WorldImagery", zoom = 13), .)
-  
-  ggplot() +
-    geom_spatraster_rgb(data = r) +
-    scale_x_continuous(expand = c(0, 0)) +
-    scale_y_continuous(expand = c(0, 0)) +
-    ggtitle(paste0(.d$mean, " m, ", .d$variance, " v"),
-            subtitle = .d$country)
-}) %>%
+p_biomes <-
+  map(1:nrow(ex_coords), function(.i) {
+    .d <- slice(ex_coords, .i)
+    r <- .d %>%
+      st_buffer(5550) %>% # squares are ~11 km * 11 km
+      crop(get_tiles(., provider = "Esri.WorldImagery", zoom = 14), .)
+    
+    pad_default <- unit(.25, "cm")
+    width_hint <- 0.2 # npc (normalized parent coords)
+    width_label <- strwidth("60 km", units = "inches", cex = .7)
+    width_label <- unit(width_label, "in")
+    
+    ggplot() +
+      geom_spatraster_rgb(data = r) +
+      scale_x_continuous(expand = c(0, 0),
+                         breaks = \(x) round(quantile(x, c(0.2, 0.8)), 2)) +
+      scale_y_continuous(expand = c(0, 0),
+                         breaks = \(x) round(quantile(x, c(0.2, 0.8)), 2)) +
+      labs(subtitle = .d$country) +
+      theme(axis.text = element_text(size = rel(0.6)),
+            plot.subtitle = element_text(size = rel(0.5)))
+  }) %>%
   wrap_plots()
 
-# 3D version of p_3 ----
+mean_axis <-
+  ggplot() +
+  annotate("segment", x = 0, xend = 1, y = 0, yend = 0, lwd = 1,
+           arrow = arrow(length = unit(0.3, "inches"), type = "closed",
+                         angle = 22.5)) +
+  annotate("text", x = 0.5, y = -0.1, label = "Mean NDVI",
+           fontface = "bold", size = 5) +
+  ylim(c(-0.2, 0.2)) +
+  theme_void()
+
+var_axis <-
+  ggplot() +
+  annotate("segment", x = 0, xend = 0, y = 0, yend = 1, lwd = 1,
+           arrow = arrow(length = unit(0.3, "inches"), type = "closed",
+                         angle = 22.5)) +
+  annotate("text", x = -0.1, y = 0.5, label = "NDVI variance", angle = 90,
+           fontface = "bold", size = 5) +
+  xlim(c(-0.2, 0.2)) +
+  theme_void()
+
+p_ex <-
+  wrap_plots(mean_axis, var_axis, p_biomes, design = "
+#########
+BCCCCCCCC
+BCCCCCCCC
+BCCCCCCCC
+BCCCCCCCC
+BCCCCCCCC
+BCCCCCCCC
+BCCCCCCCC
+BCCCCCCCC
+#AAAAAAAA")
+
+cli::cli_alert_info("Raster cells have a resolution of 0.05x0.05, which is about 5.55x5.55 km^2. Satellite images of biomes are about 11x11 km^2, so each picture would be 2x2 cells in the rasters.")
+
+ggsave("figures/p-biomes.png", p_ex, width = 6, height = 6,
+       units = "in", dpi = 300, bg = "white")
+
+p_3 <- wrap_plots(p_int, plot_spacer(), wrap_elements(full = p_biomes),
+                  widths = c(4, 0.5, 5)) +
+  plot_annotation(tag_levels = c("A", "", "B"))
+
+ggsave("figures/p-3.png", p_3, width = 12, height = 6,
+       units = "in", dpi = 300, bg = "white")
+
+# 3D version of p_int ----
 d_est <- tibble(mean_ndvi = d$mean_ndvi,
                 var_ndvi = d$var_ndvi,
                 mass_kg = unique(pred_3$mass_kg),
@@ -439,7 +492,7 @@ d_est <- tibble(mean_ndvi = d$mean_ndvi,
   fitted_values(object = m_hr, data = ., quantity = "expectation",
                 exclude = c("s(log(akde_ess_area))", "s(species)"))
 
-p_3_persp <-
+p_int_persp <-
   data_slice(m_hr, data = d,
              mean_ndvi = evenly(mean_ndvi),
              var_ndvi = evenly(var_ndvi),
@@ -465,4 +518,4 @@ p_3_persp <-
   scale_fill_gradientn(name = "Home-range size (km\U00B2)", colors = hr_pal,
                        labels = exp, breaks = log(10^seq(0, 8, by = 1))) +
   theme(legend.position = "top", legend.key.width = rel(2))
-ggsave("figures/p-3-3D.png", p_3_persp, width = 6, height = 6, dpi = 300)
+ggsave("figures/p-3-3D.png", p_int_persp, width = 6, height = 6, dpi = 300)
