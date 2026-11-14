@@ -60,6 +60,13 @@ bounds <-
 d <- readRDS("data/gam-dataset-2026-11-01.rds")
 m_hr <- readRDS('models/hr-hgam-full.rds')
 
+ggplot(d, aes(mean_ndvi, var_ndvi, color = log(mass_kg))) +
+  facet_wrap(~ round(log10(mass_kg))) +
+  geom_point() +
+  geom_point(shape = 1, color = "black") +
+  scale_color_bam() +
+  theme(legend.position = "top")
+
 # fig 1 maps and HR ~ mass model ----
 world <- geoboundaries(adm_lvl = 0, type = 'simplified') %>%
   # filter(shapeName != "Antarctica") %>%
