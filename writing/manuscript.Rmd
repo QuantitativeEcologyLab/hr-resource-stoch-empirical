@@ -150,7 +150,43 @@ To understand how resource abundance and stochasticity interact, it helps to thi
 
 Since each of the four habitat types will have different carrying capacities and selective pressures, species will develop different strategies and competitive behaviours. Resource-poor habitats may promote territoriality and caching [@wolverine_ref_andrea] or nomadism [@mongolian_gazelle], while resource-rich habitats may have low rates of competition [@ref]. Inversely, predictable habitats may favor species coexistence [@ref] and diversity [@marcus_environmental_2026], while stochastic habitats may promote despotic competition that forces low-rank individuals towards low-quality patches [@murray_dominance_2007]. Understanding the combined effects of resource abundance and stochasticity thus requires accounting for both variables concurrently [@mezzini_how_2025], along with any other confounding variables, such as competitive pressure and resource depletion [@polazzo_measuring_2024]. Thus, telemetry data of wild animals is essential for including such confounds and sources of variance in the estimates.
 
-Using a large intercontinental telemetry dataset with `r n_M_locations` million locations of `r n_animals` animals from `r n_species` distinct species (Fig. \@ref(fig:data-fig)), we present provide estimates of the effects of resource abundance and stochasticity on the range sizes of terrestrial mammals'. We use long-term estimates of spatiotemporal mean NDVI and variance in NDVI as proxies for resource abundance and stochasticity, respectively. To account for the nonlinear effects of the two variables, including nonlinear interaction effects, we model the relationships using a Generalized Additive Model [@wood_generalized_2017] (GAM). Specifically, we use a hierarchical GAM [@pedersen_hierarchical_2019] for location and scale [@rigby_generalized_2005; @stasinopoulos_generalized_2007; @wood_generalized_2017] to account for similarities across conspecifics and estimate common trends across species. The model accounts for: the partial effects of mean and variance in NDVI for each species, partial effects of the common partial effects across species, and a tensor product interaction term to account for the nonlinear interaction  ...
+Using a large intercontinental telemetry dataset with `r n_M_locations` million locations of `r n_animals` animals from `r n_species` distinct species (Fig. \@ref(fig:data-fig)), we present provide estimates of the effects of resource abundance and stochasticity on the range sizes of terrestrial mammals'. We use long-term estimates of spatiotemporal mean NDVI and variance in NDVI as proxies for resource abundance and stochasticity, respectively. To account for the nonlinear effects of the two variables, including nonlinear interaction effects, we model the relationships using a Generalized Additive Model [@wood_generalized_2017] (GAM). The GAM included a smooth term of mean NDVI, a smooth term of NDVI variance, and a smooth interaction of the two NDVI variables. Additionally, the model corrected for: (1) the scaling of energetic needs with body size [@brown_toward_2004] via a parametric effect of log-transformed body mass (kg) and (2) the uncertainty of range sizes via a smooth term of log-transformed home-range effective sample size [@ctmm-ref]. This second term corrected for potential range size overestimation when estimates with small sample sizes and also removed overdispersion in the deviance residuals.
+
+effects are scale-dependent
+
+```{r}
+m_0 <- readRDS("../models/hr-hgam-mass-only.rds")
+int_0 <- round(unname(coef(m_0)["(Intercept)"]), 4)
+log_mass_0 <- round(unname(coef(m_0)["log(mass_kg)"]), 4)
+
+m <- readRDS("../models/hr-hgam-full.rds")
+int <- round(unname(coef(m)["(Intercept)"]), 4)
+log_mass <- round(unname(coef(m)["log(mass_kg)"]), 4)
+```
+
+When body size was included as the only predictor, the log-log model produced coefficients that matched previous evidence that the mass exponent was near $\frac 34,$ suggesting an allometric scaling of energetic needs with body size [@brown_toward_2004]. Specifically, the equation was
+
+\begin{equation}
+\log\left(\mathbb{E}(H)\right) = `r int_0` + `r log_mass_0` \log(M).
+\end{equation}
+
+However, including mean and variance in NDVI dampened the effect of mass (Fig. \@ref(fig:partial-fx-fig)). The effects of the two additional variables were strongly dependent. In spatiotemporally homgeneous (i.e., predictable) environments, mammals reduced their range sizes (Fig. \@ref(fig:partial-fx-fig)B). These findings match the hypothesis proposed by [@mezzini_how_2025] and their results. As environments become more stochastic, this effect dampens, until it becomes becomes bell-shaped, with the largest range size at intermediate mean NDVI. Results for NDVI variance are similar. At low mean NDVI, mammals... due to patch optimization
+
+(Fig. \@ref(fig:partial-fx-fig)C). ...
+
+- Chisq tests
+- AIC
+- power coef of body size
+
+- make a fig of residuals from mass-only model: lots of variance remaining to explain
+- ecological theory, patches, etc.
+- see Noel's paper
+- place partial effects of mean and var in main results
+- expand in discussion with:
+  - ti() terms, case examples,
+  - 2 paragraphs of consequences: 1 climate change is forcing wider range, 2 human effects prevent expansions (tucker))
+  - one last paragraph tidying up
+
 
 <!-- • Importance of partial effects. -->
 <!-- • Variance is possibly linear because of difficulty estimating the effect due to correlation with mean -->
@@ -178,6 +214,8 @@ difficulties with estimating effect of variance:
 - temporal vs spatial variance
 - variance in NDVI may not be representative of environmental variance: a light in a boreal forest snow can change NDVI substantially without impacting nutrient availability
 
+long-term changes in resource dynamics can restructure trophic interactions [@albrecht_dynamic_2025]
+
 papers to use for structure:
 - jetz scaling of animal space use (https://pubmed.ncbi.nlm.nih.gov/15472074/)
   - tucker moving in the anthropocene (https://www.science.org/doi/10.1126/science.aam9712)
@@ -191,21 +229,21 @@ useful refs:
 - uses ndvi variance: https://esajournals.onlinelibrary.wiley.com/doi/full/10.1002/ecm.1348
 - 
 
-```{r data-fig, fig.cap = "Maps of the rasters of mean NDVI (A) and variance in NDVI (B) used as proxies for mean and variance in resource abundance. The bottom three panels show examples of environments with: (C) low mean NDVI and variance (\\emph{Canis mesomelas} near the Etosha Pan in Namibia), (D) intermediate mean NDVI and variance (\\emph{Capra ibex} in the Alps), and (E) high mean NDVI and variance (\\emph{Choloepus hoffmanni} in Costa Rica)."}
+
+```{r data-fig, fig.cap = "Maps of the rasters of mean NDVI (\\textbf{A}) and variance in NDVI (\\textbf{B.}) used as proxies for mean and variance in resource abundance. The bottom three panels show examples of environments with: (\\textbf{C.}) low mean NDVI and variance (\\emph{Canis mesomelas} near the Etosha Pan in Namibia), (\\textbf{D.}) intermediate mean NDVI and variance (\\emph{Capra ibex} in the Alps), and (\\textbf{E}) high mean NDVI and variance (\\emph{Choloepus hoffmanni} in Costa Rica)."}
 knitr::include_graphics("../figures/p-1.png")
 ```
 
-```{r partial-fx-fig, fig.cap = "Partial effects of body size (A), mean NDVI (B), and NDVI variance (C) on home range size. Y axes are on the log scale. Masses in panel A are jittered horizontally to aid in visualization, but each species has a single value for mass. The animals in the bottom right corner of panel C have masses in the bottom 8th percentile of the dataset (species: \\emph{Bradypus variegatus}, \\emph{Carollia castanea}, \\emph{Carollia perspicillata}, \\emph{Choloepus hoffmanni}, \\emph{Dasyprocta punctata}, \\emph{Nasua narica}).", out.width="65%"}
+```{r partial-fx-fig, fig.cap = paste("Partial effects of body size (\\textbf{A}), mean NDVI (\\textbf{B}), and NDVI variance (\\textbf{C}) on home range size. Y axes are on the log scale. Masses in panel A are jittered horizontally to aid in visualization, but each species has a single value for mass. The equation for the log-log model is $\\log\\left(\\mathbb{E}(H)\\right)$ = ", int, "+", log_mass, "$\\log(M)$. Curves in panel (B) are shown for NDVI variances of 0.005, 0.015, and 0.03. Curves in panel (C) are shown for NDVI means of 0, 0.3, and 0.6. The animals in the bottom right corner of panels B and C have masses in the bottom 8th percentile of the dataset (species: \\emph{Bradypus variegatus}, \\emph{Carollia castanea}, \\emph{Carollia perspicillata}, \\emph{Choloepus hoffmanni}, \\emph{Dasyprocta punctata}, \\emph{Nasua narica})."), out.width="45%"}
 knitr::include_graphics("../figures/p-2.png")
 ```
 
-```{r interaction-fig, fig.cap="Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale. Contour lines indicate surface areas with identical home range size."}
-# knitr::include_graphics("../figures/p-3.png")
+```{r interaction-fig, fig.cap="(\\textbf{A}) Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale. Contour lines indicate surface areas with the same home range size. (\\textbf{B}) Example habitats with high NDVI variance (> 0.02, top) to low NDVI variance (< 0.005, bottom) and low NDVI mean (< 0.2, left) to high NDVI mean (> 0.5, right). Fill values and contours extend to up to 20\\% of the plot range away from the data points."}
+knitr::include_graphics("../figures/p-3.png")
+# Home range size is on the log scale in both the z axis and the fill scale.
+# knitr::include_graphics("../figures/p-3-3D.png")
 ```
 
-```{r interaction-fig-3d, fig.cap="Interaction effects of mean NDVI and variance in NDVI on the home range size of a 85-kg mammal. Home range size is on the log scale in both the z axis and the fill scale."}
-knitr::include_graphics("../figures/p-3-3D.png")
-```
 
 # Materials and Methods
 

@@ -250,7 +250,7 @@ cli::cli_alert_info("Jittered masses to aid in visualization, but each species h
 
 p_2b <-
   data_slice(m_hr, data = d, mean_ndvi = evenly(mean_ndvi),
-             var_ndvi = c(0.005, 0.02, 0.035), mass_kg = median(mass_kg)) %>%
+             var_ndvi = c(0.005, 0.015, 0.03), mass_kg = median(mass_kg)) %>%
   fitted_values(object = m_hr, data = ., quantity = "expectation",
                 exclude = c("s(species)",
                             "s(log(akde_ess_area))")) %>%
@@ -321,12 +321,20 @@ p_2 <- (p_2a / p_2b / p_2c) + plot_annotation(tag_levels = 'A')
 ggsave("figures/p-2.png", p_2, width = 6, height = 15, dpi = 300)
 
 # fig 3 interaction effects of HR model ----
-r_values <- cbind(as.data.frame(round(r_mean_ndvi, 2)),
-                  as.data.frame(round(r_var_ndvi, 3))) %>%
-  distinct() %>%
-  filter(mu_hat > -0.1)
+r_values <- cbind(as.data.frame(round(r_mean_ndvi, 1)),
+                  as.data.frame(round(r_var_ndvi, 2))) %>%
+  filter(mu_hat > -0.1) %>%
+  summarize(n = n(), .by = c(mu_hat, s2_hat)) %>%
+  mutate(prop = n / sum(n))
 
-DIST <- 0.1
+r_values %>%
+  filter(prop > 0.01) %>%
+  ggplot(aes(mu_hat, s2_hat, fill = prop)) +
+  geom_raster() +
+  scale_fill_lapaz(name = "Proportion", reverse = TRUE) +
+  theme(legend.position = "top")
+
+DIST <- 0.2
 pred_3 <- data_slice(m_hr, data = d,
                      mean_ndvi = seq(0, 0.7, length.out = 400),
                      var_ndvi = seq(0, 0.04, length.out = 400)) %>%
@@ -341,6 +349,8 @@ pred_3 <- data_slice(m_hr, data = d,
          too_far_w = too_far(mean_ndvi, var_ndvi, # in world rasters
                              r_values$mu_hat, r_values$s2_hat,
                              dist = DIST)) %>%
+  mutate(.fitted = if_else(too_far_a, NA_real_, .fitted),
+         .fitted = if_else(too_far_w, NA_real_, .fitted)) %>%
   filter(any(!is.na(.fitted)), .by = mean_ndvi)
 
 p_int <-
