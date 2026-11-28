@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.4) (preloaded format=xelatex 2026.10.17)  25 NOV 2026 20:35
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.4) (preloaded format=xelatex 2026.10.17)  28 NOV 2026 10:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1231,25 +1231,25 @@ Underfull \hbox (badness 2027) in paragraph at lines 190--191
 [5]
 
 [6]
-Missing character: There is no ≈ in font [lmroman12-regular]:mapping=tex-text;!
-
 
 [7]
+Missing character: There is no ≈ in font [lmroman12-regular]:mapping=tex-text;!
+
 
 [8]
 File: ../figures/p-1.png Graphic file (type bmp)
 <../figures/p-1.png>
 
-LaTeX Warning: Float too large for page by 24.93321pt on input line 288.
+LaTeX Warning: Float too large for page by 24.93321pt on input line 295.
 
 File: ../figures/p-2.png Graphic file (type bmp)
 <../figures/p-2.png>
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.0pt on input line 296.
+(Font)              scaled to size 5.0pt on input line 303.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.00046pt on input line 296.
+(Font)              scaled to size 5.00046pt on input line 303.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 296.
+(Font)              scaled to size 4.99947pt on input line 303.
 File: ../figures/p-3.png Graphic file (type bmp)
 <../figures/p-3.png>
 
@@ -1275,7 +1275,7 @@ L3 programming layer <2025-09-02>
 Here is how much of TeX's memory you used:
  21516 strings out of 403197
  388381 string characters out of 5455936
- 1002394 words of memory out of 5000000
+ 1007542 words of memory out of 5000000
  49745 multiletter control sequences out of 15000+600000
  635157 words of font info for 102 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

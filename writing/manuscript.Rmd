@@ -170,13 +170,19 @@ When body size was included as the only predictor, the log-log model produced co
 \log\left(\mathbb{E}(H)\right) = `r int_0` + `r log_mass_0` \log(M).
 \end{equation}
 
-However, including mean and variance in NDVI dampened the effect of mass (Fig. \@ref(fig:partial-fx-fig)). The effects of the two additional variables were strongly dependent. In spatiotemporally homgeneous (i.e., predictable) environments, mammals reduced their range sizes (Fig. \@ref(fig:partial-fx-fig)B). These findings match the hypothesis proposed by [@mezzini_how_2025] and their results. As environments become more stochastic, this effect dampens, until it becomes becomes bell-shaped, with the largest range size at intermediate mean NDVI. Results for NDVI variance are similar. At low mean NDVI, mammals... due to patch optimization
+However, including mean and variance in NDVI dampened the effect of mass, whose exponent decreased to `r log_mass` (Fig. \@ref(fig:partial-fx-fig)). The effects of NDVI mean and variance were strongly dependent. In spatiotemporally homgeneous (i.e., predictable) environments, mammals reduced their range sizes nonlinearly (Fig. \@ref(fig:partial-fx-fig)B), matching the hypothesis proposed by [@mezzini_how_2025] and their results. In more stochastic environments, the effect dampened, and in highly stochastic environments the effect became bell-shaped, with the largest range size at intermediate mean NDVI. 
 
-(Fig. \@ref(fig:partial-fx-fig)C). ...
+Results for NDVI variance are similar (Fig. \@ref(fig:partial-fx-fig)C). In resource-poor environments, spatiotemporal variance in NDVI correlated with smaller range sizes. As mean NDVI increased, the effect of NDVI stochasticity flattened out before becoming convex with a maximum range size at intermediate NDVI variance.
 
+Fig. \@ref(fig:interaction-fig)A illustrates the full estimated effect of mean NDVI and NDVI variance on range size for an 85-kg mammal. By combining the two effects into a single figure, a new pattern emerges. The space can be divided into nine sections that are given by the combinations of low, intermediate, or high mean and variance ($3 \times 3 = 9$). Panel B of the figure provides examples for each section. The four corners all "deviate from the mean range"...
+
+divide surface in fig 3 into 3x3:
+- ... may be due to two reasons. Firstly, in highly stochastic but resource-poor habitats (e.g., Northern Finland; )
+- my 2025 paper did detail some of the issues with using NDVI as a proxy for resource abundance: poor proxy, fail to account for competition, which may be stronger as NDVI goes up (tie to rekha's paper with biodiversity). simulations did not account for movement optimization, and variance was only temporal, not spatial.
+
+Add to the results above:
 - Chisq tests
 - AIC
-- power coef of body size
 
 - make a fig of residuals from mass-only model: lots of variance remaining to explain
 - ecological theory, patches, etc.
@@ -188,8 +194,6 @@ However, including mean and variance in NDVI dampened the effect of mass (Fig. \
   - one last paragraph tidying up
 
 
-<!-- • Importance of partial effects. -->
-<!-- • Variance is possibly linear because of difficulty estimating the effect due to correlation with mean -->
 <!-- • Interaction effect: variance has weak effect at intermediate mean but strong u shape in some areas. Could be because of increased competition and pressure when resources are high. -->
 <!-- • Need more studies that account for competition and other factors. Ndvi is just a proxy any not necessarily appropriate for carnivores, but results are still great. Residuals do not have trends with diet types -->
 
